@@ -5,32 +5,32 @@
 
 int main() 
 {
-    setlocale(LC_ALL,""); // Set the locale to the user's preferred one
-    initscr();
-    cbreak();
-    noecho();
-    
-    attron(A_BOLD);
-	
-	// lets get the size of a square on the screen
-	int sqX = 3; // accounting for border
-	int sqY = 3;
-	
-	
-	// example setup board
-    cchar_t pawn;
-    wchar_t pwide = L'♟';
-    setcchar(&pawn, &pwide, A_NORMAL, 0, NULL);
-    
-    cchar_t li;
-    wchar_t liwide = L'─';
-    setcchar(&li, &liwide, A_NORMAL, 0, NULL);
-    
-    cchar_t ld;
-    wchar_t ldwide = L'│';
-    setcchar(&ld, &ldwide, A_NORMAL, 0, NULL);
-    
-    for(int x = 1; x <= MAX_ROW_COL - 1; x++)
+  setlocale(LC_ALL,""); // Set the locale to the user's preferred one
+  initscr();
+  cbreak();
+  noecho();
+
+  attron(A_BOLD);
+
+  // lets get the size of a square on the screen
+  int sqX = 3; // accounting for border
+  int sqY = 3;
+
+
+  // example setup board
+  cchar_t pawn;
+  wchar_t pwide = L'♟';
+  setcchar(&pawn, &pwide, A_NORMAL, 0, NULL);
+
+  cchar_t li;
+  wchar_t liwide = L'─';
+  setcchar(&li, &liwide, A_NORMAL, 0, NULL);
+
+  cchar_t ld;
+  wchar_t ldwide = L'│';
+  setcchar(&ld, &ldwide, A_NORMAL, 0, NULL);
+
+  for(int x = 1; x <= MAX_ROW_COL - 1; x++)
 	{
 		for(int line = 1; line < sqX*MAX_ROW_COL; line++)
 		{
@@ -84,20 +84,5 @@ int main()
     refresh();
     getch();
     endwin();
-
     return 0;
 }
-/*
-int main()
-{
-	initscr();
-	
-	printw("Hello world!");
-	
-	refresh();
-	
-	getch();
-	
-
-	return 0;
-}*/

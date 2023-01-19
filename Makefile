@@ -2,6 +2,7 @@ OBJ = main.o Pos.o
 CC = g++ -Wall 
 LIB = -lncursesw 
 
+
 CChess:	$(OBJ)
 		$(CC) -o CChess $(OBJ) $(LIB)
 

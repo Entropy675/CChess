@@ -10,4 +10,6 @@
 #define MAX_ROW_COL		8 // since its a square row and col are same
 
 
+void drawBoard(int sqX, int sqY);
+
 #endif

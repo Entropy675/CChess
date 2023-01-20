@@ -21,6 +21,12 @@ void Pos::set(int ix, int iy)
 	y = iy;
 }
 
+void Pos::set(Pos p)
+{
+	x = p.getX();
+	y = p.getY();
+}
+
 void Pos::setX(int ix)
 {
 	if(!isValid(ix,y))

@@ -9,6 +9,7 @@ class Pos
 
 
 	void set(int ix, int iy);
+	void set(Pos p);
 	void setX(int ix);
 	void setY(int iy);
 

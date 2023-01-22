@@ -1,29 +1,19 @@
 #ifndef KNIGHT_H
 #define KNIGHT_H
 
-#include "Piece.h"
-#include "Pos.h"
-#include "defs.h"
+#include "../Piece.h"
+#include "../Pos.h"
+#include "../defs.h"
+#include <vector>
 
 class Knight : Piece
 {
-	bool isValidMove(Pos p) override
-	{
-		// we can assume the input pos is a valid pos (check for pos before)
-		// (invalid positions cannot be saved in a pos variable)
-		
-		
-		
-	}
+	public:
+	bool isValidMove(Pos p) override;
+	void validMoves(std::vector<Pos>* p, Piece* gameBoard) override;
+	void move(Pos p) override;
 	
-	void move(Pos p) override
-	{
-		
-		
-	}
-	
-}
-
+};
 
 
 

@@ -15,7 +15,6 @@ Pos.o: Pos.cc Pos.h defs.h
 Board.o: Pos.h Board.h Board.cc defs.h
 		$(CC) -c Board.cc
 		
-
 pieces/Pawn.o:	pieces/Pawn.cc pieces/Pawn.h defs.h Pos.h Piece.h
 		$(CC) -c -o pieces/Pawn.o pieces/Pawn.cc
 		

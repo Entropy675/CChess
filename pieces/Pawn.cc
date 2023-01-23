@@ -17,6 +17,11 @@ Pawn::Pawn(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Pawn::~Pawn()
+{
+	
+}
+
 bool Pawn::isValidMove(Pos p)
 {
 	

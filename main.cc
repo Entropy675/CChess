@@ -32,7 +32,8 @@ int main()
 	while(true)
 	{
 		move(game->sqSize.getY()*MAX_ROW_COL + 2, 0);
-		string uinp; // overflow issues lmao
+		
+		string uinp;
 		char ch;
 		while(true)
 		{
@@ -52,13 +53,14 @@ int main()
 			game->toggleSize();
 			refresh();
 		}
+		
 		else if(uinp == string("exit"))
 			break;
 			
-		clear();
 		game->drawBoard();	
 	}
 	
+	game->cleanBoard();
 	
 	move(0, 0);
 

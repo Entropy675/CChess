@@ -10,6 +10,7 @@ class Bishop : public Piece
 {
 	public:
 	Bishop(Pos p, bool white);
+	~Bishop();
 	bool isValidMove(Pos p) override;
 	void validMoves(std::vector<Pos>* p, Piece* gameBoard) override;
 	void move(Pos p) override;

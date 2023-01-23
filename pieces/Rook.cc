@@ -17,6 +17,11 @@ Rook::Rook(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Rook::~Rook()
+{
+
+}
+
 bool Rook::isValidMove(Pos p)
 {
 	

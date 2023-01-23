@@ -17,6 +17,11 @@ Knight::Knight(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Knight::~Knight()
+{
+
+}
+
 bool Knight::isValidMove(Pos p)
 {
 	

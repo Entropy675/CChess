@@ -17,6 +17,11 @@ Bishop::Bishop(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Bishop::~Bishop()
+{
+
+}
+
 bool Bishop::isValidMove(Pos p)
 {
 	

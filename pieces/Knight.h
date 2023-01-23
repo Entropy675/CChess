@@ -10,6 +10,7 @@ class Knight : public Piece
 {
 	public:
 	Knight(Pos p, bool white);
+	~Knight();
 	bool isValidMove(Pos p) override;
 	void validMoves(std::vector<Pos>* p, Piece* gameBoard) override;
 	void move(Pos p) override;

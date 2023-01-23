@@ -17,6 +17,11 @@ King::King(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+King::~King()
+{
+
+}
+
 bool King::isValidMove(Pos p)
 {
 	

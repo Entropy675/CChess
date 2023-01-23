@@ -17,7 +17,12 @@
 
 Board::Board()
 {
-	
+	wchar_t liwide = L'─';
+	setcchar(&li, &liwide, A_NORMAL, 0, NULL);
+
+	wchar_t ldwide = L'│';
+	setcchar(&ld, &ldwide, A_NORMAL, 0, NULL);
+
 	if(largeBoard)
 	{
 		sqSize.set(6, 3);
@@ -46,27 +51,11 @@ void Board::toggleSize()
 		offset.set(1, 1); 
 	}
 	
-	clear();
 	drawBoard();
 }
 
 void Board::setStartingBoard(bool startingColor)
 {
-	// example setup board
-	// puts pawns in every position, temporary
-	
-	/*
-	for(int x = 0; x < MAX_ROW_COL; x++)
-	{
-		for(int y = 0; y < MAX_ROW_COL; y++)
-		{
-			// remember to use delete keyword to remove
-			gameBoard[x][y] = new Knight(Pos(x, y), x%2 == 0);
-		}
-	}
-	*/
-	
-	
 	// top pieces
 	gameBoard[0][0] = new Rook(Pos(0,0), !startingColor);
 	gameBoard[0][1] = new Knight(Pos(0,1), !startingColor);
@@ -95,15 +84,24 @@ void Board::setStartingBoard(bool startingColor)
 	
 }
 
+void Board::cleanBoard()
+{
+	for(int x = 0; x < MAX_ROW_COL; x++)
+	{
+		for(int y = 0; y < MAX_ROW_COL; y++)
+		{
+			if(gameBoard[x][y] != nullptr)
+			{
+				delete gameBoard[x][y];
+			}
+		}
+	}
+
+}
+
 void Board::drawBoard()
 {
-	cchar_t li;
-	wchar_t liwide = L'─';
-	setcchar(&li, &liwide, A_NORMAL, 0, NULL);
-
-	cchar_t ld;
-	wchar_t ldwide = L'│';
-	setcchar(&ld, &ldwide, A_NORMAL, 0, NULL);
+	clear();
 
 	for(int x = 0; x <= MAX_ROW_COL; x++)
 	{
@@ -121,7 +119,6 @@ void Board::drawBoard()
 			add_wch(&li);
 		//move(sqX*x + sqX/2 + 1, sqY*y + sqY/2 + 1);
 		//add_wch(&pawn);	
-		
 	}
 
 	for(int y = 1; y <= MAX_ROW_COL -1; y++)
@@ -145,9 +142,7 @@ void Board::drawBoard()
 		{
 			move(x*sqSize.getY() + offset.getY(), y*sqSize.getX() + offset.getX());
 			if(gameBoard[x][y] != nullptr)
-			{
 				add_wch(&(gameBoard[x][y])->chr);
-			}
 		}
 		int y1 = getcury(stdscr);
 		move(y1, sqSize.getX()*MAX_ROW_COL + 2);

@@ -17,6 +17,11 @@ Queen::Queen(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Queen::~Queen()
+{
+
+}
+
 bool Queen::isValidMove(Pos p)
 {
 	

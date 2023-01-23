@@ -3,6 +3,12 @@
 #include "defs.h"
 #include "Pos.h"
 #include "Piece.h"
+#include "pieces/Pawn.h"
+#include "pieces/King.h"
+#include "pieces/Queen.h"
+#include "pieces/Knight.h"
+#include "pieces/Rook.h"
+#include "pieces/Bishop.h"
 
 class Board
 {
@@ -10,8 +16,10 @@ class Board
 	
 	Board();
 	
+	
 	bool whiteTurn;
 	
+	void setStartingBoard();
 	void drawBoard();
 	void toggleSize(); // large/small
 	

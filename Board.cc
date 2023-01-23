@@ -1,6 +1,15 @@
 #include "Board.h"
 #include "Pos.h"
 #include "defs.h"
+
+#include "Piece.h"
+#include "pieces/Pawn.h"
+#include "pieces/King.h"
+#include "pieces/Queen.h"
+#include "pieces/Knight.h"
+#include "pieces/Rook.h"
+#include "pieces/Bishop.h"
+
 #include <ncurses.h>
 #include <locale.h>
 #include <wchar.h>
@@ -38,6 +47,22 @@ void Board::toggleSize()
 	
 	clear();
 	drawBoard();
+}
+
+void Board::setStartingBoard()
+{
+	// example setup board
+	// puts pawns in every position, temporary
+	
+
+	for(int x = 0; x < MAX_ROW_COL; x++)
+	{
+		for(int y = 0; y < MAX_ROW_COL; y++)
+		{
+			// remember to use delete keyword to remove
+			gameBoard[x][y] = new Knight(Pos(x, y), x%2 == 0);
+		}
+	}
 }
 
 void Board::drawBoard()
@@ -78,21 +103,23 @@ void Board::drawBoard()
 		}
 	}
 	
-	// example setup board
-	// puts pawns in every position, temporary
-	cchar_t pawn;
-	wchar_t pwide = L'♟';
-	setcchar(&pawn, &pwide, A_NORMAL, 0, NULL);
+	// done drawing empty board
+	// now drawing pieces
+	
+	// remember: Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
+	// 2d array of piece pointers
 	
 	for(int x = 0; x < MAX_ROW_COL; x++)
 	{
 		for(int y = 0; y < MAX_ROW_COL; y++)
 		{
 			move(x*sqSize.getY() + offset.getY(), y*sqSize.getX() + offset.getX());
-			add_wch(&pawn);
+			if(gameBoard[x][y] != nullptr)
+			{
+				add_wch(&(gameBoard[x][y])->chr);
+			}
 		}
 	}
-	
 	move(sqSize.getY()*MAX_ROW_COL + 1, 0);
 }
 

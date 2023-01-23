@@ -4,6 +4,18 @@
 #include "Knight.h"
 #include <vector>
 
+Knight::Knight(Pos p, bool white)
+{
+	wchar_t pwide;
+	if(white)
+		pwide = L'♞';
+	else
+		pwide = L'♘';
+	
+	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
+	pos.setX(p.getX());
+	pos.setY(p.getY());
+}
 
 bool Knight::isValidMove(Pos p)
 {

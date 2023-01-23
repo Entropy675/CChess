@@ -6,7 +6,7 @@ LIB = -lncursesw
 CChess:	$(OBJ)
 		$(CC) -o CChess $(OBJ) $(LIB)
 
-main.o:	main.cc defs.h
+main.o:	main.cc defs.h Piece.h Board.h
 		$(CC) -c main.cc
 		
 Pos.o: Pos.cc Pos.h defs.h
@@ -35,3 +35,4 @@ pieces/Bishop.o: pieces/Bishop.cc pieces/Bishop.h defs.h Pos.h Piece.h
 
 clean:
 		find . -type f -name '*.o' -delete
+		rm -f CChess

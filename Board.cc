@@ -13,6 +13,7 @@
 #include <ncurses.h>
 #include <locale.h>
 #include <wchar.h>
+#include <string>
 
 Board::Board()
 {
@@ -123,9 +124,9 @@ void Board::drawBoard()
 		
 	}
 
-	for(int x = 1; x <= MAX_ROW_COL -1; x++)
+	for(int y = 1; y <= MAX_ROW_COL -1; y++)
 	{
-		for(int y = 1; y <= MAX_ROW_COL -1; y++)
+		for(int x = 1; x <= MAX_ROW_COL -1; x++)
 		{
 			move(sqSize.getY()*y, sqSize.getX()*x);
 			addstr("+");
@@ -148,8 +149,28 @@ void Board::drawBoard()
 				add_wch(&(gameBoard[x][y])->chr);
 			}
 		}
+		int y1 = getcury(stdscr);
+		move(y1, sqSize.getX()*MAX_ROW_COL + 2);
+		addstr((std::to_string(MAX_ROW_COL - x)).c_str());
 	}
+	
 	move(sqSize.getY()*MAX_ROW_COL + 1, 0);
+	char chars[9] = "abcdefgh";
+	
+	for(int y = 0; y < MAX_ROW_COL; y++)
+	{
+		for(int i = 0; i < sqSize.getX()/2; i++)
+			addstr(" ");
+			
+		addch(chars[y]);
+		
+		for(int i = 0; i < sqSize.getX()/2 - 1; i++)
+			addstr(" ");
+			
+		// works well with largeboard ... very weird how this works out .... 
+	}
+	
+	//move(sqSize.getY()*MAX_ROW_COL + 2, 0); unnecessary: handled in game loop
 }
 
 

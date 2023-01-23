@@ -22,8 +22,9 @@ int main()
 	Board* game = new Board();
 
 
+	game->setStartingBoard();
 	game->drawBoard();
-	mvprintw(25, 1, "Board size: %dx%d sqaresize: %dx%d", game->sqSize.getY()*MAX_ROW_COL, game->sqSize.getX()*MAX_ROW_COL, 
+	mvprintw(18, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", game->sqSize.getY()*MAX_ROW_COL, game->sqSize.getX()*MAX_ROW_COL, 
 				game->sqSize.getX(), game->sqSize.getY());
 	
 
@@ -41,9 +42,7 @@ int main()
 			uinp += ch;
 			refresh();
 			if(ch == '\n')
-			{
 				break;
-			}
 		}
 		
 		uinp.erase(uinp.end()-1); // null terminates, removes \n from uinp

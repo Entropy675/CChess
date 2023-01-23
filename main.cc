@@ -3,6 +3,8 @@
 #include <wchar.h>
 #include <string>
 #include <cstring>
+#include <regex>
+
 #include "defs.h"
 #include "Pos.h"
 #include "Board.h"
@@ -48,6 +50,25 @@ int main()
 		uinp.erase(uinp.end()-1); // null terminates, removes \n from uinp
 		//addstr(uinp.c_str());
 		
+		// for valid input, must be of format "c# c#", where c = char in "abcdefgh"
+		// could also support p = kqrkbp in format "pc#", where only one valid move can go there.
+		// could also support "c#" where only one valid move exists (this is cringe but completely doable)
+		
+		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex
+		
+		if(regex_match(uinp, pattern))
+		{
+			// this is a valid input 
+			
+		}
+		regex pattern2("[a-h][1-8]"); // lets just use regex
+		
+		if(regex_match(uinp, pattern2))
+		{
+			// this is a valid input for single location given (only one possible valid move)
+			
+		}
+		
 		if(uinp == string("tg"))
 		{
 			game->toggleSize();
@@ -70,7 +91,13 @@ int main()
 	return 0;
 }
 
-
+int bCharToInt(char& a)
+{
+	int out = 0;
+	
+	
+	return out;
+}
 
 
 

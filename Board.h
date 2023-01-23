@@ -3,6 +3,8 @@
 #include "defs.h"
 #include "Pos.h"
 #include "Piece.h"
+#include <vector>
+
 #include "pieces/Pawn.h"
 #include "pieces/King.h"
 #include "pieces/Queen.h"
@@ -23,6 +25,9 @@ class Board
 	void drawBoard();
 	void toggleSize(); // large/small
 	void cleanBoard();
+	
+	std::vector<Piece> whitePices;
+	std::vector<Piece> blackPices;
 	
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is

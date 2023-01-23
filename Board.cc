@@ -25,8 +25,8 @@ Board::Board()
 
 	if(largeBoard)
 	{
-		sqSize.set(6, 3);
-		offset.set(3, 1); // from top left corner of square		
+		sqSize.set(6, 4);
+		offset.set(3, 2); // from top left corner of square		
 	}
 	else
 	{
@@ -41,8 +41,10 @@ void Board::toggleSize()
 	
 	if(largeBoard)
 	{
-		sqSize.set(6, 3);
-		offset.set(3, 1); // from top left corner of square		
+		sqSize.set(6, 4);
+		offset.set(3, 2); // from top left corner of square		
+		//sqSize.set(6, 3);
+		//offset.set(3, 1); // from top left corner of square		
 	}
 	else
 	{
@@ -60,8 +62,8 @@ void Board::setStartingBoard(bool startingColor)
 	gameBoard[0][0] = new Rook(Pos(0,0), !startingColor);
 	gameBoard[0][1] = new Knight(Pos(0,1), !startingColor);
 	gameBoard[0][2] = new Bishop(Pos(0,2), !startingColor);
-	gameBoard[0][3] = new King(Pos(0,3), !startingColor);
-	gameBoard[0][4] = new Queen(Pos(0,4), !startingColor);
+	gameBoard[0][3] = new Queen(Pos(0,3), !startingColor);
+	gameBoard[0][4] = new King(Pos(0,4), !startingColor);
 	gameBoard[0][5] = new Bishop(Pos(0,5), !startingColor);
 	gameBoard[0][6] = new Knight(Pos(0,6), !startingColor);
 	gameBoard[0][7] = new Rook(Pos(0,7), !startingColor);
@@ -73,8 +75,8 @@ void Board::setStartingBoard(bool startingColor)
 	gameBoard[MAX_ROW_COL-1][0] = new Rook(Pos(MAX_ROW_COL-1,0), startingColor);
 	gameBoard[MAX_ROW_COL-1][1] = new Knight(Pos(MAX_ROW_COL-1,1), startingColor);
 	gameBoard[MAX_ROW_COL-1][2] = new Bishop(Pos(MAX_ROW_COL-1,2), startingColor);
-	gameBoard[MAX_ROW_COL-1][3] = new King(Pos(MAX_ROW_COL-1,3), startingColor);
-	gameBoard[MAX_ROW_COL-1][4] = new Queen(Pos(MAX_ROW_COL-1,4), startingColor);
+	gameBoard[MAX_ROW_COL-1][3] = new Queen(Pos(MAX_ROW_COL-1,3), startingColor);
+	gameBoard[MAX_ROW_COL-1][4] = new King(Pos(MAX_ROW_COL-1,4), startingColor);
 	gameBoard[MAX_ROW_COL-1][5] = new Bishop(Pos(MAX_ROW_COL-1,5), startingColor);
 	gameBoard[MAX_ROW_COL-1][6] = new Knight(Pos(MAX_ROW_COL-1,6), startingColor);
 	gameBoard[MAX_ROW_COL-1][7] = new Rook(Pos(MAX_ROW_COL-1,7), startingColor);

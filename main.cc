@@ -22,17 +22,16 @@ int main()
 	Board* game = new Board();
 
 
-	game->setStartingBoard();
+	game->setStartingBoard(true);
 	game->drawBoard();
-	mvprintw(18, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", game->sqSize.getY()*MAX_ROW_COL, game->sqSize.getX()*MAX_ROW_COL, 
+	mvprintw(19, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", game->sqSize.getY()*MAX_ROW_COL, game->sqSize.getX()*MAX_ROW_COL, 
 				game->sqSize.getX(), game->sqSize.getY());
 	
 
 	
 	while(true)
 	{
-		
-		move(game->sqSize.getY()*MAX_ROW_COL + 1, 0);
+		move(game->sqSize.getY()*MAX_ROW_COL + 2, 0);
 		string uinp; // overflow issues lmao
 		char ch;
 		while(true)

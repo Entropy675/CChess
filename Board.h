@@ -19,7 +19,7 @@ class Board
 	
 	bool whiteTurn;
 	
-	void setStartingBoard();
+	void setStartingBoard(bool startingColor);
 	void drawBoard();
 	void toggleSize(); // large/small
 	

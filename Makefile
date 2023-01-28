@@ -1,4 +1,4 @@
-OBJ = main.o Pos.o Board.o pieces/Pawn.o pieces/King.o pieces/Knight.o pieces/Queen.o pieces/Rook.o  pieces/Bishop.o
+OBJ = main.o Pos.o Board.o Piece.o pieces/Pawn.o pieces/King.o pieces/Knight.o pieces/Queen.o pieces/Rook.o  pieces/Bishop.o
 CC = g++ -Wall 
 LIB = -lncursesw 
 
@@ -11,7 +11,10 @@ main.o:	main.cc defs.h Piece.h Board.h
 		
 Pos.o: Pos.cc Pos.h defs.h
 		$(CC) -c Pos.cc
-
+		
+Piece.o: Piece.cc Piece.h Pos.h defs.h
+		$(CC) -c Piece.cc
+		
 Board.o: Pos.h Board.h Board.cc defs.h
 		$(CC) -c Board.cc
 		

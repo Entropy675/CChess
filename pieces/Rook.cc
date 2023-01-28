@@ -7,6 +7,7 @@
 Rook::Rook(Pos p, bool white)
 {
 	wchar_t pwide;
+	chr.chars[0] = L'A';
 	if(white)
 		pwide = L'♜';
 	else
@@ -15,6 +16,11 @@ Rook::Rook(Pos p, bool white)
 	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
 	pos.setX(p.getX());
 	pos.setY(p.getY());
+}
+
+Rook::~Rook()
+{
+
 }
 
 bool Rook::isValidMove(Pos p)
@@ -29,8 +35,3 @@ void Rook::validMoves(std::vector<Pos>* p, Piece* gameBoard)
 
 }
 
-void Rook::move(Pos p) 
-{
-
-
-}

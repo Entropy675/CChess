@@ -7,6 +7,7 @@
 King::King(Pos p, bool white)
 {
 	wchar_t pwide;
+	chr.chars[0] = L'A';
 	if(white)
 		pwide = L'♚';
 	else
@@ -15,6 +16,11 @@ King::King(Pos p, bool white)
 	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
 	pos.setX(p.getX());
 	pos.setY(p.getY());
+}
+
+King::~King()
+{
+
 }
 
 bool King::isValidMove(Pos p)
@@ -29,8 +35,3 @@ void King::validMoves(std::vector<Pos>* p, Piece* gameBoard)
 
 }
 
-void King::move(Pos p) 
-{
-
-
-}

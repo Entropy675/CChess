@@ -17,6 +17,11 @@ Knight::Knight(Pos p, bool white)
 	pos.setY(p.getY());
 }
 
+Knight::~Knight()
+{
+
+}
+
 bool Knight::isValidMove(Pos p)
 {
 	
@@ -26,11 +31,5 @@ bool Knight::isValidMove(Pos p)
 void Knight::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
 {
 	
-
-}
-
-void Knight::move(Pos p) 
-{
-
 
 }

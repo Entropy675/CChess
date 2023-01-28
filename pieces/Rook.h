@@ -10,9 +10,9 @@ class Rook : public Piece
 {
 	public:
 	Rook(Pos p, bool white);
+	~Rook();
 	bool isValidMove(Pos p) override;
 	void validMoves(std::vector<Pos>* p, Piece* gameBoard) override;
-	void move(Pos p) override;
 	
 };
 

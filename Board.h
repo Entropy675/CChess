@@ -12,13 +12,16 @@
 #include "pieces/Rook.h"
 #include "pieces/Bishop.h"
 
+/* Board
+ * Contains all of the game-wide variables and code
+ * also handles player turns and pieces, and the visual
+ * aspects of the game.
+ */
 class Board
 {
 	public:
 	
 	Board();
-	
-	
 	bool whiteTurn;
 	
 	void setStartingBoard(bool startingColor);
@@ -26,8 +29,10 @@ class Board
 	void toggleSize(); // large/small
 	void cleanBoard();
 	
-	std::vector<Piece> whitePices;
-	std::vector<Piece> blackPices;
+    void movePiece(Pos&, Pos&); // move from a to b if valid on this piece
+	
+	std::vector<Piece*> whitePieces;
+	std::vector<Piece*> blackPieces;
 	
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is

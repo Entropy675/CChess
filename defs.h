@@ -8,8 +8,9 @@
 #define C_FALSE			0
 
 #define MAX_ROW_COL		8 // since its a square row and col are same
+#define NUM_PIECES		32
 
-
+// board character to int: abcdefgh -> 12345678
 int bCharToInt(char& a);
 
 class Board;

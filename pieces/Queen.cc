@@ -7,6 +7,7 @@
 Queen::Queen(Pos p, bool white)
 {
 	wchar_t pwide;
+	chr.chars[0] = L'A';
 	if(white)
 		pwide = L'♛';
 	else
@@ -31,11 +32,5 @@ bool Queen::isValidMove(Pos p)
 void Queen::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
 {
 	
-
-}
-
-void Queen::move(Pos p) 
-{
-
 
 }

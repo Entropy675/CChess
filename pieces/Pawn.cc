@@ -7,6 +7,8 @@
 Pawn::Pawn(Pos p, bool white)
 {
 	wchar_t pwide;
+	chr.chars[0] = L'A';
+	
 	if(white)
 		pwide = L'♟';
 	else
@@ -34,8 +36,3 @@ void Pawn::validMoves(std::vector<Pos>* p, Piece* gameBoard)
 
 }
 
-void Pawn::move(Pos p) 
-{
-
-
-}

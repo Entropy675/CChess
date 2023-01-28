@@ -33,9 +33,3 @@ void Knight::validMoves(std::vector<Pos>* p, Piece* gameBoard)
 	
 
 }
-
-void Knight::move(Pos p) 
-{
-
-
-}

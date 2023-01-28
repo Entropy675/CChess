@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <regex>
+#include <iostream>
 
 #include "defs.h"
 #include "Pos.h"
@@ -29,11 +30,13 @@ int main()
 	mvprintw(19, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", game->sqSize.getY()*MAX_ROW_COL, game->sqSize.getX()*MAX_ROW_COL, 
 				game->sqSize.getX(), game->sqSize.getY());
 	
-
+	
+	bool redraw = true;
 	
 	while(true)
 	{
 		move(game->sqSize.getY()*MAX_ROW_COL + 2, 0);
+		redraw = true;
 		
 		string uinp;
 		char ch;
@@ -59,8 +62,20 @@ int main()
 		if(regex_match(uinp, pattern))
 		{
 			// this is a valid input 
+			Pos p1, p2;
 			
+			p1.setX(bCharToInt(uinp[0])); // a
+			p1.setY(8 - (uinp[1] - '0')); // 1 -> 0
+			
+			p2.setX(bCharToInt(uinp[3]));
+			p2.setY(8 - (uinp[4] - '0'));
+			
+			printf("\nPOS1 %d %d\n", p1.getX(), p1.getY());
+			printf("\nPOS2 %d %d\n", p2.getX(), p2.getY());
+			
+			game->movePiece(p1, p2); // has access to board, has access to both pieces
 		}
+		
 		regex pattern2("[a-h][1-8]"); // lets just use regex
 		
 		if(regex_match(uinp, pattern2))
@@ -78,7 +93,11 @@ int main()
 		else if(uinp == string("exit"))
 			break;
 			
-		game->drawBoard();	
+		if(redraw)
+		{
+			game->drawBoard();
+			refresh();
+		}
 	}
 	
 	game->cleanBoard();
@@ -91,12 +110,10 @@ int main()
 	return 0;
 }
 
+// abcdefgh -> 01234567
 int bCharToInt(char& a)
 {
-	int out = 0;
-	
-	
-	return out;
+	return a - 'a';
 }
 
 

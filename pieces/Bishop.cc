@@ -7,6 +7,7 @@
 Bishop::Bishop(Pos p, bool white)
 {
 	wchar_t pwide;
+	chr.chars[0] = L'A';
 	if(white)
 		pwide = L'♝';
 	else
@@ -34,8 +35,3 @@ void Bishop::validMoves(std::vector<Pos>* p, Piece* gameBoard)
 
 }
 
-void Bishop::move(Pos p) 
-{
-
-
-}

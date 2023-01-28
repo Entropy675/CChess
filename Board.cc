@@ -15,6 +15,7 @@
 #include <wchar.h>
 #include <string>
 
+
 Board::Board()
 {
 	wchar_t liwide = L'─';
@@ -56,8 +57,66 @@ void Board::toggleSize()
 	drawBoard();
 }
 
+void Board::movePiece(Pos& a, Pos& b) // move from a to b if valid on this piece
+{
+	//Piece* aP = gameBoard[a.getY()][a.getX()];
+	//Piece* bP = gameBoard[b.getY()][b.getX()];
+	
+	if(gameBoard[a.getY()][a.getX()] == nullptr)
+		return;
+	
+	
+	// only do this after checking if the player can actually move to b
+	if(gameBoard[b.getY()][b.getX()] != nullptr)
+		gameBoard[b.getY()][b.getX()]->dead = true;
+	
+	
+	// since our game doesn't rely on the pointers existing on board
+	// we can just delete them and forget about them: masterlist of pointers is held in the piece vectors
+	gameBoard[b.getY()][b.getX()] = gameBoard[a.getY()][a.getX()];
+	gameBoard[a.getY()][a.getX()] = nullptr; 
+	/*
+	*/
+}
+
 void Board::setStartingBoard(bool startingColor)
 {
+	// place pieces in their starting positions,
+	// populate the vectors corresponding to the black/white pieces.
+	
+	for(int x = 0; x < MAX_ROW_COL; x++)
+	{
+		for(int y = 0; y < MAX_ROW_COL; y++)
+		{
+			gameBoard[y][x] = nullptr;
+			
+			if((x == 0 || x == MAX_ROW_COL-1) && (y == MAX_ROW_COL-1 || y == 0))
+				gameBoard[y][x] = new Rook(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+			else if ((x == 1 || x == MAX_ROW_COL-2) && (y == MAX_ROW_COL-1 || y == 0))
+				gameBoard[y][x] = new Knight(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+			else if ((x == 2 || x == MAX_ROW_COL-3) && (y == MAX_ROW_COL-1 || y == 0))
+				gameBoard[y][x] = new Bishop(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+			else if ((x == 3) && (y == MAX_ROW_COL-1 || y == 0))
+				gameBoard[y][x] = new Queen(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+			else if ((x == 4) && (y == MAX_ROW_COL-1 || y == 0))
+				gameBoard[y][x] = new King(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+			else if (y == 1 || y == MAX_ROW_COL-2)
+				gameBoard[y][x] = new Pawn(Pos(y,x), (y == 1) ? !startingColor : startingColor);
+			
+			if(y == 0)
+				blackPieces.push_back(gameBoard[y][x]);
+			else if(y == MAX_ROW_COL-1)
+				whitePieces.push_back(gameBoard[y][x]);
+		}
+	}
+	
+	for(int i = 0; i < MAX_ROW_COL; i++)
+	{
+		blackPieces.push_back(gameBoard[1][i]);
+		whitePieces.push_back(gameBoard[MAX_ROW_COL-2][i]);
+	}
+
+	/* old method
 	// top pieces
 	gameBoard[0][0] = new Rook(Pos(0,0), !startingColor);
 	gameBoard[0][1] = new Knight(Pos(0,1), !startingColor);
@@ -83,11 +142,17 @@ void Board::setStartingBoard(bool startingColor)
 	
 	for(int i = 0; i < MAX_ROW_COL; i++)
 		gameBoard[MAX_ROW_COL-2][i] = new Pawn(Pos(MAX_ROW_COL-2,i), startingColor);
-	
+	*/
 }
 
 void Board::cleanBoard()
 {
+	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
+	{
+		delete whitePieces[i]; // never ever remove pieces from this, just set them dead when they die
+		delete blackPieces[i];			
+	}
+	/*
 	for(int x = 0; x < MAX_ROW_COL; x++)
 	{
 		for(int y = 0; y < MAX_ROW_COL; y++)
@@ -97,7 +162,7 @@ void Board::cleanBoard()
 				delete gameBoard[x][y];
 			}
 		}
-	}
+	}*/
 
 }
 
@@ -119,8 +184,6 @@ void Board::drawBoard()
 		move(sqSize.getY()*y, 1);
 		for(int line = 0; line < sqSize.getX()*MAX_ROW_COL - 1; line++)
 			add_wch(&li);
-		//move(sqX*x + sqX/2 + 1, sqY*y + sqY/2 + 1);
-		//add_wch(&pawn);	
 	}
 
 	for(int y = 1; y <= MAX_ROW_COL -1; y++)
@@ -167,6 +230,21 @@ void Board::drawBoard()
 		// works well with largeboard ... very weird how this works out .... 
 	}
 	
+	// draw the taken pieces in 2 different lines for white and black
+	move(sqSize.getY()*MAX_ROW_COL + 3, 0);
+	
+	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
+	{
+		if(whitePieces.at(i)->dead == true)
+			add_wch(&whitePieces.at(i)->chr);
+	}
+	addch('\n');
+	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
+	{
+		if(blackPieces.at(i)->dead == true)
+			add_wch(&blackPieces.at(i)->chr);
+	}
+			
 	//move(sqSize.getY()*MAX_ROW_COL + 2, 0); unnecessary: handled in game loop
 }
 

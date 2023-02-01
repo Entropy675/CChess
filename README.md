@@ -4,4 +4,4 @@ Uses ncurses library for GUI: intended for Linux.
 
 Compile Command: make
 
-Run command: ./CChess (only runs in linux console)
+Run command: ./CChess (only builds on linux os)

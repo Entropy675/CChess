@@ -13,7 +13,7 @@ class Piece
 	Piece();
     Pos pos;
     bool isWhite;
-    bool hasMoved;
+    bool hasMoved = false;
     bool dead = false;
     
     cchar_t chr;

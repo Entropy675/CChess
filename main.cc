@@ -99,6 +99,7 @@ int main()
 			refresh();
 		}
 	}
+	/// above code will be in control function inside Board class later
 	
 	game->cleanBoard();
 	

@@ -18,11 +18,8 @@
 
 Board::Board()
 {
-	wchar_t liwide = L'─';
-	setcchar(&li, &liwide, A_NORMAL, 0, NULL);
-
-	wchar_t ldwide = L'│';
-	setcchar(&ld, &ldwide, A_NORMAL, 0, NULL);
+	setcchar(&li, L"─", A_NORMAL, 0, NULL);
+	setcchar(&ld, L"│", A_NORMAL, 0, NULL);
 
 	if(largeBoard)
 	{
@@ -34,6 +31,11 @@ Board::Board()
 		sqSize.set(2, 2); // more tight fitting board
 		offset.set(1, 1); 
 	}
+}
+
+Board::~Board()
+{
+	cleanBoard();
 }
 
 void Board::toggleSize()
@@ -65,6 +67,7 @@ void Board::movePiece(Pos& a, Pos& b) // move from a to b if valid on this piece
 	if(gameBoard[a.getY()][a.getX()] == nullptr)
 		return;
 	
+	// check if valid move, if not then return.
 	
 	// only do this after checking if the player can actually move to b
 	if(gameBoard[b.getY()][b.getX()] != nullptr)
@@ -75,8 +78,6 @@ void Board::movePiece(Pos& a, Pos& b) // move from a to b if valid on this piece
 	// we can just delete them and forget about them: masterlist of pointers is held in the piece vectors
 	gameBoard[b.getY()][b.getX()] = gameBoard[a.getY()][a.getX()];
 	gameBoard[a.getY()][a.getX()] = nullptr; 
-	/*
-	*/
 }
 
 void Board::setStartingBoard(bool startingColor)
@@ -152,23 +153,25 @@ void Board::cleanBoard()
 		delete whitePieces[i]; // never ever remove pieces from this, just set them dead when they die
 		delete blackPieces[i];			
 	}
-	/*
-	for(int x = 0; x < MAX_ROW_COL; x++)
-	{
-		for(int y = 0; y < MAX_ROW_COL; y++)
-		{
-			if(gameBoard[x][y] != nullptr)
-			{
-				delete gameBoard[x][y];
-			}
-		}
-	}*/
+}
 
+void Board::userInput(std::string& uinp)
+{
+	char ch;
+	while(true)
+	{
+		ch = getch();
+		addch(ch);
+		uinp += ch;
+		refresh();
+		if(ch == '\n')
+			break;
+	}
 }
 
 void Board::drawBoard()
 {
-	clear();
+	clear(); // clear board
 
 	for(int x = 0; x <= MAX_ROW_COL; x++)
 	{
@@ -215,10 +218,12 @@ void Board::drawBoard()
 	}
 	
 	move(sqSize.getY()*MAX_ROW_COL + 1, 0);
-	char chars[9] = "abcdefgh";
+	
+	const char chars[9] = "abcdefgh";
 	
 	for(int y = 0; y < MAX_ROW_COL; y++)
 	{
+		// works well with largeboard 
 		for(int i = 0; i < sqSize.getX()/2; i++)
 			addstr(" ");
 			
@@ -226,26 +231,21 @@ void Board::drawBoard()
 		
 		for(int i = 0; i < sqSize.getX()/2 - 1; i++)
 			addstr(" ");
-			
-		// works well with largeboard ... very weird how this works out .... 
 	}
 	
-	// draw the taken pieces in 2 different lines for white and black
+	
+	// draw the dead pieces in 2 different lines for white and black
 	move(sqSize.getY()*MAX_ROW_COL + 3, 0);
 	
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
-	{
 		if(whitePieces.at(i)->dead == true)
 			add_wch(&whitePieces.at(i)->chr);
-	}
+	
 	addch('\n');
+	
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
-	{
 		if(blackPieces.at(i)->dead == true)
 			add_wch(&blackPieces.at(i)->chr);
-	}
-			
-	//move(sqSize.getY()*MAX_ROW_COL + 2, 0); unnecessary: handled in game loop
 }
 
 

@@ -4,6 +4,7 @@
 #include "Pos.h"
 #include "Piece.h"
 #include <vector>
+#include <string>
 
 #include "pieces/Pawn.h"
 #include "pieces/King.h"
@@ -22,20 +23,23 @@ class Board
 	public:
 	
 	Board();
+	~Board();
 	bool whiteTurn;
 	
-	void setStartingBoard(bool startingColor);
+	void userInput(std::string&);
+	void setStartingBoard(bool);
 	void drawBoard();
 	void toggleSize(); // large/small
-	void cleanBoard();
 	
     void movePiece(Pos&, Pos&); // move from a to b if valid on this piece
+    
+	Pos sqSize; // size of a singe square on board
+	Pos offset; // offset of where the center of that square is
+	
+	private:
 	
 	std::vector<Piece*> whitePieces;
 	std::vector<Piece*> blackPieces;
-	
-	Pos sqSize; // size of a singe square on board
-	Pos offset; // offset of where the center of that square is
 	
 	// line characters for drawing board
 	cchar_t li;
@@ -43,7 +47,7 @@ class Board
 	
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL]; // remember to free later
 	
-	private:
+	void cleanBoard();
 	bool largeBoard = false;
 };
 

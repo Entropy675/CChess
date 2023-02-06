@@ -73,6 +73,7 @@ void Board::movePiece(Pos& a, Pos& b) // move from a to b if valid on this piece
 	if(gameBoard[b.getY()][b.getX()] != nullptr)
 		gameBoard[b.getY()][b.getX()]->dead = true;
 	
+	gameBoard[a.getY()][a.getX()]->hasMoved = true;
 	
 	// since our game doesn't rely on the pointers existing on board
 	// we can just delete them and forget about them: masterlist of pointers is held in the piece vectors

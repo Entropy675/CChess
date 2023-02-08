@@ -1,6 +1,8 @@
 #ifndef POS_H
 #define POS_H
 
+#include <iostream>
+
 class Pos
 {
 	public:
@@ -8,10 +10,12 @@ class Pos
 	Pos(int x = 0, int y = 0);
 
 
-	void set(int ix, int iy);
 	void set(Pos p);
-	void setX(int ix);
-	void setY(int iy);
+	
+	// following return C_NOK for invalid position (else C_OK)
+	int set(int ix, int iy);
+	int setX(int ix);
+	int setY(int iy);
 
 	int getX();
 	int getY();

@@ -31,6 +31,8 @@ class Board
 	
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL]; // remember to free later
 	
+	bool refreshEPPawns;
+	
 	void cleanBoard();
 };
 

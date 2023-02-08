@@ -29,7 +29,7 @@ bool King::isValidMove(Pos p)
 	return false;
 }
 
-void King::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void King::validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL])
 {
 	
 

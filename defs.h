@@ -6,15 +6,18 @@
 
 #define C_TRUE			1
 #define C_FALSE			0
+#define C_OK			1
+#define C_NOK			-1
 
 #define MAX_ROW_COL		8 // since its a square row and col are same
 #define NUM_PIECES		32
 
-// board character to int: abcdefgh -> 12345678
-int bCharToInt(char& a);
+
+class ChessGame;
 
 class Board;
 class Pos;
+
 
 class Piece;
 

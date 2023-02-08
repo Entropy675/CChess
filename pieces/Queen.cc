@@ -29,7 +29,7 @@ bool Queen::isValidMove(Pos p)
 	return false;
 }
 
-void Queen::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void Queen::validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL])
 {
 	
 

@@ -28,7 +28,7 @@ bool Knight::isValidMove(Pos p)
 	return false;
 }
 
-void Knight::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void Knight::validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL]) 
 {
 	
 

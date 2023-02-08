@@ -29,7 +29,7 @@ bool Rook::isValidMove(Pos p)
 	return false;
 }
 
-void Rook::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void Rook::validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL])
 {
 	
 

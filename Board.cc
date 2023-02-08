@@ -11,7 +11,7 @@
 
 Board::Board()
 {
-	
+	refreshEPPawns = false;
 }
 
 Board::~Board()
@@ -29,12 +29,15 @@ void Board::movePiece(Pos& a, Pos& b) // move from a to b if valid on this piece
 		return;
 	
 	// check if valid move, if not then return.
+	if(dynamic_cast<Pawn*>(gameBoard[a.getY()][a.getX()]) != nullptr)
+		gameBoard[a.getY()][a.getX()]->validMoves(new std::vector<Pos>, gameBoard);
 	
 	// only do this after checking if the player can actually move to b
 	if(gameBoard[b.getY()][b.getX()] != nullptr)
 		gameBoard[b.getY()][b.getX()]->dead = true;
 	
 	gameBoard[a.getY()][a.getX()]->hasMoved = true;
+	gameBoard[a.getY()][a.getX()]->pos.set(b);
 	
 	// since our game doesn't rely on the pointers existing on board
 	// we can just delete them and forget about them: masterlist of pointers is held in the piece vectors
@@ -54,17 +57,17 @@ void Board::setStartingBoard(bool startingColor)
 			gameBoard[y][x] = nullptr;
 			
 			if((x == 0 || x == MAX_ROW_COL-1) && (y == MAX_ROW_COL-1 || y == 0))
-				gameBoard[y][x] = new Rook(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+				gameBoard[y][x] = new Rook(Pos(x,y), (y == 0) ? !startingColor : startingColor);
 			else if ((x == 1 || x == MAX_ROW_COL-2) && (y == MAX_ROW_COL-1 || y == 0))
-				gameBoard[y][x] = new Knight(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+				gameBoard[y][x] = new Knight(Pos(x,y), (y == 0) ? !startingColor : startingColor);
 			else if ((x == 2 || x == MAX_ROW_COL-3) && (y == MAX_ROW_COL-1 || y == 0))
-				gameBoard[y][x] = new Bishop(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+				gameBoard[y][x] = new Bishop(Pos(x,y), (y == 0) ? !startingColor : startingColor);
 			else if ((x == 3) && (y == MAX_ROW_COL-1 || y == 0))
-				gameBoard[y][x] = new Queen(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+				gameBoard[y][x] = new Queen(Pos(x,y), (y == 0) ? !startingColor : startingColor);
 			else if ((x == 4) && (y == MAX_ROW_COL-1 || y == 0))
-				gameBoard[y][x] = new King(Pos(y,x), (y == 0) ? !startingColor : startingColor);
+				gameBoard[y][x] = new King(Pos(x,y), (y == 0) ? !startingColor : startingColor);
 			else if (y == 1 || y == MAX_ROW_COL-2)
-				gameBoard[y][x] = new Pawn(Pos(y,x), (y == 1) ? !startingColor : startingColor);
+				gameBoard[y][x] = new Pawn(Pos(x,y), (y == 1) ? !startingColor : startingColor);
 			
 			if(y == 0)
 				blackPieces.push_back(gameBoard[y][x]);

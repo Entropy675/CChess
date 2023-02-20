@@ -12,8 +12,11 @@ class NcLog
 	~NcLog();
 	void logStrP(std::string);
 	void logStr(std::string);
+	void add(std::string in);
+	void post();
 	
 	private:
+	std::string builder;
 	WINDOW* pwin;
 
 };

@@ -2,9 +2,22 @@
 #include <string>
 #include <ncurses.h>
 
-NcLog::NcLog()
+NcLog::NcLog() : builder("")
 {
 	pwin = newwin(5, 30, 5, 20);
+}
+
+void NcLog::add(std::string in)
+{
+	if(builder != "")
+		builder += "  ";
+	builder += in;
+}
+
+void NcLog::post()
+{
+	logStr(builder);
+	builder = "";
 }
 
 NcLog::~NcLog()

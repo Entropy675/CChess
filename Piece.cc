@@ -15,16 +15,15 @@ bool Piece::move(Pos cPos)
 	bool isValid = false;
 	
 	for(std::vector<Pos>::size_type i = 0; i < p.size(); i++)
-	{
 		if(p.at(i) == cPos)
-		{
-			a.logStr("MATCH: " + std::to_string(cPos.getX()) + " " + std::to_string(cPos.getY()));
 			isValid = true;
-		}
-	}
+			
 	a.logStr("Valid: " + std::to_string(isValid));
+	
 	if(!isValid)
 			return false;
+	
+	a.logStr("MATCH: " + std::to_string(cPos.getX()) + " " + std::to_string(cPos.getY()));
 	
 	if(!hasMoved)
 		hasMoved = true;

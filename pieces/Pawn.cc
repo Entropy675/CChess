@@ -30,29 +30,29 @@ void Pawn::validMoves(std::vector<Pos>& p)
 	NcLog a;
 	
 	int dircheck = -1;
+	
 	if(!white)
 		dircheck = 1;
 	
-	a.logStr("[" + std::to_string(pos.getX()) + "," + std::to_string(pos.getY()) + "]"
-	+ "\n  [" + std::to_string(pos.getX()) + "," + std::to_string(pos.getY() + dircheck) + "]"
-	+ "\n  isnull: " + std::to_string(game->getPiece(Pos(pos.getX(), pos.getY() + dircheck)) == nullptr)
-	);
 	
 	if(game->getPiece(Pos(pos.getX(), pos.getY() + dircheck)) == nullptr)
 	{
 		p.push_back(Pos(pos.getX(), pos.getY() + dircheck));
-		
+		a.add("Pass 1\n");
 		if(!hasMoved && game->getPiece(Pos(pos.getX(), pos.getY() + dircheck*2)) == nullptr)
+		{
+			a.add("Pass 2\n");
 			p.push_back(Pos(pos.getX(), pos.getY() + dircheck*2));
+		}
 	}
 	
 	
-    std::string str = "VArr " + std::to_string(p.size()) + ": ";
+    a.add("VArr " + std::to_string(p.size()) + ": ");
     
     for (auto &x : p)
-        str += "[" + std::to_string(x.getX()) + "," + std::to_string(x.getY()) + "], ";
+        a.add("[" + std::to_string(x.getX()) + "," + std::to_string(x.getY()) + "], ");
     
     
-    a.logStr(str);
+    a.post();
 }
 

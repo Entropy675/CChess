@@ -4,18 +4,9 @@
 #include "King.h"
 #include <vector>
 
-King::King(Pos p, bool white)
+King::King(Pos p, bool white, Board* g) : Piece(p, 'K', white, g)
 {
-	wchar_t pwide;
-	chr.chars[0] = L'A';
-	if(white)
-		pwide = L'♚';
-	else
-		pwide = L'♔';
 	
-	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
-	pos.setX(p.getX());
-	pos.setY(p.getY());
 }
 
 King::~King()
@@ -29,7 +20,7 @@ bool King::isValidMove(Pos p)
 	return false;
 }
 
-void King::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void King::validMoves(std::vector<Pos>& p)
 {
 	
 

@@ -4,17 +4,9 @@
 #include "Knight.h"
 #include <vector>
 
-Knight::Knight(Pos p, bool white)
+Knight::Knight(Pos p, bool white, Board* g) : Piece(p, 'N', white, g)
 {
-	wchar_t pwide;
-	if(white)
-		pwide = L'♞';
-	else
-		pwide = L'♘';
 	
-	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
-	pos.setX(p.getX());
-	pos.setY(p.getY());
 }
 
 Knight::~Knight()
@@ -28,7 +20,7 @@ bool Knight::isValidMove(Pos p)
 	return false;
 }
 
-void Knight::validMoves(std::vector<Pos>* p, Piece* gameBoard) 
+void Knight::validMoves(std::vector<Pos>& p) 
 {
 	
 

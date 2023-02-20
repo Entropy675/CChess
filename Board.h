@@ -3,6 +3,7 @@
 #include "defs.h"
 #include "Pos.h"
 #include "Piece.h"
+
 #include <vector>
 #include <string>
 
@@ -18,20 +19,15 @@ class Board
 	Board();
 	~Board();
 	
-	bool whiteTurn;
-	
-	void setStartingBoard(bool);
-    void movePiece(Pos&, Pos&); // move from a to b if valid on this piece
+	void setStartingBoard(bool flag, std::vector<Piece*>* whitePieces, std::vector<Piece*>* blackPieces);
+    void movePiece(Pos, Pos); // move from a to b if valid on this piece
+    Piece* getPiece(Pos);
     
-	Pos sqSize; // size of a singe square on board
-	Pos offset; // offset of where the center of that square is
-	
-	std::vector<Piece*> whitePieces;
-	std::vector<Piece*> blackPieces;
-	
-	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL]; // remember to free later
-	
-	void cleanBoard();
+    private:
+	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
+	bool refreshEPPawns;
 };
+
+
 
 #endif

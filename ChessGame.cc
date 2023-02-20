@@ -16,31 +16,19 @@ using namespace std;
 
 ChessGame::ChessGame() : largeBoard(false)
 {
-	whitePieces = new std::vector<Piece*>;
-	blackPieces = new std::vector<Piece*>;
 	game = new Board();
-	view = new NcView(game, whitePieces, blackPieces);
+	view = new NcView(game);
 }
 
 ChessGame::~ChessGame()
-{	
-	// board cleans up the pieces it holds
-	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		delete whitePieces->at(i); // never ever remove pieces from this, just set them dead when they die
-		
-	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		delete blackPieces->at(i);		
-	
-	delete whitePieces;
-	delete blackPieces;
-	
+{
 	delete game;
 	delete view;
 }
 
 void ChessGame::startGame()
 {
-	game->setStartingBoard(true, whitePieces, blackPieces);
+	game->setStartingBoard(true);
 	view->initNcurses();
 	view->drawBoard();
 	
@@ -76,9 +64,6 @@ void ChessGame::startGame()
 			
 			p2.setX(bCharToInt(uinp[3]));
 			p2.setY(8 - (uinp[4] - '0'));
-			
-			printf("\nPOS1 %d %d\n", p1.getX(), p1.getY());
-			printf("\nPOS2 %d %d\n", p2.getX(), p2.getY());
 			
 			game->movePiece(p1, p2); // has access to board, has access to both pieces
 		}

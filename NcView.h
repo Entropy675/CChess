@@ -12,7 +12,7 @@
 class NcView
 {
 	public:
-	NcView(Board*, std::vector<Piece*>* whitePieces, std::vector<Piece*>* blackPieces);
+	NcView(Board*);
 	void drawBoard();
 	void toggleSize(); // large/small
 	void userInput(std::string&);

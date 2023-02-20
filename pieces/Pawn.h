@@ -14,9 +14,12 @@ class Pawn : public Piece
 	bool isValidMove(Pos p) override;
 	void validMoves(std::vector<Pos>& p) override;
 	
+	bool move(Pos) override;
+	void enPassantTarget(Piece*);
+	
 	private:
-	bool canEP = false;
-	Piece* capturableViaEP = nullptr;
+	bool canEP;
+	Piece* capturableViaEP;
 };
 
 

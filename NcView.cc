@@ -1,6 +1,6 @@
 #include "NcView.h"
 
-NcView::NcView(Board* g, std::vector<Piece*>* wP, std::vector<Piece*>* bP) : game(g), whitePieces(wP), blackPieces(bP)
+NcView::NcView(Board* g) : game(g)
 {
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
 	setcchar(&ld, L"│", A_NORMAL, 0, NULL);
@@ -147,24 +147,27 @@ void NcView::drawBoard()
 	
 	
 	// draw the dead pieces in 2 different lines for white and black
-	move(sqSize.getY()*MAX_ROW_COL + 3, 0);
+	move(sqSize.getY()*MAX_ROW_COL + 4, 0);
 	
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
-		if(whitePieces->at(i)->isDead())
+		if(game->whitePieces->at(i)->isDead())
 		{
-			asciiChessConversion(whitePieces->at(i)->getCharacter(), (*whitePieces).at(i)->isWhite(), ctemp);
+			asciiChessConversion(game->whitePieces->at(i)->getCharacter(), game->whitePieces->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}
 	
-	addch('\n');
+	asciiChessConversion('K', game->isWhiteTurn(), ctemp);
+	addstr("\n - --<<");
+	add_wch(&ctemp);
+	addstr(">>-- - \n");
 	
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
-		if(blackPieces->at(i)->isDead())
+		if(game->blackPieces->at(i)->isDead())
 		{
-			asciiChessConversion(blackPieces->at(i)->getCharacter(), (*blackPieces).at(i)->isWhite(), ctemp);
+			asciiChessConversion(game->blackPieces->at(i)->getCharacter(), game->blackPieces->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}

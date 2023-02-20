@@ -14,10 +14,6 @@ class ChessGame
 	int bCharToInt(char);
 	
 	private:
-	std::vector<Piece*>* whitePieces;
-	std::vector<Piece*>* blackPieces;
-	
-	bool whiteTurn;
 	bool largeBoard;
 	
 	NcView* view;

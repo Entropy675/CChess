@@ -9,10 +9,10 @@
 class Bishop : public Piece
 {
 	public:
-	Bishop(Pos p, bool white);
+	Bishop(Pos p, bool white, Board* g);
 	~Bishop();
 	bool isValidMove(Pos p) override;
-	void validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL]) override;
+	void validMoves(std::vector<Pos>& p) override;
 	
 };
 

@@ -4,18 +4,9 @@
 #include "Queen.h"
 #include <vector>
 
-Queen::Queen(Pos p, bool white)
+Queen::Queen(Pos p, bool white, Board* g) : Piece(p, 'Q', white, g)
 {
-	wchar_t pwide;
-	chr.chars[0] = L'A';
-	if(white)
-		pwide = L'♛';
-	else
-		pwide = L'♕';
 	
-	setcchar(&chr, &pwide, A_NORMAL, 0, NULL);
-	pos.setX(p.getX());
-	pos.setY(p.getY());
 }
 
 Queen::~Queen()
@@ -29,7 +20,7 @@ bool Queen::isValidMove(Pos p)
 	return false;
 }
 
-void Queen::validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL])
+void Queen::validMoves(std::vector<Pos>& p)
 {
 	
 

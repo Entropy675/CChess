@@ -1,5 +1,5 @@
-OBJ = main.o ChessGame.o Pos.o Board.o NcLog.o Piece.o pieces/Pawn.o pieces/King.o pieces/Knight.o pieces/Queen.o pieces/Rook.o pieces/Bishop.o 
-CC = g++ -Wall 
+OBJ = main.o ChessGame.o Pos.o Board.o NcLog.o NcView.o Piece.o pieces/Pawn.o pieces/King.o pieces/Knight.o pieces/Queen.o pieces/Rook.o pieces/Bishop.o 
+CC = g++ -Wall -g
 LIB = -lncursesw 
 
 
@@ -9,11 +9,14 @@ CChess:	$(OBJ)
 main.o: main.cc ChessGame.o NcLog.o
 		$(CC) -c main.cc
 
-ChessGame.o:	ChessGame.cc defs.h Piece.h Board.h
+ChessGame.o:	ChessGame.cc NcView.h
 		$(CC) -c ChessGame.cc
 
 NcLog.o: 		NcLog.cc
 		$(CC) -c NcLog.cc
+		
+NcView.o: 		NcView.cc defs.h Piece.h Board.h
+		$(CC) -c NcView.cc
 
 Pos.o: 			Pos.cc Pos.h defs.h
 		$(CC) -c Pos.cc

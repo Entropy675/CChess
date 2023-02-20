@@ -9,10 +9,10 @@
 class King : public Piece
 {
 	public:
-	King(Pos p, bool white);
+	King(Pos p, bool white, Board* g);
 	~King();
 	bool isValidMove(Pos p) override;
-	void validMoves(std::vector<Pos>* p, Piece* (&gameBoard)[MAX_ROW_COL][MAX_ROW_COL]) override;
+	void validMoves(std::vector<Pos>& p) override;
 	
 };
 

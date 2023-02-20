@@ -2,28 +2,25 @@
 #define CHESSGAME_H
 
 #include "Board.h"
+#include "NcView.h"
 
 class ChessGame
 {
 	public:
 	ChessGame();
+	~ChessGame();
 	
 	void startGame();	
-	int bCharToInt(char&);
-	
-	void userInput(std::string&);
-	void drawBoard();
-	void toggleSize(); // large/small
-	
+	int bCharToInt(char);
 	
 	private:
+	std::vector<Piece*>* whitePieces;
+	std::vector<Piece*>* blackPieces;
 	
-	// line characters for drawing board
-	cchar_t li;
-	cchar_t ld;
+	bool whiteTurn;
+	bool largeBoard;
 	
-	bool largeBoard = false;
-	
+	NcView* view;
 	Board* game;
 };
 

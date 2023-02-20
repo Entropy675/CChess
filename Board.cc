@@ -11,12 +11,26 @@
 
 Board::Board() : refreshEPPawns(false)
 {
-	
+	whitePieces = new std::vector<Piece*>;
+	blackPieces = new std::vector<Piece*>;
 }
 
 Board::~Board()
 {	
+	// board cleans up the pieces it holds
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		delete whitePieces->at(i); // never ever remove pieces from this, just set them dead when they die
+		
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		delete blackPieces->at(i);		
+	
+	delete whitePieces;
+	delete blackPieces;
+}
 
+bool Board::isWhiteTurn()
+{
+	return whiteTurn;
 }
 
 Piece* Board::getPiece(Pos a)
@@ -24,26 +38,38 @@ Piece* Board::getPiece(Pos a)
 	return gameBoard[a.getX()][a.getY()];
 }
 
+void Board::clearPiece(Pos a)
+{
+	gameBoard[a.getX()][a.getY()] = nullptr;
+}
+
 void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
-		
-	if(getPiece(a) == nullptr)
+	
+	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return;
 		
+	if(gameBoard[b.getX()][b.getY()] != nullptr)
+		gameBoard[b.getX()][b.getY()]->die();
+	
 	if(getPiece(a)->move(b))
 	{
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
-		gameBoard[a.getX()][a.getY()] = nullptr;
+		clearPiece(a);
+		whiteTurn = !whiteTurn;
 	}
 }
 
-void Board::setStartingBoard(bool startingColor, std::vector<Piece*>* whitePieces, std::vector<Piece*>* blackPieces)
+void Board::setStartingBoard(bool startingColor)
 {
 	// place pieces in their starting positions,
 	// populate the vectors corresponding to the black/white pieces.
 	
-	/*
+	/*whitePieces
+	blackPieces
 	*/
+	
+	whiteTurn = startingColor;
 	
 	for(int x = 0; x < MAX_ROW_COL; x++)
 	{

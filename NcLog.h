@@ -16,7 +16,7 @@ class NcLog
 	void post();
 	
 	private:
-	std::string builder;
+	static std::string builder;
 	WINDOW* pwin;
 
 };

@@ -2,7 +2,9 @@
 #include <string>
 #include <ncurses.h>
 
-NcLog::NcLog() : builder("")
+std::string NcLog::builder = "";
+
+NcLog::NcLog()
 {
 	pwin = newwin(5, 30, 5, 20);
 }
@@ -36,7 +38,6 @@ void NcLog::logStrP(std::string s)
 
 void NcLog::logStr(std::string s)
 {
-
     WINDOW *popup = newwin(15, s.length()+4, 1, 20);
     mvwprintw(popup, 2, 2, "%s", s.c_str());
     box(popup, 0, 0);

@@ -16,21 +16,22 @@ class Piece
     virtual ~Piece();
     virtual bool isValidMove(Pos p) = 0; // virtual meaning it can be overriden, = 0 meaning it must be.
 	virtual void validMoves(std::vector<Pos>& p) = 0;
+	virtual bool move(Pos);
 	
 	bool isWhite() const;
-	char getCharacter() const;
+	char getCharacter();
 	bool isDead();
 	void die();
 	
-	bool move(Pos);
 	Pos getPos();
 
     protected:
     Pos pos;
+    Pawn* clearEnPassantPiece[2];
     
     bool hasMoved;
     bool dead;
-    const char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}
+    char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}
     const bool white;
     
     Board* game;    

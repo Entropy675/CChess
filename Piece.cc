@@ -2,7 +2,16 @@
 
 #include "NcLog.h"
 
-Piece::Piece(Pos p, char c, bool w, Board* g) : pos(p), hasMoved(false), dead(false), chr(c), white(w), game(g) {}
+#include "pieces/Pawn.h"
+#include "pieces/King.h"
+#include "pieces/Queen.h"
+#include "pieces/Knight.h"
+#include "pieces/Rook.h"
+#include "pieces/Bishop.h"
+
+Piece::Piece(Pos p, char c, bool w, Board* g) 
+	: pos(p), clearEnPassantPiece{nullptr, nullptr}, hasMoved(false), dead(false), chr(c), white(w), game(g) {}
+
 Piece::~Piece() {}
 
 bool Piece::move(Pos cPos)
@@ -18,12 +27,19 @@ bool Piece::move(Pos cPos)
 		if(p.at(i) == cPos)
 			isValid = true;
 			
-	a.logStr("Valid: " + std::to_string(isValid));
+	a.add("Valid: " + std::to_string(isValid) + "\n");
+	a.add("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
+	
 	
 	if(!isValid)
-			return false;
+	{
+		a.post();
+		return false;
+	}
 	
-	a.logStr("MATCH: " + std::to_string(cPos.getX()) + " " + std::to_string(cPos.getY()));
+	
+	a.add(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
+	a.post();
 	
 	if(!hasMoved)
 		hasMoved = true;
@@ -31,10 +47,21 @@ bool Piece::move(Pos cPos)
 	if(game->getPiece(cPos) != nullptr)
 		game->getPiece(cPos)->die();
 	
+	for(int i = 0; i < 2; i++)
+	{
+		if(clearEnPassantPiece[i] != nullptr)
+		{
+			a.add("Found removabale link? " + std::to_string(i) + "\n"); // test this to find bug
+			//clearEnPassantPiece[i]->enPassantTarget(nullptr);
+			//clearEnPassantPiece[i] = nullptr;
+		}
+	}
+	
 	pos = cPos;
 	
 	return true;
 }
+
 
 Pos Piece::getPos()
 {
@@ -48,7 +75,7 @@ bool Piece::isDead()
 
 void Piece::die()
 {
-	dead = false;
+	dead = true;
 }
 
 bool Piece::isWhite() const
@@ -56,7 +83,7 @@ bool Piece::isWhite() const
 	return white;
 }
 
-char Piece::getCharacter() const
+char Piece::getCharacter()
 {
 	return chr;
 }

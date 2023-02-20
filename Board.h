@@ -19,13 +19,19 @@ class Board
 	Board();
 	~Board();
 	
-	void setStartingBoard(bool flag, std::vector<Piece*>* whitePieces, std::vector<Piece*>* blackPieces);
+	void setStartingBoard(bool flag);
     void movePiece(Pos, Pos); // move from a to b if valid on this piece
+    bool isWhiteTurn();
+    void clearPiece(Pos);
     Piece* getPiece(Pos);
+    
+	std::vector<Piece*>* whitePieces;
+	std::vector<Piece*>* blackPieces;
     
     private:
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
 	bool refreshEPPawns;
+	bool whiteTurn;
 };
 
 

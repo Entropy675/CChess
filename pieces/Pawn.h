@@ -4,7 +4,9 @@
 #include "../Piece.h"
 #include "../Pos.h"
 #include "../defs.h"
+
 #include <vector>
+
 
 class Pawn : public Piece
 {
@@ -15,10 +17,10 @@ class Pawn : public Piece
 	void validMoves(std::vector<Pos>& p) override;
 	
 	bool move(Pos) override;
-	void enPassantTarget(Piece*);
+	void enPassantTarget(Piece*, int);
 	
 	private:
-	bool canEP;
+	int turnToEP;
 	Piece* capturableViaEP;
 };
 

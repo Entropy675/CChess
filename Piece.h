@@ -8,6 +8,8 @@
 #include "Pos.h"
 #include "Board.h"
 
+#include "NcLog.h"
+
 class Piece 
 {
 	public:
@@ -27,14 +29,13 @@ class Piece
 
     protected:
     Pos pos;
-    Pawn* clearEnPassantPiece[2];
     
     bool hasMoved;
     bool dead;
     char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}
     const bool white;
     
-    Board* game;    
+    Board* game;
 };
 
 #endif

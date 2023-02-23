@@ -1,6 +1,4 @@
 #include "NcLog.h"
-#include <string>
-#include <ncurses.h>
 
 std::string NcLog::builder = "";
 int NcLog::logLevel = 0;

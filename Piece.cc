@@ -1,12 +1,5 @@
 #include "Piece.h"
 
-#include "pieces/Pawn.h"
-#include "pieces/King.h"
-#include "pieces/Queen.h"
-#include "pieces/Knight.h"
-#include "pieces/Rook.h"
-#include "pieces/Bishop.h"
-
 Piece::Piece(Pos p, char c, bool w, Board* g) 
 	: pos(p), hasMoved(false), dead(false), chr(c), white(w), game(g) {}
 

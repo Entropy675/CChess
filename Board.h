@@ -1,5 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
+
 #include "defs.h"
 #include "Pos.h"
 #include "Piece.h"

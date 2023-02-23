@@ -1,11 +1,3 @@
-#include <ncurses.h>
-#include <locale.h>
-#include <wchar.h>
-#include <string>
-#include <cstring>
-#include <regex>
-#include <iostream>
-
 #include "ChessGame.h"
 
 using namespace std;
@@ -57,10 +49,10 @@ void ChessGame::startGame()
 			// this is a valid input 
 			Pos p1, p2;
 			
-			p1.setX(bCharToInt(uinp[0])); // a
+			p1.setX(uinp[0] - 'a'); // a
 			p1.setY(8 - (uinp[1] - '0')); // 1 -> 0
 			
-			p2.setX(bCharToInt(uinp[3]));
+			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
 			
 			game->movePiece(p1, p2); // has access to board, has access to both pieces
@@ -98,9 +90,4 @@ void ChessGame::startGame()
 	view->cleanupNcurses();
 }
 
-// abcdefgh -> 01234567
-int ChessGame::bCharToInt(char a)
-{
-	return a - 'a';
-}
 

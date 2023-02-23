@@ -1,8 +1,4 @@
-#include "../Piece.h"
-#include "../Pos.h"
-#include "../defs.h"
 #include "Knight.h"
-#include <vector>
 
 Knight::Knight(Pos p, bool white, Board* g) : Piece(p, 'N', white, g)
 {

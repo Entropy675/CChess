@@ -119,7 +119,7 @@ void NcView::drawBoard()
 			
 			if(!(game->getPiece(p) == nullptr))
 			{
-				asciiChessConversion(game->getPiece(p)->getCharacter(), game->getPiece(p)->isWhite(), ctemp);
+				wideChessConversion(game->getPiece(p)->getCharacter(), game->getPiece(p)->isWhite(), ctemp);
 				add_wch(&ctemp);
 			}
 		}
@@ -153,12 +153,12 @@ void NcView::drawBoard()
 	{
 		if(game->whitePieces->at(i)->isDead())
 		{
-			asciiChessConversion(game->whitePieces->at(i)->getCharacter(), game->whitePieces->at(i)->isWhite(), ctemp);
+			wideChessConversion(game->whitePieces->at(i)->getCharacter(), game->whitePieces->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}
 	
-	asciiChessConversion('K', game->isWhiteTurn(), ctemp);
+	wideChessConversion('K', game->isWhiteTurn(), ctemp);
 	addstr("\n - --<<");
 	add_wch(&ctemp);
 	addstr(">>-- - \n");
@@ -167,13 +167,13 @@ void NcView::drawBoard()
 	{
 		if(game->blackPieces->at(i)->isDead())
 		{
-			asciiChessConversion(game->blackPieces->at(i)->getCharacter(), game->blackPieces->at(i)->isWhite(), ctemp);
+			wideChessConversion(game->blackPieces->at(i)->getCharacter(), game->blackPieces->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}
 }
 
-void NcView::asciiChessConversion(char c, bool isWhite, cchar_t& cch)
+void NcView::wideChessConversion(char c, bool isWhite, cchar_t& cch)
 {
 	wchar_t tmp;
 	if(isWhite)

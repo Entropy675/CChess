@@ -10,12 +10,14 @@ class NcLog
 	public:
 	NcLog();
 	~NcLog();
-	void logStrP(std::string);
-	void logStr(std::string);
+	void logStrP(std::string, int ll);
+	void logStr(std::string, int ll);
 	void add(std::string in);
-	void post();
+	void post(int ll = 1);
+	static void setLogLevel(int);
 	
 	private:
+	static int logLevel;
 	static std::string builder;
 	WINDOW* pwin;
 

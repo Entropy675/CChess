@@ -1,15 +1,3 @@
-#include <ncurses.h>
-#include <locale.h>
-#include <wchar.h>
-#include <string>
-#include <cstring>
-#include <regex>
-#include <iostream>
-
-#include "defs.h"
-#include "Pos.h"
-#include "Board.h"
-#include "Piece.h"
 #include "ChessGame.h"
 
 using namespace std;
@@ -35,6 +23,8 @@ void ChessGame::startGame()
 	mvprintw(19, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", 
 	view->sqSize.getY()*MAX_ROW_COL, view->sqSize.getX()*MAX_ROW_COL, view->sqSize.getX(), view->sqSize.getY());
 	
+	NcLog::setLogLevel(LOG_LEVEL); // set the log level to 1
+	
 	bool redraw;
 	
 	while(true)
@@ -59,10 +49,10 @@ void ChessGame::startGame()
 			// this is a valid input 
 			Pos p1, p2;
 			
-			p1.setX(bCharToInt(uinp[0])); // a
+			p1.setX(uinp[0] - 'a'); // a
 			p1.setY(8 - (uinp[1] - '0')); // 1 -> 0
 			
-			p2.setX(bCharToInt(uinp[3]));
+			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
 			
 			game->movePiece(p1, p2); // has access to board, has access to both pieces
@@ -96,13 +86,8 @@ void ChessGame::startGame()
 	move(0, 0);
 
 	refresh();
-	//getch();
+	// getch();
 	view->cleanupNcurses();
 }
 
-// abcdefgh -> 01234567
-int ChessGame::bCharToInt(char a)
-{
-	return a - 'a';
-}
 

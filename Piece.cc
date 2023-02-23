@@ -1,16 +1,7 @@
 #include "Piece.h"
 
-#include "NcLog.h"
-
-#include "pieces/Pawn.h"
-#include "pieces/King.h"
-#include "pieces/Queen.h"
-#include "pieces/Knight.h"
-#include "pieces/Rook.h"
-#include "pieces/Bishop.h"
-
 Piece::Piece(Pos p, char c, bool w, Board* g) 
-	: pos(p), clearEnPassantPiece{nullptr, nullptr}, hasMoved(false), dead(false), chr(c), white(w), game(g) {}
+	: pos(p), hasMoved(false), dead(false), chr(c), white(w), game(g) {}
 
 Piece::~Piece() {}
 
@@ -32,32 +23,14 @@ bool Piece::move(Pos cPos)
 	
 	
 	if(!isValid)
-	{
-		a.post();
 		return false;
-	}
-	
 	
 	a.add(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
-	a.post();
-	
+
 	if(!hasMoved)
 		hasMoved = true;
-	
-	if(game->getPiece(cPos) != nullptr)
-		game->getPiece(cPos)->die();
-	
-	for(int i = 0; i < 2; i++)
-	{
-		if(clearEnPassantPiece[i] != nullptr)
-		{
-			a.add("Found removabale link? " + std::to_string(i) + "\n"); // test this to find bug
-			//clearEnPassantPiece[i]->enPassantTarget(nullptr);
-			//clearEnPassantPiece[i] = nullptr;
-		}
-	}
-	
-	pos = cPos;
+
+	pos = cPos; // causes problems for EnPassant
 	
 	return true;
 }

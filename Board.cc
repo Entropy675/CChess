@@ -9,7 +9,7 @@
 
 
 
-Board::Board() : refreshEPPawns(false)
+Board::Board() : refreshEPPawns(false), turnCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -49,15 +49,26 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return;
 		
-	if(gameBoard[b.getX()][b.getY()] != nullptr)
-		gameBoard[b.getX()][b.getY()]->die();
-	
+	NcLog log;
+
 	if(getPiece(a)->move(b))
-	{
+	{	
+		if(gameBoard[b.getX()][b.getY()] != nullptr)
+			gameBoard[b.getX()][b.getY()]->die();
+			
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
 		whiteTurn = !whiteTurn;
+		turnCount++;
+		log.add("tc: " + std::to_string(turnCount));
 	}
+	
+	log.post(1); // log all movement comments to screen.
+}
+
+int Board::getTurn()
+{
+	return turnCount;
 }
 
 void Board::setStartingBoard(bool startingColor)

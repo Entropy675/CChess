@@ -1,8 +1,15 @@
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
+#include <string>
+#include <cstring>
+#include <regex>
+#include <iostream>
+
 #include "Board.h"
 #include "NcView.h"
+
+#include "NcLog.h"
 
 class ChessGame
 {
@@ -10,8 +17,7 @@ class ChessGame
 	ChessGame();
 	~ChessGame();
 	
-	void startGame();	
-	int bCharToInt(char);
+	void startGame();
 	
 	private:
 	bool largeBoard;

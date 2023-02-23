@@ -4,6 +4,7 @@
 #include "../Piece.h"
 #include "../Pos.h"
 #include "../defs.h"
+
 #include <vector>
 
 class Queen : public Piece

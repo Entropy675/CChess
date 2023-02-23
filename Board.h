@@ -1,5 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
+
 #include "defs.h"
 #include "Pos.h"
 #include "Piece.h"
@@ -22,8 +23,9 @@ class Board
 	void setStartingBoard(bool flag);
     void movePiece(Pos, Pos); // move from a to b if valid on this piece
     bool isWhiteTurn();
-    void clearPiece(Pos);
     Piece* getPiece(Pos);
+    void clearPiece(Pos);
+    int getTurn();
     
 	std::vector<Piece*>* whitePieces;
 	std::vector<Piece*>* blackPieces;
@@ -32,6 +34,7 @@ class Board
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
 	bool refreshEPPawns;
 	bool whiteTurn;
+	int turnCount;
 };
 
 

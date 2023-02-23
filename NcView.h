@@ -17,9 +17,8 @@ class NcView
 	void toggleSize(); // large/small
 	void userInput(std::string&);
 	void initNcurses();
-	void cleanupNcurses();
-	void asciiChessConversion(char ch, bool isWhite, cchar_t& c);
-    
+	void cleanupNcurses();	
+	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
 	

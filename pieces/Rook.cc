@@ -4,7 +4,7 @@
 #include "Rook.h"
 #include <vector>
 
-Rook::Rook(Pos p, bool white, Board* g) : Piece(p, 'B', white, g)
+Rook::Rook(Pos p, bool white, Board* g) : Piece(p, 'R', white, g)
 {
 	
 }

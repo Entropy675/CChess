@@ -10,7 +10,7 @@ bool Piece::move(Pos cPos)
 	std::vector<Pos> p;
 	validMoves(p);
 	
-	NcLog a;
+	NcLog a(1);
 	
 	bool isValid = false;
 	
@@ -18,19 +18,19 @@ bool Piece::move(Pos cPos)
 		if(p.at(i) == cPos)
 			isValid = true;
 			
-	a.add("Valid: " + std::to_string(isValid) + "\n");
-	a.add("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
+	a.append("Valid: " + std::to_string(isValid) + "\n");
+	a.append("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
 	
 	
 	if(!isValid)
 		return false;
 	
-	a.add(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
+	a.append(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
 
 	if(!hasMoved)
 		hasMoved = true;
 
-	pos = cPos; // causes problems for EnPassant
+	pos = cPos; 
 	
 	return true;
 }

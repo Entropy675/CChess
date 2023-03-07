@@ -10,7 +10,6 @@
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32
 
-#define LOG_LEVEL		1  // 0 or 1, for now
 
 class ChessGame;
 

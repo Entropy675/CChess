@@ -49,7 +49,7 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return;
 		
-	NcLog log;
+	NcLog log(1); // basic log level
 
 	if(getPiece(a)->move(b))
 	{	
@@ -60,10 +60,10 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 		clearPiece(a);
 		whiteTurn = !whiteTurn;
 		turnCount++;
-		log.add("tc: " + std::to_string(turnCount));
+		log.append("tc: " + std::to_string(turnCount));
 	}
 	
-	log.post(1); // log all movement comments to screen.
+	log.flush(); // log all movement comments to screen.
 }
 
 int Board::getTurn()

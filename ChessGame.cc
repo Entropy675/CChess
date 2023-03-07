@@ -23,7 +23,7 @@ void ChessGame::startGame()
 	mvprintw(19, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", 
 	view->sqSize.getY()*MAX_ROW_COL, view->sqSize.getX()*MAX_ROW_COL, view->sqSize.getX(), view->sqSize.getY());
 	
-	NcLog::setLogLevel(LOG_LEVEL); // set the log level to 1
+	NcLog::setMajorLogLevel(LOG_LEVEL); // set the log level to 1
 	
 	bool redraw;
 	

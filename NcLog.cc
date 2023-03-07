@@ -1,9 +1,9 @@
 #include "NcLog.h"
 
-std::string NcLog::builder = "";
+std::string NcLog::message = "";
 int NcLog::logLevel = 0;
 
-NcLog::NcLog()
+NcLog::NcLog() : logLevelLocal(1)
 {
 	pwin = newwin(5, 30, 5, 20);
 }
@@ -14,25 +14,33 @@ NcLog::~NcLog()
     endwin();
 }
 
-void NcLog::add(std::string in)
-{
-	if(builder != "")
-		builder += "  ";
-	builder += in;
+void NcLog::append(std::string in, int ll)
+{	
+	if(logLevel < ll || logLevelLocal < ll)
+		return;
+		
+	if(message != "")
+		message += "  "; // 2 spaces: 1 account for popup boarder, 1 add space for visual appeal
+	message += in;
 }
 
 void NcLog::setLogLevel(int a)
 {
-	logLevel = a;
+	if(a <= 1) // cannot allow less then 1 log level, to avoid bypassing program wide log level of 0
+		return;
+	logLevelLocal = a;
 }
 
-void NcLog::post(int ll)
+void NcLog::flush()
 {
-	logStr(builder, ll);
-	builder = "";
+	if(message == "")
+		return;
+		
+	logStrP(message);
+	message = "";
 }
 
-void NcLog::logStrP(std::string s, int ll)
+void NcLog::logStr(std::string s, int ll)
 {
 	if(logLevel < ll)
 		return;
@@ -43,11 +51,8 @@ void NcLog::logStrP(std::string s, int ll)
     getch();
 }
 
-void NcLog::logStr(std::string s, int ll)
+void NcLog::logStrP(std::string s)
 {
-	if(logLevel < ll)
-		return;
-	
     WINDOW *popup = newwin(15, s.length()+4, 1, 20);
     mvwprintw(popup, 2, 2, "%s", s.c_str());
     box(popup, 0, 0);

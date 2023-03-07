@@ -8,40 +8,40 @@ CChess:	$(OBJ)
 main.o: main.cc ChessGame.o
 		$(CC) -c main.cc
 
-ChessGame.o:	ChessGame.cc NcLog.h Board.h NcView.h defs.h
+ChessGame.o:	ChessGame.cc ChessGame.h NcLog.h Board.h NcView.h defs.h
 		$(CC) -c ChessGame.cc
 
 NcLog.o: 		NcLog.cc NcLog.h
 		$(CC) -c NcLog.cc
 		
-NcView.o: 		NcView.cc Board.h
+NcView.o: 		NcView.cc NcView.h Board.h
 		$(CC) -c NcView.cc
 
-Pos.o: 			Pos.cc defs.h
+Pos.o: 			Pos.cc Pos.h defs.h
 		$(CC) -c Pos.cc
 		
-Piece.o: 		Piece.cc NcLog.h Pos.h defs.h
+Piece.o: 		Piece.cc Piece.h NcLog.h Pos.h defs.h
 		$(CC) -c Piece.cc
 		
-Board.o: 		Board.cc Pos.h Piece.h defs.h pieces/Pawn.h pieces/King.h pieces/Knight.h pieces/Queen.h pieces/Rook.h pieces/Bishop.h
+Board.o: 		Board.cc Board.h Pos.h Piece.h defs.h pieces/Pawn.h pieces/King.h pieces/Knight.h pieces/Queen.h pieces/Rook.h pieces/Bishop.h
 		$(CC) -c Board.cc
 		
-pieces/Pawn.o:	pieces/Pawn.cc Pos.h Piece.h defs.h
+pieces/Pawn.o:	pieces/Pawn.cc pieces/Pawn.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/Pawn.o pieces/Pawn.cc
 		
-pieces/King.o:	pieces/King.cc Pos.h Piece.h defs.h
+pieces/King.o:	pieces/King.cc pieces/King.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/King.o pieces/King.cc
 
-pieces/Knight.o: pieces/Knight.cc Pos.h Piece.h defs.h
+pieces/Knight.o: pieces/Knight.cc pieces/Knight.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/Knight.o pieces/Knight.cc
 
-pieces/Queen.o:	pieces/Queen.cc Pos.h Piece.h defs.h
+pieces/Queen.o:	pieces/Queen.cc pieces/Queen.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/Queen.o pieces/Queen.cc
 
-pieces/Rook.o: pieces/Rook.cc Pos.h Piece.h defs.h
+pieces/Rook.o: pieces/Rook.cc pieces/Rook.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/Rook.o pieces/Rook.cc
 
-pieces/Bishop.o: pieces/Bishop.cc Pos.h Piece.h defs.h
+pieces/Bishop.o: pieces/Bishop.cc pieces/Bishop.h Pos.h Piece.h defs.h
 		$(CC) -c -o pieces/Bishop.o pieces/Bishop.cc
 
 clean:

@@ -76,9 +76,6 @@ void Board::setStartingBoard(bool startingColor)
 	// place pieces in their starting positions,
 	// populate the vectors corresponding to the black/white pieces.
 	
-	/*whitePieces
-	blackPieces
-	*/
 	
 	whiteTurn = startingColor;
 	
@@ -115,35 +112,6 @@ void Board::setStartingBoard(bool startingColor)
 		blackPieces->push_back(gameBoard[i][1]);
 		whitePieces->push_back(gameBoard[i][MAX_ROW_COL-2]);
 	}
-	
-	
-	/* old method
-	// top pieces
-	gameBoard[0][0] = new Rook(Pos(0,0), !startingColor, this);
-	gameBoard[0][1] = new Knight(Pos(0,1), !startingColor, this);
-	gameBoard[0][2] = new Bishop(Pos(0,2), !startingColor, this);
-	gameBoard[0][3] = new Queen(Pos(0,3), !startingColor, this);
-	gameBoard[0][4] = new King(Pos(0,4), !startingColor, this);
-	gameBoard[0][5] = new Bishop(Pos(0,5), !startingColor, this);
-	gameBoard[0][6] = new Knight(Pos(0,6), !startingColor, this);
-	gameBoard[0][7] = new Rook(Pos(0,7), !startingColor, this);
-	
-	for(int i = 0; i < MAX_ROW_COL; i++)
-		gameBoard[1][i] = new Pawn(Pos(1,i), !startingColor, this);
-		
-	// bottom pieces
-	gameBoard[MAX_ROW_COL-1][0] = new Rook(Pos(MAX_ROW_COL-1,0), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][1] = new Knight(Pos(MAX_ROW_COL-1,1), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][2] = new Bishop(Pos(MAX_ROW_COL-1,2), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][3] = new Queen(Pos(MAX_ROW_COL-1,3), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][4] = new King(Pos(MAX_ROW_COL-1,4), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][5] = new Bishop(Pos(MAX_ROW_COL-1,5), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][6] = new Knight(Pos(MAX_ROW_COL-1,6), startingColor, this);
-	gameBoard[MAX_ROW_COL-1][7] = new Rook(Pos(MAX_ROW_COL-1,7), startingColor, this);
-	
-	for(int i = 0; i < MAX_ROW_COL; i++)
-		gameBoard[MAX_ROW_COL-2][i] = new Pawn(Pos(MAX_ROW_COL-2,i), startingColor, this);
-	*/
 }
 
 

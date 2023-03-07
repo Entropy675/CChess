@@ -49,7 +49,7 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return;
 		
-	NcLog log;
+	NcLog log(1); // basic log level
 
 	if(getPiece(a)->move(b))
 	{	

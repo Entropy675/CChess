@@ -16,86 +16,38 @@ void Pawn::enPassantTarget(Piece* p, int tep)
 	turnToEP = tep;
 }
 
-/*
 bool Pawn::move(Pos p)
 {
-	
-	NcLog a;
-	
-	Pos tmp = pos; // we need to account for the position reversal (the parent move changes piece position)
-	
-	a.append("Pre:  " + std::to_string(pos.getX()) + "," + std::to_string(pos.getY()) + "\n");
-	bool vld = Piece::move(p); // vld reperesents a legal move
-	a.append("Post: " + std::to_string(pos.getX()) + "," + std::to_string(pos.getY()) + "\n");
-	
-	if(!vld) // completely invalid move
-		return false;
-	
-	
-	int dircheck = white ? -1 : 1;
-	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
-	if(capturableViaEP != nullptr)
-	{
-   		a.append("PASSED NULLCHK, GameTurn: " + std::to_string(game->getTurn()) + " Turn2Pass: " + std::to_string(turnToEP));
-   		
-   		if(turnToEP == game->getTurn())
-   		{
-   			a.append("TurnPass");
-			if(Pos(p.getX(), p.getY() - dircheck) == capturableViaEP->getPos())
-			{
-	   			a.append("PASSED KILLCHK");
-				capturableViaEP->die();
-				game->clearPiece(Pos(p.getX(), p.getY() - dircheck));
-				vld = true;
-			}
-   		}
-   		else
-   		{
-   			a.append("---> ENPASSANT OVERRIDE, MOVE INVALID");
-   			pos = tmp;
-   			vld = false;
-		}
-		
-		capturableViaEP = nullptr;
-		turnToEP = -1;
-	}
-	
-	return vld;
-}
-*/
-
-bool Pawn::move(Pos p)
-{
-	NcLog a;
+	NcLog a(3); // requires 2 global log level
 	
 	//int dircheck = white ? -1 : 1;
 	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
 	if(capturableViaEP != nullptr && turnToEP != game->getTurn())
 	{
-		a.append("---> ENPASSANT MOVE INVALID");
+		a.append("---> ENPASSANT MOVE INVALID", 1);
 	
 		capturableViaEP = nullptr;
 		turnToEP = -1;
 	}
 	
-	a.append("---> MOVING PWN\n");
+	a.append("---> MOVING PWN\n", 1);
 	if(capturableViaEP != nullptr)
 	{
-		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " "  + std::to_string(p.getY()));
+		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " "  + std::to_string(p.getY()), 3);
 		a.append("PIECEMOV: " + std::to_string(capturableViaEP->getPos().getX()) 
-				+ " " + std::to_string(capturableViaEP->getPos().getY()) + "\n");
+				+ " " + std::to_string(capturableViaEP->getPos().getY()) + "\n", 3);
 				
 		if(p.getY() == capturableViaEP->getPos().getY() - 1 || p.getY() == capturableViaEP->getPos().getY() + 1)
-			a.append("pass" + std::to_string(capturableViaEP->getPos().getY()));
+			a.append("pass" + std::to_string(capturableViaEP->getPos().getY()), 3);
 		else
-			a.append("fail" + std::to_string(capturableViaEP->getPos().getY()));
+			a.append("fail" + std::to_string(capturableViaEP->getPos().getY()), 3);
 		
 		if((p.getY() == capturableViaEP->getPos().getY() - 1 || p.getY() == capturableViaEP->getPos().getY() + 1) && p.getX() == capturableViaEP->getPos().getX())
 		{
 			capturableViaEP->die();
-			game->clearPiece(capturableViaEP->getPos());
+			game->clearPiece(capturableViaEP->getPos()); // clear the piece ptr off the game board
 			
-			a.append(" ==ENP== ---*^\\> MATCH: " + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + "\n");
+			a.append(" ==ENP== ---*^\\> MATCH: " + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + "\n", 1);
 			
 			if(!hasMoved)
 				hasMoved = true;
@@ -111,7 +63,7 @@ bool Pawn::move(Pos p)
 
 void Pawn::validMoves(std::vector<Pos>& p)
 {
-	NcLog a;
+	NcLog a(2); // requires >=2 global log level, disables local logs <2
 
 	int dircheck = white ? -1 : 1;
 	
@@ -148,12 +100,12 @@ void Pawn::validMoves(std::vector<Pos>& p)
 	
 	
 	
-    a.append("VArr " + std::to_string(p.size()) + ":");
+    a.append("VArr " + std::to_string(p.size()) + ":", 2);
     
     for (auto &x : p)
-        a.append("[" + std::to_string(x.getX()) + "," + std::to_string(x.getY()) + "],");
+        a.append("[" + std::to_string(x.getX()) + "," + std::to_string(x.getY()) + "],", 2);
     
-    a.append(" trn: " + std::to_string(game->getTurn()));
+    a.append(" trn: " + std::to_string(game->getTurn()), 1);
 }
 
 

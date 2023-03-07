@@ -1,9 +1,9 @@
 #include "NcLog.h"
 
 std::string NcLog::message = "";
-int NcLog::logLevel = 0;
+int NcLog::logLevel = LOG_LEVEL;
 
-NcLog::NcLog() : logLevelLocal(1)
+NcLog::NcLog(int locallog) : logLevelLocal(locallog)
 {
 	pwin = newwin(5, 30, 5, 20);
 }
@@ -28,6 +28,7 @@ void NcLog::setLogLevel(int a)
 {
 	if(a <= 1) // cannot allow less then 1 log level, to avoid bypassing program wide log level of 0
 		return;
+	
 	logLevelLocal = a;
 }
 
@@ -35,7 +36,7 @@ void NcLog::flush()
 {
 	if(message == "")
 		return;
-		
+	
 	logStrP(message);
 	message = "";
 }

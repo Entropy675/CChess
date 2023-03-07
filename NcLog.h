@@ -5,19 +5,28 @@
 #include <vector>
 #include <ncurses.h>
 
-#define LOG_LEVEL		1  // set higher for more logs, 1 means basic logs will show. 0 = no logs.
+// set higher for more logs, 1 means basic logs, >1 is more specific. 0 = no logs.
+#define LOG_LEVEL		1  
+/*
+// BASIC LOG DECORM (for this project)
+// 0 - NO LOGS. Set to 0 to have no logs at all.
+// 1 - BASIC LOGS. This shows basic information about each move after it is made.
+// 2 - MOVE LOGS. This shows every move considered in the log.
+// 3 - PIECE SPECIFIC LOGS. This shows logs specific to certain pieces.
+*/
+
 
 class NcLog
 {
 	public:
-	NcLog();
+	NcLog(int locallog = 1);
 	~NcLog();
 	
 	/*
 	// Append and logStr require a log level, which is the level at which you want the message to show up.
 	// If both the local log level and the global log level are high enough, then the message will pass through.
 	// The default global log level is defined above.
-	// The local log level must be defined per object, with setLogLevel. Default is 1.
+	// The local log level must be defined per log object, with setLogLevel. Default is 1.
 	*/
 	
 	// logs in a new unique popup, for any message input

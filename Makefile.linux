@@ -11,7 +11,7 @@ main.o: main.cc ChessGame.o
 ChessGame.o:	ChessGame.cc NcLog.h Board.h NcView.h defs.h
 		$(CC) -c ChessGame.cc
 
-NcLog.o: 		NcLog.cc
+NcLog.o: 		NcLog.cc NcLog.h
 		$(CC) -c NcLog.cc
 		
 NcView.o: 		NcView.cc Board.h

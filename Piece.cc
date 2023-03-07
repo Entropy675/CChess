@@ -10,7 +10,7 @@ bool Piece::move(Pos cPos)
 	std::vector<Pos> p;
 	validMoves(p);
 	
-	NcLog a;
+	NcLog a(1);
 	
 	bool isValid = false;
 	

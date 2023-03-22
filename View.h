@@ -5,8 +5,9 @@
 
 /*
 ** View
-** 
-
+** Virtual class that can be implemented with any graphics library.
+** Program will work with any implementation of the View class, allowing for different
+** views and different methods of creating views. (Will be useful for web version later)
 */
 class View
 {

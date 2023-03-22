@@ -24,6 +24,11 @@ class NcView : View
 	private:
 	void initNcurses();
 	void cleanupNcurses();	
+	
+	void drawBoard();
+	void drawPieces();
+	void drawPieceBar();
+	
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
 	

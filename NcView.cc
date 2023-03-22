@@ -60,14 +60,9 @@ void NcView::toggleSize()
 	update();
 }
 
-void NcView::printAt(int x, int y, const std::string& s) const
-{
-	mvprintw(x, y, "%s", s.c_str());
-}
-
 void NcView::userInput(std::string& uinp)
 {
-	char ch; // add backspace functionality 
+	char ch; // TODO: add backspace functionality 
 	while(true)
 	{
 		ch = getch();
@@ -81,12 +76,31 @@ void NcView::userInput(std::string& uinp)
 	uinp.erase(uinp.end()-1); // null terminates, removes \n from uinp
 }
 
-// TODO: Functions. Everything can go in a function. Split this up when you can.
 void NcView::update()
 {
-	clear(); // clear on screen board
+	clear();
 	
-	//game->getGameBoard()
+	drawBoard();
+	drawPieces();
+	drawPieceBar();
+	
+	moveToInputPos();
+}
+
+void NcView::printAt(int x, int y, const std::string& s) const
+{
+	mvprintw(x, y, "%s", s.c_str());
+	moveToInputPos();
+}
+
+void NcView::moveToInputPos()
+{
+	move(sqSize.getY()*MAX_ROW_COL + 2, 0); // move to position for input
+}
+
+void NcView::drawBoard()
+{
+	// draws an empty labeled board based off sqSize
 	for(int x = 0; x <= MAX_ROW_COL; x++)
 	{
 		for(int line = 1; line < sqSize.getY()*MAX_ROW_COL; line++)
@@ -110,36 +124,7 @@ void NcView::update()
 			move(sqSize.getY()*y, sqSize.getX()*x);
 			addstr("+");
 		}
-	}
-	
-	// done drawing empty board
-	// now drawing pieces
-	
-	// remember: Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
-	// 2d array of piece pointers
-	
-	cchar_t ctemp;
-	
-	
-	// Draws everything in the ptr array in its relative location
-	for(int x = 0; x < MAX_ROW_COL; x++)
-	{
-		for(int y = 0; y < MAX_ROW_COL; y++)
-		{
-			Pos p(y, x);
-			move(x*sqSize.getY() + offset.getY(), y*sqSize.getX() + offset.getX());
-			
-			if(!(game->getPiece(p) == nullptr))
-			{
-				wideChessConversion(game->getPiece(p)->getCharacter(), game->getPiece(p)->isWhite(), ctemp);
-				add_wch(&ctemp);
-			}
-		}
-		
-		int y1 = getcury(stdscr);
-		move(y1, sqSize.getX()*MAX_ROW_COL + 2);
-		addstr((std::to_string(MAX_ROW_COL - x)).c_str());
-	}
+	}	
 	
 	move(sqSize.getY()*MAX_ROW_COL + 1, 0);
 	
@@ -156,11 +141,37 @@ void NcView::update()
 		for(int i = 0; i < sqSize.getX()/2 - 1; i++)
 			addstr(" ");
 	}
-	
-	
+}
+
+void NcView::drawPieces()
+{
+	// draws all pieces in their right positions based off sqSize and offset
+	for(int x = 0; x < MAX_ROW_COL; x++)
+	{
+		for(int y = 0; y < MAX_ROW_COL; y++)
+		{
+			Pos p(y, x);
+			move(x*sqSize.getY() + offset.getY(), y*sqSize.getX() + offset.getX());
+			
+			if(!(game->getPiece(p) == nullptr))
+			{
+				cchar_t ctemp;
+				wideChessConversion(game->getPiece(p)->getCharacter(), game->getPiece(p)->isWhite(), ctemp);
+				add_wch(&ctemp);
+			}
+		}
+		
+		int y1 = getcury(stdscr);
+		move(y1, sqSize.getX()*MAX_ROW_COL + 2);
+		addstr((std::to_string(MAX_ROW_COL - x)).c_str());
+	}
+}
+
+void NcView::drawPieceBar()
+{
 	// draw the dead pieces in 2 different lines for white and black
 	move(sqSize.getY()*MAX_ROW_COL + 4, 0);
-	
+	cchar_t ctemp;
 	
 	// TODO: refactor these 2 for loops to eliminate getWhitePieces/getBlackPieces if possible
 	// or make more functions
@@ -186,9 +197,8 @@ void NcView::update()
 			add_wch(&ctemp);
 		}
 	}
-	
-	move(sqSize.getY()*MAX_ROW_COL + 2, 0);
 }
+
 
 void NcView::wideChessConversion(char c, bool isWhite, cchar_t& cch)
 {

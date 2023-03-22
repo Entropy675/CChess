@@ -19,8 +19,8 @@ void ChessGame::startGame()
 	game->setStartingBoard(true);
 	view->update();
 	
-	view->printAt(20, 1, "Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
-	view->printAt(21, 1, "Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
+	view->printAt(20, 0, "Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
+	view->printAt(21, 0, "Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
 	
 	bool redraw;
 	

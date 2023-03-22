@@ -93,7 +93,7 @@ void NcView::printAt(int x, int y, const std::string& s) const
 	moveToInputPos();
 }
 
-void NcView::moveToInputPos()
+void NcView::moveToInputPos() const
 {
 	move(sqSize.getY()*MAX_ROW_COL + 2, 0); // move to position for input
 }

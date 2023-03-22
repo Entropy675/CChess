@@ -24,6 +24,7 @@ class NcView : View
 	private:
 	void initNcurses();
 	void cleanupNcurses();	
+	void moveToInputPos() const;
 	
 	void drawBoard();
 	void drawPieces();

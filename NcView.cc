@@ -60,9 +60,9 @@ void NcView::toggleSize()
 	update();
 }
 
-void NcView::printAt(const Pos& p, const std::string& s) const
+void NcView::printAt(int x, int y, const std::string& s) const
 {
-	mvprintw(p.getY(), p.getX(), "%s", s.c_str());
+	mvprintw(x, y, "%s", s.c_str());
 }
 
 void NcView::userInput(std::string& uinp)

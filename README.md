@@ -1,7 +1,8 @@
 # CChess
 A console implementation of Chess. 
-Uses ncurses library for GUI: intended for Linux.
 
 Compile Command: make
 
-Run command: ./CChess (only builds on linux os)
+Run command: ./CChess 
+
+Currently only builds on Linux.

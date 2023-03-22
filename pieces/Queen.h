@@ -12,9 +12,10 @@ class Queen : public Piece
 	public:
 	Queen(Pos p, bool white, Board* g);
 	~Queen();
-	bool isValidMove(Pos p) override;
-	void validMoves(std::vector<Pos>& p) override;
 	
+	virtual bool isValidMove(const Pos p) override;
+	virtual void validMoves(std::vector<Pos>& p) override;
+	virtual bool move(const Pos) override;
 };
 
 

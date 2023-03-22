@@ -1,6 +1,7 @@
 #ifndef NCVIEW_H
 #define NCVIEW_H
 
+#include "View.h"
 #include "Board.h"
 
 #include <ncurses.h>
@@ -9,26 +10,25 @@
 #include <string>
 #include <cstring>
 
-class NcView
+class NcView : View
 {
 	public:
-	NcView(Board*);
-	void drawBoard();
-	void toggleSize(); // large/small
-	void userInput(std::string&);
+	NcView(Board*); // must subscribe to a Board on creation
+	virtual ~NcView();
+	
+	virtual void update() override;
+	virtual void toggleSize() override; // large/small
+	virtual void userInput(std::string&) override;
+	virtual void printAt(const Pos& p, const std::string& s) const override;
+	
+	private:
 	void initNcurses();
 	void cleanupNcurses();	
-	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
 	
-	private:
-	Board* game;
-	
-	std::vector<Piece*>* whitePieces;
-	std::vector<Piece*>* blackPieces;
-	
 	bool largeBoard = false;
+	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 	
 	// line characters for drawing board
 	cchar_t li;

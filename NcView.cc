@@ -1,7 +1,8 @@
 #include "NcView.h"
 
-NcView::NcView(Board* g) : game(g)
+NcView::NcView(Board* g) : View(g)
 {
+	initNcurses();
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
 	setcchar(&ld, L"│", A_NORMAL, 0, NULL);
 
@@ -16,6 +17,12 @@ NcView::NcView(Board* g) : game(g)
 		offset.set(1, 1); 
 	}
 }
+
+NcView::~NcView()
+{
+	cleanupNcurses();
+}
+
 
 void NcView::initNcurses()
 {
@@ -50,9 +57,13 @@ void NcView::toggleSize()
 		offset.set(1, 1); 
 	}
 	
-	drawBoard();
+	update();
 }
 
+void NcView::printAt(const Pos& p, const std::string& s) const
+{
+	mvprintw(p.getY(), p.getX(), "%s", s.c_str());
+}
 
 void NcView::userInput(std::string& uinp)
 {
@@ -70,7 +81,8 @@ void NcView::userInput(std::string& uinp)
 	uinp.erase(uinp.end()-1); // null terminates, removes \n from uinp
 }
 
-void NcView::drawBoard()
+// TODO: Functions. Everything can go in a function. Split this up when you can.
+void NcView::update()
 {
 	clear(); // clear on screen board
 	
@@ -149,11 +161,14 @@ void NcView::drawBoard()
 	// draw the dead pieces in 2 different lines for white and black
 	move(sqSize.getY()*MAX_ROW_COL + 4, 0);
 	
+	
+	// TODO: refactor these 2 for loops to eliminate getWhitePieces/getBlackPieces if possible
+	// or make more functions
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
-		if(game->whitePieces->at(i)->isDead())
+		if(game->getWhitePieces()->at(i)->isDead())
 		{
-			wideChessConversion(game->whitePieces->at(i)->getCharacter(), game->whitePieces->at(i)->isWhite(), ctemp);
+			wideChessConversion(game->getWhitePieces()->at(i)->getCharacter(), game->getWhitePieces()->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}
@@ -165,12 +180,14 @@ void NcView::drawBoard()
 	
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
-		if(game->blackPieces->at(i)->isDead())
+		if(game->getBlackPieces()->at(i)->isDead())
 		{
-			wideChessConversion(game->blackPieces->at(i)->getCharacter(), game->blackPieces->at(i)->isWhite(), ctemp);
+			wideChessConversion(game->getBlackPieces()->at(i)->getCharacter(), game->getBlackPieces()->at(i)->isWhite(), ctemp);
 			add_wch(&ctemp);
 		}
 	}
+	
+	move(sqSize.getY()*MAX_ROW_COL + 2, 0);
 }
 
 void NcView::wideChessConversion(char c, bool isWhite, cchar_t& cch)

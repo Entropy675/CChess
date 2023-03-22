@@ -8,7 +8,6 @@
 
 #include "Board.h"
 #include "NcView.h"
-
 #include "NcLog.h"
 
 class ChessGame

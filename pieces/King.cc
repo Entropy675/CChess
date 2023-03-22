@@ -10,7 +10,7 @@ King::~King()
 
 }
 
-bool King::isValidMove(Pos p)
+bool King::isValidMove(const Pos p)
 {
 	
 	return false;
@@ -22,3 +22,10 @@ void King::validMoves(std::vector<Pos>& p)
 
 }
 
+
+
+bool King::move(const Pos p)
+{
+	
+	return false;
+}

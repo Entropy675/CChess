@@ -36,12 +36,12 @@ bool Piece::move(Pos cPos)
 }
 
 
-Pos Piece::getPos()
+Pos Piece::getPos() const
 {
 	return pos;
 }
 
-bool Piece::isDead()
+bool Piece::isDead() const
 {
 	return dead;
 }
@@ -56,7 +56,7 @@ bool Piece::isWhite() const
 	return white;
 }
 
-char Piece::getCharacter()
+char Piece::getCharacter() const
 {
 	return chr;
 }

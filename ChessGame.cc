@@ -17,17 +17,14 @@ ChessGame::~ChessGame()
 void ChessGame::startGame()
 {
 	game->setStartingBoard(true);
-	view->initNcurses();
-	view->drawBoard();
+	view->update();
 	
-	mvprintw(19, 1, "Board size: %dx%d sqaresize: %dx%d\n Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.", 
-	view->sqSize.getY()*MAX_ROW_COL, view->sqSize.getX()*MAX_ROW_COL, view->sqSize.getX(), view->sqSize.getY());
+	view->printAt(Pos(19, 1), "Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
 	
 	bool redraw;
 	
 	while(true)
 	{
-		move(view->sqSize.getY()*MAX_ROW_COL + 2, 0);
 		
 		redraw = true;
 		
@@ -75,7 +72,7 @@ void ChessGame::startGame()
 			
 		if(redraw)
 		{
-			view->drawBoard();
+			view->update();
 			refresh();
 		}
 	}
@@ -85,7 +82,6 @@ void ChessGame::startGame()
 
 	refresh();
 	// getch();
-	view->cleanupNcurses();
 }
 
 

@@ -19,11 +19,17 @@ class NcView : View
 	virtual void update() override;
 	virtual void toggleSize() override; // large/small
 	virtual void userInput(std::string&) override;
-	virtual void printAt(const Pos& p, const std::string& s) const override;
+	virtual void printAt(int x, int y, const std::string& s) const override;
 	
 	private:
 	void initNcurses();
 	void cleanupNcurses();	
+	void moveToInputPos() const;
+	
+	void drawBoard();
+	void drawPieces();
+	void drawPieceBar();
+	
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
 	

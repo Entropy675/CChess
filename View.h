@@ -5,8 +5,9 @@
 
 /*
 ** View
-** 
-
+** Virtual class that can be implemented with any graphics library.
+** Program will work with any implementation of the View class, allowing for different
+** views and different methods of creating views. (Will be useful for web version later)
 */
 class View
 {
@@ -17,7 +18,7 @@ class View
 	virtual void update() = 0;
 	virtual void toggleSize() = 0; // large/small
 	virtual void userInput(std::string&) = 0;
-	virtual void printAt(const Pos& p, const std::string& s) const = 0;
+	virtual void printAt(int x, int y, const std::string& s) const = 0;
 	
 	protected:
 	Board* game;

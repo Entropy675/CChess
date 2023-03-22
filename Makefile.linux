@@ -17,7 +17,7 @@ View.o:	View.cc View.h
 NcLog.o: NcLog.cc NcLog.h
 	$(CC) -c NcLog.cc
 		
-NcView.o: NcView.cc Board.h View.h
+NcView.o: NcView.cc NcView.h View.h Board.h
 	$(CC) -c NcView.cc
 
 Pos.o: Pos.cc defs.h

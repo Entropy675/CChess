@@ -1,19 +1,24 @@
 #include "defs.h"
 #include "Pos.h"
 
-Pos::Pos(int ix, int iy)
+Pos::Pos(const int ix, const int iy)
 {
 	set(ix, iy);
 }
 
-bool Pos::isValid(int ix, int iy)
+Pos::Pos(const Pos& o)
+{
+	set(o.x, o.y);
+}
+
+bool Pos::isValid(const int ix, const int iy) const
 {
 	if(ix >= MAX_ROW_COL || ix < 0 || iy >= MAX_ROW_COL || iy < 0)
 		return false;
 	return true;
 }
 
-int Pos::set(int ix, int iy)
+int Pos::set(const int ix, const int iy)
 {
 	if(!isValid(ix,iy))
 		return C_NOK;
@@ -22,13 +27,13 @@ int Pos::set(int ix, int iy)
 	return C_OK;
 }
 
-void Pos::set(Pos p)
+void Pos::set(const Pos p)
 {
-	x = p.getX();
-	y = p.getY();
+	x = p.x;
+	y = p.y;
 }
 
-int Pos::setX(int ix)
+int Pos::setX(const int ix)
 {
 	if(!isValid(ix,y))
 		return C_NOK;
@@ -36,7 +41,7 @@ int Pos::setX(int ix)
 	return C_OK;
 }
 
-int Pos::setY(int iy)
+int Pos::setY(const int iy)
 {
 	if(!isValid(x,iy))
 		return C_NOK;
@@ -44,26 +49,33 @@ int Pos::setY(int iy)
 	return C_OK;
 }
 
-int Pos::getX()
+int Pos::getX() const
 {
 	return x;
 }
 
-int Pos::getY()
+int Pos::getY() const
 {
 	return y;
-
 }
 
-bool Pos::operator==(const Pos &p)
+bool Pos::operator==(const Pos &p) const
 {
 	return x == p.x && y == p.y;
 }
 
-bool Pos::operator!=(const Pos &p)
+bool Pos::operator!=(const Pos &p) const
 {
-	return x != p.x && y != p.y;
+	return !(*this == p);
 }
+
+Pos& Pos::operator+=(const Pos &p)
+{
+	x += p.x;
+	y += p.y;
+	return *this;
+}
+
 
 
 

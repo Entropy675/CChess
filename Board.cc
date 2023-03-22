@@ -28,12 +28,12 @@ Board::~Board()
 	delete blackPieces;
 }
 
-bool Board::isWhiteTurn()
+bool Board::isWhiteTurn() const
 {
 	return whiteTurn;
 }
 
-Piece* Board::getPiece(Pos a)
+Piece* Board::getPiece(Pos a) const
 {
 	return gameBoard[a.getX()][a.getY()];
 }
@@ -41,6 +41,21 @@ Piece* Board::getPiece(Pos a)
 void Board::clearPiece(Pos a)
 {
 	gameBoard[a.getX()][a.getY()] = nullptr;
+}
+
+int Board::getTurn() const
+{
+	return turnCount;
+}
+
+std::vector<Piece*>* Board::getWhitePieces() const
+{
+	return whitePieces;
+}
+
+std::vector<Piece*>* Board::getBlackPieces() const
+{
+	return blackPieces;
 }
 
 void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
@@ -64,11 +79,6 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 	}
 	
 	log.flush(); // log all movement comments to screen.
-}
-
-int Board::getTurn()
-{
-	return turnCount;
 }
 
 void Board::setStartingBoard(bool startingColor)

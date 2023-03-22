@@ -10,7 +10,7 @@ Queen::~Queen()
 
 }
 
-bool Queen::isValidMove(Pos p)
+bool Queen::isValidMove(const Pos p)
 {
 	
 	return false;
@@ -20,4 +20,10 @@ void Queen::validMoves(std::vector<Pos>& p)
 {
 	
 
+}
+
+bool Queen::move(const Pos p)
+{
+	
+	return false;
 }

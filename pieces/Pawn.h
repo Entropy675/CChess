@@ -13,13 +13,13 @@ class Pawn : public Piece
 	public:
 	Pawn(Pos p, bool white, Board* g);
 	~Pawn();
-	bool isValidMove(Pos p) override;
-	void validMoves(std::vector<Pos>& p) override;
 	
-	bool move(Pos) override;
-	void enPassantTarget(Piece*, int);
+	virtual bool isValidMove(const Pos p) override;
+	virtual void validMoves(std::vector<Pos>& p) override;
+	virtual bool move(const Pos) override;
 	
 	private:
+	void enPassantTarget(Piece*, int);
 	int turnToEP;
 	Piece* capturableViaEP;
 };

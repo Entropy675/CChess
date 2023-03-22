@@ -5,7 +5,7 @@ Pawn::Pawn(Pos p, bool white, Board* g)
 
 Pawn::~Pawn() {}
 
-bool Pawn::isValidMove(Pos p)
+bool Pawn::isValidMove(const Pos p) 
 {
 	return false;
 }
@@ -16,7 +16,7 @@ void Pawn::enPassantTarget(Piece* p, int tep)
 	turnToEP = tep;
 }
 
-bool Pawn::move(Pos p)
+bool Pawn::move(const Pos p)
 {
 	NcLog a(3); // requires 2 global log level
 	

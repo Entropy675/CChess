@@ -10,7 +10,7 @@ Knight::~Knight()
 
 }
 
-bool Knight::isValidMove(Pos p)
+bool Knight::isValidMove(const Pos p) 
 {
 	
 	return false;
@@ -20,4 +20,10 @@ void Knight::validMoves(std::vector<Pos>& p)
 {
 	
 
+}
+
+bool Knight::move(const Pos p)
+{
+	
+	return false;
 }

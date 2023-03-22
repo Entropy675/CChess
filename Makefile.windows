@@ -1,4 +1,4 @@
-OBJ = main.o ChessGame.o Pos.o Board.o NcLog.o NcView.o Piece.o pieces\Pawn.o pieces\King.o pieces\Knight.o pieces\Queen.o pieces\Rook.o pieces\Bishop.o 
+OBJ = main.o ChessGame.o Pos.o Board.o View.o NcLog.o NcView.o Piece.o pieces\Pawn.o pieces\King.o pieces\Knight.o pieces\Queen.o pieces\Rook.o pieces\Bishop.o 
 CC = x86_64-w64-mingw32-g++ -Wall -g
 INC = -IC:\pdcurses\include
 LIB = -LC:\pdcurses\lib -lpdcurses
@@ -11,6 +11,9 @@ main.o: main.cc ChessGame.o
 
 ChessGame.o: ChessGame.cc NcLog.h Board.h NcView.h defs.h
 	$(CC) -c $(INC) ChessGame.cc
+
+View.o:	View.cc View.h
+	$(CC) -c $(INC) View.cc
 
 NcLog.o: NcLog.cc
 	$(CC) -c $(INC) NcLog.cc

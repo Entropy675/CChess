@@ -22,7 +22,7 @@ class View
 	
 	protected:
 	Board* game;
-	
+
 };
 
 

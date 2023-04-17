@@ -1,0 +1,7 @@
+# Suppress memory leaks related to ncurses library
+{
+   <ncurses>
+   Memcheck:Leak
+   ...
+   fun:*
+}

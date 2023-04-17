@@ -15,13 +15,13 @@ class ChessGame
 	public:
 	ChessGame();
 	~ChessGame();
-	
+
 	void startGame();
-	
+
 	private:
 	bool largeBoard;
-	
-	NcView* view;
+
+	View* view;
 	Board* game;
 };
 

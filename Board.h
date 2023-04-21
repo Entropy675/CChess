@@ -27,6 +27,8 @@ class Board
 	bool isWhiteTurn() const;
 	int getTurn() const;
 	Piece* getPiece(Pos) const;
+	// can overload [] and [][] for the board interface
+	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
 

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-ChessGame::ChessGame() : largeBoard(false)
+ChessGame::ChessGame()
 {
 	game = new Board();
 	view = new NcView(game);

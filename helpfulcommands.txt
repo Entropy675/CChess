@@ -1,0 +1,13 @@
+
+# Build the project:
+make
+
+# test the project for mem leaks (ignores memory that valgrind thinks is lost because valgrind can't see it):
+valgrind --suppressions=ncurses.supp ./CChess
+
+# running the program normally:
+./CChess
+
+# Clean project:
+make clean
+

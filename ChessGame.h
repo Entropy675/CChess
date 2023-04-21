@@ -19,8 +19,6 @@ class ChessGame
 	void startGame();
 
 	private:
-	bool largeBoard;
-
 	View* view;
 	Board* game;
 };

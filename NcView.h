@@ -30,11 +30,10 @@ class NcView : public View
 	void drawPieces();
 	void drawPieceBar();
 
+	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
+
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
-
-	bool largeBoard = false;
-	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 
 	// line characters for drawing board
 	cchar_t li;

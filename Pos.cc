@@ -87,16 +87,17 @@ bool Pos::operator==(const Pos& p) const
 
 Pos Pos::operator+(const Pos& a) const
 {
-	int r1 = x + a.x;
-	int r2 = y + a.y;
-	return Pos(r1, r2);
+	Pos temp(*this);
+	temp += a; // utalize validity checking in +=, if invalid this fails, returning a temp with values of this.
+	// would be very very bad if this checking did not occur, as the program assumes Pos always holds valid positions.
+	return temp;
 }
 
 Pos Pos::operator-(const Pos& a) const
 {
-	int r1 = x - a.x;
-	int r2 = y - a.y;
-	return Pos(r1, r2);
+	Pos temp(*this);
+	temp -= a;
+	return temp;
 }
 
 bool Pos::operator!=(const Pos& p) const
@@ -106,14 +107,13 @@ bool Pos::operator!=(const Pos& p) const
 
 Pos& Pos::operator-=(const Pos& p)
 {
-	x -= p.x;
-	y -= p.y;
+	this->set(x - p.x, y - p.y);
+	//if(this->set(x - p.x, y - p.y) == C_NOK) print some error, but we can kind of just ignore since no change occurs. can log with some low log level or something
 	return *this;
 }
 
 Pos& Pos::operator+=(const Pos& p)
 {
-	x += p.x;
-	y += p.y;
+	this->set(x + p.x, y + p.y);
 	return *this;
 }

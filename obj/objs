@@ -1,0 +1,2 @@
+Object files are loaded into this folder when make is called.
+This is done to not clutter the code space.

@@ -19,7 +19,7 @@ class ChessGame
 	void startGame();
 
 	private:
-	View* view;
+	View* view; // TODO: Turn this into a vector of view pointers. Change code to work with list of views.
 	Board* game;
 };
 

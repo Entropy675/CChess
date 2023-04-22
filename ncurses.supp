@@ -1,4 +1,4 @@
-# Suppress memory leaks related to ncurses library
+# Suppress memory leaks related to ncurses library, valgrind detects ghosts here
 {
    <ncurses>
    Memcheck:Leak

@@ -108,7 +108,7 @@ bool Pos::operator!=(const Pos& p) const
 Pos& Pos::operator-=(const Pos& p)
 {
 	this->set(x - p.x, y - p.y);
-	//if(this->set(x - p.x, y - p.y) == C_NOK) print some error, but we can kind of just ignore since no change occurs. can log with some low log level or something
+	//if(this->set(x - p.x, y - p.y) == C_NOK) print some error, but we can kind of just ignore since no change occurs. TODO: log all validity failures in operators with some low log level or something (whatever you do, document it)
 	return *this;
 }
 

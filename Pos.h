@@ -5,10 +5,14 @@
 
 class Pos
 {
+	friend std::ostream& operator<<(std::ostream&, const Pos&);
+
 	public:
 	Pos(int x = 0, int y = 0);
-	Pos(const Pos& o);
+	Pos(const Pos&);
 
+
+	Pos& operator=(const Pos&);
 	void set(const Pos p);
 
 	// following return C_NOK for invalid position (else C_OK)
@@ -19,9 +23,18 @@ class Pos
 	int getX() const;
 	int getY() const;
 
-	bool operator==(const Pos &p) const;
-	bool operator!=(const Pos &p) const;
-	Pos& operator+=(const Pos &p);
+	// not defining a < or > for this because its too subjective
+	// - the meaning relative to the application is unclear.
+	int& operator[](int);
+
+	Pos operator+(const Pos&) const;
+	Pos operator-(const Pos&) const;
+
+	bool operator==(const Pos&) const;
+	bool operator!=(const Pos&) const;
+
+	Pos& operator+=(const Pos&);
+	Pos& operator-=(const Pos&);
 
 	private:
 	bool isValid(int ix, int iy) const; // check if the position is valid, for internal use, do not save invalid pos

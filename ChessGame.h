@@ -15,13 +15,11 @@ class ChessGame
 	public:
 	ChessGame();
 	~ChessGame();
-	
+
 	void startGame();
-	
+
 	private:
-	bool largeBoard;
-	
-	NcView* view;
+	View* view; // TODO: Turn this into a vector of view pointers. Change code to work with list of views.
 	Board* game;
 };
 

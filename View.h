@@ -19,10 +19,11 @@ class View
 	virtual void toggleSize() = 0; // large/small
 	virtual void userInput(std::string&) = 0;
 	virtual void printAt(int x, int y, const std::string& s) const = 0;
-	
+
 	protected:
+	bool largeBoard = false;
 	Board* game;
-	
+
 };
 
 

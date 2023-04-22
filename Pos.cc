@@ -27,10 +27,31 @@ int Pos::set(const int ix, const int iy)
 	return C_OK;
 }
 
+std::ostream& operator<<(std::ostream& o, const Pos& p)
+{
+	o << "(" << p.x << "," << p.y << ")";
+	return o;
+}
+
+Pos& Pos::operator=(const Pos& o)
+{
+	x = o.x;
+	y = o.y;
+	return *this;
+}
+
+int& Pos::operator[](int i)
+{
+	if(i == 0)
+		return x;
+	if(i == 1)
+		return y; // sorry, but the exception is needed. Cannot return value.
+	throw std::out_of_range("Index out of range in Pos::operator[]. Only 0 or 1 allowed.");
+}
+
 void Pos::set(const Pos p)
 {
-	x = p.x;
-	y = p.y;
+	*this = p;
 }
 
 int Pos::setX(const int ix)
@@ -59,26 +80,40 @@ int Pos::getY() const
 	return y;
 }
 
-bool Pos::operator==(const Pos &p) const
+bool Pos::operator==(const Pos& p) const
 {
 	return x == p.x && y == p.y;
 }
 
-bool Pos::operator!=(const Pos &p) const
+Pos Pos::operator+(const Pos& a) const
+{
+	Pos temp(*this);
+	temp += a; // utalize validity checking in +=, if invalid this fails, returning a temp with values of this.
+	// would be very very bad if this checking did not occur, as the program assumes Pos always holds valid positions.
+	return temp;
+}
+
+Pos Pos::operator-(const Pos& a) const
+{
+	Pos temp(*this);
+	temp -= a;
+	return temp;
+}
+
+bool Pos::operator!=(const Pos& p) const
 {
 	return !(*this == p);
 }
 
-Pos& Pos::operator+=(const Pos &p)
+Pos& Pos::operator-=(const Pos& p)
 {
-	x += p.x;
-	y += p.y;
+	this->set(x - p.x, y - p.y);
+	//if(this->set(x - p.x, y - p.y) == C_NOK) print some error, but we can kind of just ignore since no change occurs. TODO: log all validity failures in operators with some low log level or something (whatever you do, document it)
 	return *this;
 }
 
-
-
-
-
-
-
+Pos& Pos::operator+=(const Pos& p)
+{
+	this->set(x + p.x, y + p.y);
+	return *this;
+}

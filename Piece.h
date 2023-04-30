@@ -1,31 +1,41 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include <ncurses.h>
 #include <vector>
 
 #include "defs.h"
-#include "Pos.h"
-#include "Board.h"
-
 #include "NcLog.h"
 
-class Piece 
+#include "Pos.h"
+#include "Board.h"
+#include "MoveBehaviour.h"
+#include "piece_behav/PawnMove.h"
+
+/*
+** Piece
+** Reperesents a single piece on the chess board. Holds all the attributes of
+** the chess piece, including a list of pointers to movement behaviour and a character
+** indicating the type of the piece.
+** {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn} as per standard.
+*/
+class Piece
 {
 	public:
 	Piece(Pos p, char c = '0', bool w = false, Board* g = nullptr);
 
-	virtual ~Piece();
-	virtual bool isValidMove(const Pos p) = 0; 
-	virtual void validMoves(std::vector<Pos>& p) = 0;
-	virtual bool move(const Pos);
+	~Piece();
+	bool isValidMove(const Pos p);
+	void validMoves(std::vector<Pos>& p);
+	bool move(const Pos);
 
 	Pos getPos() const;
 	char getCharacter() const;
 	bool isWhite() const;
 	bool isDead() const;
-
 	void die();
+	
+	PawnMove* hasPawnBehaviour() const;
+	void addBehav(MoveBehaviour*);
 
 	protected:
 	Pos pos;
@@ -35,6 +45,7 @@ class Piece
 	char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}
 	const bool white;
 
+	std::vector<MoveBehaviour*> movebehavArr; // delegate isValidMove & validMoves to the sum of all these
 	Board* game;
 };
 

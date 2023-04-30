@@ -41,6 +41,19 @@ Pos Piece::getPos() const
 	return pos;
 }
 
+PawnMove* Piece::getPawnBehaviour() const
+{
+	for(int i = 0; i < movebehavArr.size(); i++)
+		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
+			return dynamic_cast<PawnMove*>(movebehavArr.at(i));
+	return nullptr;
+}
+
+void addBehav(MoveBehaviour* b)
+{
+	return movebehavArr.push_back(b);
+}
+
 bool Piece::isDead() const
 {
 	return dead;

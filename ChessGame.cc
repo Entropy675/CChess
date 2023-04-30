@@ -35,7 +35,7 @@ void ChessGame::startGame()
 		//addstr(uinp.c_str());
 
 		// for valid input, must be of format "c# c#", where c = char in "abcdefgh"
-		// could also support p = kqrkbp in format "pc#", where only one valid move can go there.
+		// could also support p = kqrnbp in format "pc#", where only one valid move can go there.
 		// could also support "c#" where only one valid move exists (this is cringe but completely doable)
 
 		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex

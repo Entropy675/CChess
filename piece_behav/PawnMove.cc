@@ -27,7 +27,7 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 		turnToEP = -1;
 	}
 
-	a.append("---> MOVING PWN\n", 1);
+	a.append("---> MOVING PWN (EPcheck)\n", 1);
 	if(capturableViaEP != nullptr)
 	{
 		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " "  + std::to_string(p.getY()), 3);
@@ -86,10 +86,10 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 	}
 
 	// piece capture (diagonal)
-	if(from->getBoard()->getPiece(Pos(from->getPos().getX() - dircheck, from->getPos().getY() + dircheck)) != nullptr)
+	if(from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
 
-	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + dircheck, from->getPos().getY() + dircheck)) != nullptr)
+	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
 	
 	// This addition to the list is unnecessary but helpful for diagnostics and has minimal impact on efficiency, so it will be left in.

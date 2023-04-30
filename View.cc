@@ -1,13 +1,7 @@
 #include "View.h"
 
 
-View::View(Board* g) : game(g)
-{
+View::View(Board* g) : game(g) {}
 
-}
-
-View::~View()
-{
-
-}
+View::~View(){}
 

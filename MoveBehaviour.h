@@ -1,6 +1,7 @@
 #ifndef MOVEBEHAVIOUR_H
 #define MOVEBEHAVIOUR_H
 
+#include "Pos.h"
 #include "Piece.h"
 #include <vector>
 
@@ -14,10 +15,10 @@
 class MoveBehaviour
 {
 public:
-  MoveBehaviour();
-  virtual ~MoveBehaviour();
+	MoveBehaviour();
+	virtual ~MoveBehaviour();
 
-  virtual void validMoves(std::vector<Pos>& out, const Piece& from) = 0;
+	virtual void validMoves(std::vector<Pos>& out, const Piece* from) = 0;
 	virtual bool isValidMove(const Pos& to, const Piece& from) = 0;
 };
 

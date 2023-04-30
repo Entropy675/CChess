@@ -1,15 +1,18 @@
-OBJ = obj/ChessGame.o obj/main.o obj/Pos.o obj/Board.o obj/View.o obj/NcLog.o obj/NcView.o obj/Piece.o obj/PawnMove.o obj/OneMove.o obj/KnightMove.o obj/PlusMove.o obj/CrossMove.o
+OBJ = obj/ChessGame.o obj/main.o obj/Pos.o obj/MoveBehaviour.o obj/PawnMove.o obj/OneMove.o obj/KnightMove.o obj/PlusMove.o obj/CrossMove.o obj/Piece.o obj/Board.o obj/View.o obj/NcLog.o obj/NcView.o
 CC = g++ -Wall -g
 LIB = -lncursesw
 
 CChess:	$(OBJ)
 	$(CC) -o CChess $(OBJ) $(LIB)
 
-obj/ChessGame.o: ChessGame.cc ChessGame.h NcLog.h Board.h NcView.h defs.h
+obj/ChessGame.o: ChessGame.cc ChessGame.h NcLog.h Board.h NcView.h defs.h MoveBehaviour.h
 	$(CC) -c ChessGame.cc -o obj/ChessGame.o
 
 obj/main.o: main.cc obj/ChessGame.o
 	$(CC) -c main.cc -o obj/main.o
+
+obj/MoveBehaviour.o: MoveBehaviour.cc MoveBehaviour.h
+	$(CC) -c MoveBehaviour.cc -o obj/MoveBehaviour.o
 
 obj/View.o:	View.cc View.h
 	$(CC) -c View.cc -o obj/View.o
@@ -29,19 +32,19 @@ obj/Piece.o: Piece.cc Piece.h NcLog.h Pos.h defs.h
 obj/Board.o: Board.cc Board.h Pos.h Piece.h defs.h piece_behav/PawnMove.h piece_behav/OneMove.h piece_behav/KnightMove.h piece_behav/PlusMove.h piece_behav/CrossMove.h
 	$(CC) -c Board.cc -o obj/Board.o
 
-obj/PawnMove.o: piece_behav/PawnMove.cc piece_behav/PawnMove.h Pos.h Piece.h defs.h
+obj/PawnMove.o: piece_behav/PawnMove.cc piece_behav/PawnMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/PawnMove.cc -o obj/PawnMove.o
 
-obj/OneMove.o: piece_behav/OneMove.cc piece_behav/OneMove.h Pos.h Piece.h defs.h
+obj/OneMove.o: piece_behav/OneMove.cc piece_behav/OneMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/OneMove.cc -o obj/OneMove.o
 
-obj/KnightMove.o: piece_behav/KnightMove.cc piece_behav/KnightMove.h Pos.h Piece.h defs.h
+obj/KnightMove.o: piece_behav/KnightMove.cc piece_behav/KnightMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/KnightMove.cc -o obj/KnightMove.o
 
-obj/PlusMove.o:   piece_behav/PlusMove.cc piece_behav/PlusMove.h Pos.h Piece.h defs.h
+obj/PlusMove.o:   piece_behav/PlusMove.cc piece_behav/PlusMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/PlusMove.cc -o obj/PlusMove.o
 
-obj/CrossMove.o: piece_behav/CrossMove.cc piece_behav/CrossMove.h Pos.h Piece.h defs.h
+obj/CrossMove.o: piece_behav/CrossMove.cc piece_behav/CrossMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/CrossMove.cc -o obj/CrossMove.o
 
 clean:

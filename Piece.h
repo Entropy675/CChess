@@ -8,8 +8,10 @@
 
 #include "Pos.h"
 #include "Board.h"
-#include "MoveBehaviour.h"
-#include "piece_behav/PawnMove.h"
+//#include "MoveBehaviour.h" this is always used as a ptr so it can all be linked
+//#include "piece_behav/PawnMove.h"
+class MoveBehaviour;
+class PawnMove;
 
 /*
 ** Piece
@@ -33,8 +35,9 @@ class Piece
 	bool isWhite() const;
 	bool isDead() const;
 	void die();
+	Board* getBoard() const;
 	
-	PawnMove* hasPawnBehaviour() const;
+	PawnMove* getPawnBehaviour() const;
 	void addBehav(MoveBehaviour*);
 
 	protected:

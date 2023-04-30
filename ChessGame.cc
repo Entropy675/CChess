@@ -21,8 +21,7 @@ void ChessGame::startGame()
 
 	view->printAt(20, 0, "Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
 	view->printAt(21, 0, "Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
-	view->printAt(22, 0, "Your font must be monospace. If the rows are squished together with no space between,");
-	view->printAt(23, 0, "change your console font to a monospace font (Something like DejaVu Sans Mono).");
+
 	bool redraw;
 
 	while(true)
@@ -36,7 +35,7 @@ void ChessGame::startGame()
 		//addstr(uinp.c_str());
 
 		// for valid input, must be of format "c# c#", where c = char in "abcdefgh"
-		// could also support p = kqrkbp in format "pc#", where only one valid move can go there.
+		// could also support p = kqrnbp in format "pc#", where only one valid move can go there.
 		// could also support "c#" where only one valid move exists (this is cringe but completely doable)
 
 		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex

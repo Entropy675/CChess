@@ -1,2 +1,2 @@
-Object files are loaded into this folder when make is called.
-This is done to not clutter the code space.
+Object files are loaded into this folder when program is made (call make).
+This avoids clutter in the code space.

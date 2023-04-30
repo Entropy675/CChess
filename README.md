@@ -5,4 +5,4 @@ Compile Command: make
 
 Run command: ./CChess 
 
-Currently only builds on Linux.
+Currently only builds on Linux or WSL with KeX.

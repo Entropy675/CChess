@@ -1,13 +1,13 @@
-#ifndef KNIGHTMOVE_H
-#define KNIGHTMOVE_H
+#ifndef KINGMOVE_H
+#define KINGMOVE_H
 
 #include "../MoveBehaviour.h"
 
-class KnightMove : public MoveBehaviour
+class KingMove : public MoveBehaviour
 {
 	public:
-	KnightMove();
-	~KnightMove();
+	KingMove();
+	~KingMove();
 
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
 	virtual bool isValidMove(const Pos& to, Piece* from) override;

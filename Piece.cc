@@ -1,16 +1,23 @@
 #include "Piece.h"
+#include "MoveBehaviour.h"
+#include "piece_behav/PawnMove.h"
 
 Piece::Piece(Pos p, char c, bool w, Board* g) 
-	: pos(p), hasMoved(false), dead(false), chr(c), white(w), game(g) {}
+	: pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
 
-Piece::~Piece() {}
+// piece cleans up its behaviour array
+Piece::~Piece() 
+{
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+		delete movebehavArr[i];
+}
 
 bool Piece::move(Pos cPos)
 {
 	std::vector<Pos> p;
 	
-	for(int i = 0; i < movebehavArr.size(); i++)
-		movebehavArr[i]->validMoves(p);
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+		movebehavArr[i]->validMoves(p, this);
 	
 	NcLog a(1);
 	
@@ -42,14 +49,18 @@ bool Piece::move(Pos cPos)
 	
 	a.append(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
 
-	if(!hasMoved)
-		hasMoved = true;
+	if(!moved)
+		moved = true;
 
 	pos = cPos; 
 	
 	return true;
 }
 
+bool Piece::hasMoved() const
+{
+	return moved;
+}
 
 Pos Piece::getPos() const
 {
@@ -58,7 +69,7 @@ Pos Piece::getPos() const
 
 PawnMove* Piece::getPawnBehaviour() const
 {
-	for(int i = 0; i < movebehavArr.size(); i++)
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
 			return pawnMove;
 	return nullptr;
@@ -69,7 +80,7 @@ void Piece::addBehav(MoveBehaviour* b)
 	return movebehavArr.push_back(b);
 }
 
-Board* getBoard() const
+Board* Piece::getBoard() const
 {
 	return game;
 }

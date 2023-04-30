@@ -1,6 +1,7 @@
 #ifndef MOVEBEHAVIOUR_H
 #define MOVEBEHAVIOUR_H
 
+#include "defs.h"
 #include "Pos.h"
 #include "Piece.h"
 #include <vector>
@@ -18,8 +19,8 @@ public:
 	MoveBehaviour();
 	virtual ~MoveBehaviour();
 
-	virtual void validMoves(std::vector<Pos>& out, const Piece* from) = 0;
-	virtual bool isValidMove(const Pos& to, const Piece& from) = 0;
+	virtual void validMoves(std::vector<Pos>& out, Piece* from) = 0; // ptr cant be const ref because of pawn EP set & kill
+	virtual bool isValidMove(const Pos& to, Piece* from) = 0;
 };
 
 

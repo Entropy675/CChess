@@ -54,7 +54,7 @@ void PawnMove::enPassantTarget(Piece* p, int tep)
 	turnToEP = tep;
 }
 
-void PawnMove::validMoves(std::vector<Pos>& p, const Piece* from)
+void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
 	NcLog a(2); // requires >=2 global log level, disables local logs <2
 
@@ -64,7 +64,7 @@ void PawnMove::validMoves(std::vector<Pos>& p, const Piece* from)
 	if(from->getBoard()->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck)) == nullptr)
 	{
 		p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
-		if(!hasMoved && from->getBoard()->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
+		if(!from->hasMoved() && from->getBoard()->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
 		{
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
 
@@ -104,11 +104,11 @@ void PawnMove::validMoves(std::vector<Pos>& p, const Piece* from)
     a.append(" trn: " + std::to_string(from->getBoard()->getTurn()), 1);
 }
 
-bool PawnMove::isValidMove(const Pos& to, const Piece& from)
+bool PawnMove::isValidMove(const Pos& to, Piece* from)
 {
 	std::vector<Pos> templist;
 	validMoves(templist, from);
-	for(int i = 0; i < templist.size(); i++)
+	for(long unsigned int i = 0; i < templist.size(); i++)
 		if(templist[i] == to)
 			return true;
 	return false;

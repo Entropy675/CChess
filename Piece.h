@@ -34,6 +34,7 @@ class Piece
 	char getCharacter() const;
 	bool isWhite() const;
 	bool isDead() const;
+	bool hasMoved() const;
 	void die();
 	Board* getBoard() const;
 	
@@ -43,7 +44,7 @@ class Piece
 	protected:
 	Pos pos;
 
-	bool hasMoved;
+	bool moved;
 	bool dead;
 	char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}
 	const bool white;

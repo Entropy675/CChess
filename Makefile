@@ -1,4 +1,4 @@
-OBJ = obj/ChessGame.o obj/main.o obj/Pos.o obj/MoveBehaviour.o obj/PawnMove.o obj/OneMove.o obj/KnightMove.o obj/PlusMove.o obj/CrossMove.o obj/Piece.o obj/Board.o obj/View.o obj/NcLog.o obj/NcView.o
+OBJ = obj/ChessGame.o obj/main.o obj/Pos.o obj/MoveBehaviour.o obj/PawnMove.o obj/KingMove.o obj/KnightMove.o obj/PlusMove.o obj/CrossMove.o obj/Piece.o obj/Board.o obj/View.o obj/NcLog.o obj/NcView.o
 CC = g++ -Wall -g
 LIB = -lncursesw
 
@@ -29,14 +29,14 @@ obj/Pos.o: Pos.cc Pos.h defs.h
 obj/Piece.o: Piece.cc Piece.h NcLog.h Pos.h defs.h
 	$(CC) -c Piece.cc -o obj/Piece.o
 
-obj/Board.o: Board.cc Board.h Pos.h Piece.h defs.h piece_behav/PawnMove.h piece_behav/OneMove.h piece_behav/KnightMove.h piece_behav/PlusMove.h piece_behav/CrossMove.h
+obj/Board.o: Board.cc Board.h Pos.h Piece.h defs.h piece_behav/PawnMove.h piece_behav/KingMove.h piece_behav/KnightMove.h piece_behav/PlusMove.h piece_behav/CrossMove.h
 	$(CC) -c Board.cc -o obj/Board.o
 
 obj/PawnMove.o: piece_behav/PawnMove.cc piece_behav/PawnMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/PawnMove.cc -o obj/PawnMove.o
 
-obj/OneMove.o: piece_behav/OneMove.cc piece_behav/OneMove.h Pos.h Piece.h defs.h MoveBehaviour.h
-	$(CC) -c piece_behav/OneMove.cc -o obj/OneMove.o
+obj/KingMove.o: piece_behav/KingMove.cc piece_behav/KingMove.h Pos.h Piece.h defs.h MoveBehaviour.h
+	$(CC) -c piece_behav/KingMove.cc -o obj/KingMove.o
 
 obj/KnightMove.o: piece_behav/KnightMove.cc piece_behav/KnightMove.h Pos.h Piece.h defs.h MoveBehaviour.h
 	$(CC) -c piece_behav/KnightMove.cc -o obj/KnightMove.o

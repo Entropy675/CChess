@@ -1,7 +1,7 @@
 #include "Board.h"
 
 #include "piece_behav/PawnMove.h"
-#include "piece_behav/OneMove.h"
+#include "piece_behav/KingMove.h"
 #include "piece_behav/KnightMove.h"
 #include "piece_behav/PlusMove.h"
 #include "piece_behav/CrossMove.h"
@@ -102,31 +102,32 @@ void Board::setStartingBoard(bool startingColor)
 			{
 				// Knight
 				gameBoard[x][y] = new Piece(Pos(x,y), 'N', (y == 0) ? !startingColor : startingColor, this);
-
+				gameBoard[x][y]->addBehav(new KnightMove());
 			}
 			else if ((x == 2 || x == MAX_ROW_COL-3) && (y == MAX_ROW_COL-1 || y == 0))
 			{
 				// Bishop
 				gameBoard[x][y] = new Piece(Pos(x,y), 'B', (y == 0) ? !startingColor : startingColor, this);
-
+				gameBoard[x][y]->addBehav(new CrossMove());
 			}
 			else if ((x == 3) && (y == MAX_ROW_COL-1 || y == 0))
 			{
 				// Queen
 				gameBoard[x][y] = new Piece(Pos(x,y), 'Q', (y == 0) ? !startingColor : startingColor, this);
-
+				gameBoard[x][y]->addBehav(new CrossMove());
+				gameBoard[x][y]->addBehav(new PlusMove());
 			}
 			else if ((x == 4) && (y == MAX_ROW_COL-1 || y == 0))
 			{
 				// King
 				gameBoard[x][y] = new Piece(Pos(x,y), 'K', (y == 0) ? !startingColor : startingColor, this);
-
+				gameBoard[x][y]->addBehav(new KingMove());
 			}
 			else if (y == 1 || y == MAX_ROW_COL-2)
 			{
 				// Pawn
 				gameBoard[x][y] = new Piece(Pos(x,y), 'P', (y == 1) ? !startingColor : startingColor, this);
-
+				gameBoard[x][y]->addBehav(new PawnMove());
 			}
 
 

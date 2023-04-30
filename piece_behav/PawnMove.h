@@ -1,7 +1,6 @@
 #ifndef PAWNMOVE_H
 #define PAWNMOVE_H
 
-#include "../defs.h"
 #include "../MoveBehaviour.h"
 
 class PawnMove : public MoveBehaviour
@@ -11,8 +10,8 @@ class PawnMove : public MoveBehaviour
 	~PawnMove();
 
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move. 
-	virtual void validMoves(std::vector<Pos>& out, const Piece* from) override;
-	virtual bool isValidMove(const Pos& to, const Piece& from) override;
+	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
+	virtual bool isValidMove(const Pos& to, Piece* from) override;
 
 	private:
 	void enPassantTarget(Piece*, int);

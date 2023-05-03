@@ -8,10 +8,10 @@
 
 #include "Pos.h"
 #include "Board.h"
-//#include "MoveBehaviour.h" this is always used as a ptr so it can all be linked
-//#include "piece_behav/PawnMove.h"
 class MoveBehaviour;
 class PawnMove;
+//#include "MoveBehaviour.h" this is always used as a ptr so it can all be linked
+//#include "piece_behav/PawnMove.h"
 
 /*
 ** Piece
@@ -22,6 +22,8 @@ class PawnMove;
 */
 class Piece
 {
+	friend std::ostream& operator<<(std::ostream&, const Piece&);
+	
 	public:
 	Piece(Pos p, char c = '0', bool w = false, Board* g = nullptr);
 
@@ -30,12 +32,15 @@ class Piece
 	void validMoves(std::vector<Pos>& p);
 	bool move(const Pos);
 
-	Pos getPos() const;
-	char getCharacter() const;
 	bool isWhite() const;
 	bool isDead() const;
 	bool hasMoved() const;
+	
 	void die();
+	
+	std::string toString() const;
+	Pos getPos() const;
+	char getCharacter() const;
 	Board* getBoard() const;
 	
 	PawnMove* getPawnBehaviour() const;

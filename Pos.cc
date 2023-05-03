@@ -1,7 +1,7 @@
 #include "defs.h"
 #include "Pos.h"
 
-Pos::Pos(const int ix, const int iy)
+Pos::Pos(const int ix, const int iy) : x(-1), y(-1)
 {
 	set(ix, iy);
 }
@@ -29,7 +29,7 @@ int Pos::set(const int ix, const int iy)
 
 std::ostream& operator<<(std::ostream& o, const Pos& p)
 {
-	o << "(" << p.x << "," << p.y << ")";
+	o << p.toString();
 	return o;
 }
 
@@ -46,6 +46,15 @@ int& Pos::operator[](int i)
 		return x;
 	if(i == 1)
 		return y; // sorry, but the exception is needed. Cannot return value.
+	throw std::out_of_range("Index out of range in Pos::operator[]. Only 0 or 1 allowed.");
+}
+
+int Pos::operator[](int i) const
+{
+	if(i == 0)
+		return x;
+	if(i == 1)
+		return y; 
 	throw std::out_of_range("Index out of range in Pos::operator[]. Only 0 or 1 allowed.");
 }
 
@@ -78,6 +87,11 @@ int Pos::getX() const
 int Pos::getY() const
 {
 	return y;
+}
+
+std::string Pos::toString() const
+{
+	return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
 }
 
 bool Pos::operator==(const Pos& p) const

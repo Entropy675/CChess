@@ -1,5 +1,10 @@
 #include "NcView.h"
 
+/*
+** NcView
+** Ncurses based implementation of the View class. This is the main version
+** used for debugging, as per the use of the NcLog class 
+*/
 NcView::NcView(Board* g) : View(g)
 {
 	initNcurses();

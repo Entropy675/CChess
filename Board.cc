@@ -63,7 +63,9 @@ void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 		return;
 
 	NcLog log(1); // basic log level
-
+	
+	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
+	
 	if(getPiece(a)->move(b))
 	{
 		if(gameBoard[b.getX()][b.getY()] != nullptr)

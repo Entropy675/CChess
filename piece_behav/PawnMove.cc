@@ -25,8 +25,9 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 
 		capturableViaEP = nullptr;
 		turnToEP = -1;
+		a.flush();
 	}
-
+	
 	a.append("---> MOVING PWN (EPcheck)\n", 1);
 	if(capturableViaEP != nullptr)
 	{
@@ -54,10 +55,11 @@ void PawnMove::enPassantTarget(Piece* p, int tep)
 	turnToEP = tep;
 }
 
+
+// not gonna lie, this is some sus code, TODO: refactor when you have time using new Pos funcs
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
 	NcLog a(2); // requires >=2 global log level, disables local logs <2
-
 	int dircheck = from->isWhite() ? -1 : 1;
 
 	// forward moves (2 and 1 squares) as well as EnPassant logic
@@ -85,6 +87,7 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 		}
 	}
 
+	
 	// piece capture (diagonal)
 	if(from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
@@ -92,10 +95,6 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
 	
-	// This addition to the list is unnecessary but helpful for diagnostics and has minimal impact on efficiency, so it will be left in.
-	if(capturableViaEP != nullptr)
-		p.push_back(Pos(capturableViaEP->getPos().getX(), capturableViaEP->getPos().getY() + dircheck));
-
     a.append("VArr " + std::to_string(p.size()) + ":", 2);
 
     for (auto &x : p)

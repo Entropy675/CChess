@@ -12,14 +12,28 @@ Piece::~Piece()
 		delete movebehavArr[i];
 }
 
+std::string Piece::toString() const
+{
+	std::string r = getCharacter() + ": " + getPos().toString() + ", is ";
+	if(!dead)
+		r += "not ";
+	r += "dead.";
+	return r;
+}
+
+std::ostream& operator<<(std::ostream& o, const Piece& p)
+{
+	o << p.toString();
+	return o;
+}
+
 bool Piece::move(Pos cPos)
 {
-	std::vector<Pos> p;
+	NcLog a(1);
+	std::vector<Pos> p; 
 	
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		movebehavArr[i]->validMoves(p, this);
-	
-	NcLog a(1);
 	
 	bool isValid = false;
 	

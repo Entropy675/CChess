@@ -21,27 +21,30 @@ class Board
 	~Board();
 
 	void setStartingBoard(bool flag);
-	void movePiece(Pos, Pos); // move from a to b if valid on this piece
+	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
 	void clearPiece(Pos);
 
 	bool isWhiteTurn() const;
 	int getTurn() const;
 	Piece* getPiece(Pos) const;
-	// TODO: overload [] and [][] for the board interface
+	bool registerPromotion(std::string&);
+	
+	// TODO: overload [] and/or [][] for the board interface
 	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
 
 	private:
+	char promotionMatchChar(std::string&);
+
 	std::vector<Piece*>* whitePieces;
 	std::vector<Piece*>* blackPieces;
 
+	Piece* promotePiece; // last piece moved
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
-	bool refreshEPPawns;
 	bool whiteTurn;
 	int turnCount;
 };
-
 
 
 #endif

@@ -2,6 +2,7 @@
 #define PIECE_H
 
 #include <vector>
+#include <string>
 
 #include "defs.h"
 #include "NcLog.h"
@@ -30,7 +31,7 @@ class Piece
 	~Piece();
 	bool isValidMove(const Pos p);
 	void validMoves(std::vector<Pos>& p);
-	bool move(const Pos);
+	ChessStatus move(const Pos);
 
 	bool isWhite() const;
 	bool isDead() const;
@@ -41,12 +42,15 @@ class Piece
 	std::string toString() const;
 	Pos getPos() const;
 	char getCharacter() const;
+	void promote(const char);
 	Board* getBoard() const;
 	
 	PawnMove* getPawnBehaviour() const;
 	void addBehav(MoveBehaviour*);
 
 	protected:
+	void clearAllBehavs();
+	
 	Pos pos;
 
 	bool moved;

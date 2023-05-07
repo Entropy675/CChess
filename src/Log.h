@@ -4,10 +4,6 @@
 #include <string>
 #include <vector>
 
-
-
-#include <ncurses.h>
-
 // set higher for more logs, 1 means basic logs, >1 is more specific. 0 = no logs.
 #define LOG_LEVEL		1  
 /*
@@ -19,11 +15,11 @@
 */
 
 
-class NcLog
+class Log
 {
 	public:
-	NcLog(int locallog = 1);
-	~NcLog();
+	Log(int locallog = 1);
+	virtual ~Log();
 	
 	/*
 	// Append and logStr require a log level, which is the level at which you want the message to show up.
@@ -33,25 +29,20 @@ class NcLog
 	*/
 	
 	// logs in a new unique popup, for any message input
-	void logStr(std::string, int ll = 1); 
+	virtual void logStr(std::string, int ll = 1) = 0;  
 	
 	// set the local objects log level. Default is 1.
-	void setLogLevel(int);
+	virtual void setLogLevel(int) = 0;
 	
 	// append() allows you to build up a log message. Only appends if the log level matches (adds new line at end).
 	// flush() writes all logs saved up to the screen.
-	void append(std::string in, int ll = 1);
-	void flush();
+	virtual void append(std::string in, int ll = 1) = 0;
+	virtual void flush() = 0;
 	
 	private:
-	// Private function to log the message and clear the internal message buffer.
-	// Should not ever be called directly by users of the class.
-	void logStrP(std::string);
-	
 	int logLevelLocal;
 	static int logLevel;
 	static std::string message;
-	WINDOW* pwin;
 };
 
 #endif

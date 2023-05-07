@@ -19,8 +19,10 @@ class NcView : public View
 	virtual void update() override;
 	virtual void toggleSize() override; // large/small
 	virtual void userInput(std::string&) override;
-	virtual void printAt(int x, int y, const std::string& s) const override;
+	virtual void print(const std::string& s) override;
 
+	void printAt(int x, int y, const std::string& s) const;
+	
 	private:
 	void initNcurses();
 	void cleanupNcurses();
@@ -38,6 +40,9 @@ class NcView : public View
 	// line characters for drawing board
 	cchar_t li;
 	cchar_t ld;
+	
+	const int baseWriteHead;
+	int writeHead;
 };
 
 

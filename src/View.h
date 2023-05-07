@@ -18,7 +18,7 @@ class View
 	virtual void update() = 0;
 	virtual void toggleSize() = 0; // large/small
 	virtual void userInput(std::string&) = 0;
-	virtual void printAt(int x, int y, const std::string& s) const = 0;
+	virtual void print(const std::string& s) = 0; // we gonna leave this non-const for compatability :(
 
 	protected:
 	bool largeBoard = false;

@@ -5,7 +5,7 @@
 ** Ncurses based implementation of the View class. This is the main version
 ** used for debugging, as per the use of the NcLog class 
 */
-NcView::NcView(Board* g) : View(g)
+NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead)
 {
 	initNcurses();
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
@@ -88,14 +88,21 @@ void NcView::update()
 	drawBoard();
 	drawPieces();
 	drawPieceBar();
+	writeHead = baseWriteHead;
 	
 	moveToInputPos();
+	refresh();
 }
 
 void NcView::printAt(int x, int y, const std::string& s) const
 {
 	mvprintw(x, y, "%s", s.c_str());
 	moveToInputPos();
+}
+
+void NcView::print(const std::string& s)
+{
+	printAt(writeHead++, 0, s);
 }
 
 void NcView::moveToInputPos() const

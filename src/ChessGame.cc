@@ -19,10 +19,21 @@ void ChessGame::startGame()
 	game->setStartingBoard(true);
 	view->update();
 
-	view->printAt(20, 0, "Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
-	view->printAt(21, 0, "Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
+	view->print("Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
+	view->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
 
 	bool redraw;
+	/*
+	game->movePiece(Pos(3, 6), Pos(3, 4));
+	game->movePiece(Pos(4, 1), Pos(4, 3));
+	game->movePiece(Pos(3, 4), Pos(4, 3));
+	game->movePiece(Pos(0, 1), Pos(0, 2));
+	game->movePiece(Pos(4, 3), Pos(4, 2));
+	game->movePiece(Pos(0, 2), Pos(0, 3));
+	game->movePiece(Pos(4, 2), Pos(4, 1));
+	game->movePiece(Pos(0, 3), Pos(0, 4));
+	*/
+
 
 	while(true)
 	{
@@ -39,6 +50,7 @@ void ChessGame::startGame()
 		// could also support "c#" where only one valid move exists (this is cringe but completely doable)
 
 		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex
+		ChessStatus promotionAsk = ChessStatus::FAIL;
 
 		if(regex_match(uinp, pattern))
 		{
@@ -51,7 +63,7 @@ void ChessGame::startGame()
 			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
 
-			game->movePiece(p1, p2); // has access to board, has access to both pieces
+			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
 		}
 
 		regex pattern2("[a-h][1-8]"); // lets just use regex
@@ -63,20 +75,39 @@ void ChessGame::startGame()
 		}
 
 		if(uinp == string("tg"))
-		{
 			view->toggleSize();
-			refresh();
-		}
 
 		else if(uinp == string("exit"))
 			break;
+		
+
+		if(promotionAsk == ChessStatus::PROMOTE)
+		{
+			bool validInput = false;
+			while(!validInput)
+			{
+				uinp = "";
+				
+				view->update();
+				view->print("Pawn can be promoted! Input promotion (Q, N, R, B). ");
+				view->userInput(uinp);
+				
+				validInput = game->registerPromotion(uinp);
+				
+				NcLog log(1);
+				log.append("Checking promotion... : ");
+				if(validInput)
+					log.append("Valid!");
+				else
+					log.append("Invalid :(");
+				log.flush();
+			}
+		}
+
 
 		if(redraw)
-		{
 			view->update();
-			refresh();
-		}
 	}
 
-	refresh();
+	view->update();
 }

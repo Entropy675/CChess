@@ -1,4 +1,5 @@
 #include "Board.h"
+#include <cctype>
 
 #include "piece_behav/PawnMove.h"
 #include "piece_behav/KingMove.h"
@@ -7,7 +8,7 @@
 #include "piece_behav/CrossMove.h"
 
 
-Board::Board() : refreshEPPawns(false), turnCount(0)
+Board::Board() : promotePiece(nullptr), turnCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -56,29 +57,100 @@ std::vector<Piece*>* Board::getBlackPieces() const
 	return blackPieces;
 }
 
-void Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
+bool Board::registerPromotion(std::string& s)
+{
+	
+	char input = promotionMatchChar(s);
+	
+	// {R, N, B, Q, P} -> {Rook, Knight, Bishop, Queen, Pawn}
+	if(input == '\0' || promotePiece == nullptr)
+		return false;
+	
+	switch(std::tolower(input))
+	{
+		case 'r':
+			promotePiece->promote('r');
+			break;
+		case 'n':
+			promotePiece->promote('n');
+			break;
+		case 'b':
+			promotePiece->promote('b');
+			break;
+		case 'q':
+			promotePiece->promote('q');
+			break;	
+		default:
+			return false;
+	}
+	
+	promotePiece = nullptr;
+	whiteTurn = !whiteTurn;
+	turnCount++;
+	return true;
+}
+
+char Board::promotionMatchChar(std::string& s)
+{
+	const char* charArr = "rnbq"; // cant promote to pawn or king
+	char temp = '\0';
+	
+	NcLog log(1);
+	for(long unsigned int i = 0; i < sizeof(charArr); i++) // sizeof gives byte size, chars are all 1 byte though
+	{
+		if(std::tolower(s[0]) == std::tolower(charArr[i]))
+		{
+			temp = charArr[i];
+			break;
+		}
+	}
+	std::string outstring = "promotionMatchChar? ";
+	outstring += temp;
+	log.append(outstring);
+	log.flush();
+	
+	return temp;
+}
+
+ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
-		return;
+		return ChessStatus::FAIL;
 
 	NcLog log(1); // basic log level
 	
 	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
 	
-	if(getPiece(a)->move(b))
+	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
+		
+	if(returnChessStatus == ChessStatus::FAIL)
+		log.append("Fail");
+	if(returnChessStatus == ChessStatus::PROMOTE)
+		log.append("Promote");
+	if(returnChessStatus == ChessStatus::SUCCESS)
+		log.append("Success");
+		
+	promotePiece = getPiece(a); // keeps track of previous piece moved, for promotion
+	
+	if(returnChessStatus != ChessStatus::FAIL) // FAIL is 0th in enum
 	{
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 			gameBoard[b.getX()][b.getY()]->die();
 
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
-		whiteTurn = !whiteTurn;
-		turnCount++;
-		log.append("tc: " + std::to_string(turnCount));
+		
+		if(returnChessStatus != ChessStatus::PROMOTE)
+		{
+			whiteTurn = !whiteTurn;
+			turnCount++;
+			returnChessStatus = ChessStatus::SUCCESS;
+		}
 	}
 
 	log.flush(); // log all movement comments to screen.
+	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }
 
 void Board::setStartingBoard(bool startingColor)

@@ -10,6 +10,12 @@
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32
 
+enum class ChessStatus {
+	FAIL,
+	SUCCESS,
+	PROMOTE
+};
+
 
 class ChessGame;
 

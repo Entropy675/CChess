@@ -37,10 +37,13 @@ class Piece
 	bool isDead() const;
 	bool hasMoved() const;
 	
+	void epActivate();
 	void die();
 	
+	std::string getBoardPos() const;
 	std::string toString() const;
 	Pos getPos() const;
+	char toFENChar() const;
 	char getCharacter() const;
 	void promote(const char);
 	Board* getBoard() const;

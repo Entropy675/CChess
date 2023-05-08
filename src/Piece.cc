@@ -5,6 +5,8 @@
 #include "piece_behav/PlusMove.h"
 #include "piece_behav/KnightMove.h"
 
+#include <cctype>
+
 Piece::Piece(Pos p, char c, bool w, Board* g) 
 	: pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
 
@@ -13,6 +15,13 @@ Piece::~Piece()
 {
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		delete movebehavArr[i];
+}
+
+std::string Piece::getBoardPos() const
+{
+	std::string out = "" + "abcdefgh"[pos.getX()]; // Pos class can only hold values between 0-7, so no mem issues!
+	out += std::to_string(pos.getY() + 1);
+	return out; // pos string
 }
 
 std::string Piece::toString() const
@@ -28,6 +37,18 @@ std::ostream& operator<<(std::ostream& o, const Piece& p)
 {
 	o << p.toString();
 	return o;
+}
+
+void Piece::epActivate()
+{
+	game->epActivate();
+}
+
+char Piece::toFENChar() const // all chars are stored in uppercase
+{
+	if(white)
+		return chr;
+	return std::tolower(chr);
 }
 
 void Piece::promote(const char c)
@@ -68,11 +89,14 @@ void Piece::clearAllBehavs()
 	
 ChessStatus Piece::move(Pos cPos)
 {
-	NcLog a(1);
+	NcLog log(1);
 	std::vector<Pos> p; 
 	
+	game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
+	log.append("EP bool is deactivated, weather used or not.");
+	
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		movebehavArr[i]->validMoves(p, this);
+		movebehavArr[i]->validMoves(p, this); // sets EP check
 	
 	bool isValid = false;
 	ChessStatus returnChessStatus = ChessStatus::FAIL;
@@ -82,15 +106,18 @@ ChessStatus Piece::move(Pos cPos)
 	{
 		if(pm->enPassantCheckAct(cPos, *this)) // Act refers to instantly killing enpassant target when true
 		{
-			NcLog hmm(1);
-			hmm.append("EPCA active");
-			hmm.flush();
 			isValid = true;
-			returnChessStatus = ChessStatus::SUCCESS;
+			returnChessStatus = ChessStatus::PAWNMOVE;
 		}
-		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0) //
-			returnChessStatus = ChessStatus::PROMOTE;
+		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
+			returnChessStatus = ChessStatus::PROMOTE; // assume its a PAWNMOVE (since only ones that promote)
 	}
+	log.append("EP bool: set ");
+	if(game->isEnpassantOnBoard())
+		log.append("TRUE!");
+	else
+		log.append("FALSE!");
+	log.append("\n");
 	
 	if(!isValid)
 	{
@@ -100,24 +127,20 @@ ChessStatus Piece::move(Pos cPos)
 			{
 				isValid = true;
 				if(returnChessStatus == ChessStatus::FAIL) // ensures that PROMOTE stays the same
-				{
 					returnChessStatus = ChessStatus::SUCCESS;
-				}
 				break;
 			}
 		}
 	}
 		
-	a.append("Valid: " + std::to_string(isValid) + "\n");
-	a.append("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
+	log.append("Valid: " + std::to_string(isValid) + "\n");
+	log.append("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
 	for(long unsigned int i = 0; i < p.size(); i++)
-	{
-		a.append(p[i].toString());
-	}
+		log.append(p[i].toString());
 	
 	if(isValid) // if isValid was never found, we don't move
 	{
-		a.append(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
+		log.append(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
 		if(!moved)
 			moved = true;
 		pos = cPos; 

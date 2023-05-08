@@ -15,9 +15,8 @@ PawnMove::~PawnMove()
 // responsibility to move this pawn to the position and update values (like has moved etc) as per normal.
 bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 {
-	NcLog a(3); // requires 2 global log level
+	NcLog a(3); // requires 3 global log level
 
-	//int dircheck = white ? -1 : 1;
 	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
 	if(capturableViaEP != nullptr && turnToEP != target.getBoard()->getTurn())
 	{
@@ -31,10 +30,10 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 	a.append("---> MOVING PWN (EPcheck)\n", 1);
 	if(capturableViaEP != nullptr)
 	{
-		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " "  + std::to_string(p.getY()), 3);
+		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " " + std::to_string(p.getY()), 3);
 		a.append("PIECEMOV: " + std::to_string(capturableViaEP->getPos().getX()) + " " + std::to_string(capturableViaEP->getPos().getY()) + "\n", 3);
 
-		if((p.getY() == capturableViaEP->getPos().getY() - 1 || p.getY() == capturableViaEP->getPos().getY() + 1) && p.getX() == capturableViaEP->getPos().getX())
+		if(p.getY() == capturableViaEP->getPos().getY() + (target.isWhite() ? -1 : 1) && p.getX() == capturableViaEP->getPos().getX())
 		{
 			a.append("pass" + std::to_string(capturableViaEP->getPos().getY()), 3);
 			a.append(" ==ENPASSANT== ---*^\\> MATCH: " + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + "\n", 1);
@@ -48,11 +47,17 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 
 	return false;
 }
+
+const Piece& PawnMove::getEnPassantTarget() const
+{
+	return *capturableViaEP;
+}
 	
 void PawnMove::enPassantTarget(Piece* p, int tep)
 {
 	capturableViaEP = p;
 	turnToEP = tep;
+	p->epActivate();
 }
 
 
@@ -74,14 +79,14 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 			if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2)) != nullptr)
 			{
 				PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
-				if (pm != nullptr)
+				if (pm != nullptr && from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
 					pm->enPassantTarget(from, from->getBoard()->getTurn() + 1);
 			}
 			
 			if(from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2)) != nullptr)
 			{
 				PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
-				if (pm != nullptr)
+				if (pm != nullptr&& from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
 					pm->enPassantTarget(from, from->getBoard()->getTurn() + 1);
 			}
 		}
@@ -96,10 +101,8 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 		p.push_back(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
 	
     a.append("VArr " + std::to_string(p.size()) + ":", 2);
-
     for (auto &x : p)
         a.append("[" + std::to_string(x.getX()) + "," + std::to_string(x.getY()) + "],", 2);
-
     a.append(" trn: " + std::to_string(from->getBoard()->getTurn()), 1);
 }
 

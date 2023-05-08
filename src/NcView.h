@@ -20,10 +20,13 @@ class NcView : public View
 	virtual void toggleSize() override; // large/small
 	virtual void userInput(std::string&) override;
 	virtual void print(const std::string& s) override;
-
+	virtual void log(std::string) override;
+	
 	void printAt(int x, int y, const std::string& s) const;
 	
 	private:
+	void logStrP(std::string);
+	
 	void initNcurses();
 	void cleanupNcurses();
 	void moveToInputPos() const;
@@ -41,6 +44,7 @@ class NcView : public View
 	cchar_t li;
 	cchar_t ld;
 	
+	WINDOW* logwin;
 	const int baseWriteHead;
 	int writeHead;
 };

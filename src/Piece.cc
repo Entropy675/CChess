@@ -89,7 +89,7 @@ void Piece::clearAllBehavs()
 	
 ChessStatus Piece::move(Pos cPos)
 {
-	NcLog log(1);
+	Log log(1);
 	std::vector<Pos> p; 
 	
 	game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
@@ -112,6 +112,7 @@ ChessStatus Piece::move(Pos cPos)
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // assume its a PAWNMOVE (since only ones that promote)
 	}
+	log.setLogLevel(2);
 	log.append("EP bool: set ");
 	if(game->isEnpassantOnBoard())
 		log.append("TRUE!");
@@ -132,7 +133,8 @@ ChessStatus Piece::move(Pos cPos)
 			}
 		}
 	}
-		
+	
+	log.setLogLevel(1);
 	log.append("Valid: " + std::to_string(isValid) + "\n");
 	log.append("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
 	for(long unsigned int i = 0; i < p.size(); i++)

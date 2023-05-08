@@ -5,7 +5,7 @@
 #include <string>
 
 #include "defs.h"
-#include "NcLog.h"
+#include "Log.h"
 
 #include "Pos.h"
 #include "Board.h"
@@ -53,6 +53,7 @@ class Piece
 
 	protected:
 	void clearAllBehavs();
+	bool enPassantActive;
 	
 	Pos pos;
 

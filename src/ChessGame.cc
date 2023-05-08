@@ -6,6 +6,7 @@ ChessGame::ChessGame()
 {
 	game = new Board();
 	view = new NcView(game);
+	Log::addView(view);
 }
 
 ChessGame::~ChessGame()
@@ -114,7 +115,7 @@ void ChessGame::startGame()
 				
 				validInput = game->registerPromotion(uinp);
 				
-				NcLog log(1);
+				Log log(1);
 				log.append("Checking promotion... : ");
 				if(validInput)
 					log.append("Valid!");

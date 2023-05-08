@@ -2,8 +2,7 @@
 
 /*
 ** NcView
-** Ncurses based implementation of the View class. This is the main version
-** used for debugging, as per the use of the NcLog class 
+** Ncurses based implementation of the View class. This is the main dev version
 */
 NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead)
 {
@@ -21,10 +20,13 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead)
 		sqSize.set(2, 2); // more tight fitting board
 		offset.set(1, 1); 
 	}
+	
+	logwin = newwin(15, 100, 1, 20); // for logging
 }
 
 NcView::~NcView()
 {
+	delwin(logwin);
 	cleanupNcurses();
 }
 
@@ -92,6 +94,20 @@ void NcView::update()
 	
 	moveToInputPos();
 	refresh();
+}
+
+void NcView::log(std::string s)
+{
+	std::size_t pos = 0;
+	while ((pos = s.find('\n', pos)) != std::string::npos) {
+		s.replace(pos, 1, "\n  ");
+		pos += 3; // move past the newly inserted characters
+	}
+	
+	mvwprintw(logwin, 3, 2, "%s", s.c_str());
+	box(logwin, 0, 0);
+	wrefresh(logwin);
+	getch();
 }
 
 void NcView::printAt(int x, int y, const std::string& s) const

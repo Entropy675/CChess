@@ -23,7 +23,7 @@ class ChessGame;
 class Board;
 class NcView;
 
-class NcLog;
+class Log;
 class Pos;
 
 class Piece;

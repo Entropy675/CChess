@@ -28,10 +28,10 @@ class Board
 	bool isWhiteTurn() const;
 	int getTurn() const;
 	Piece* getPiece(Pos) const;
-	std::string getEnPassantBoardPos() const;
 
 	void epActivate();
 	void epDeactivate();
+	std::string getEnPassantBoardPos() const;
 	bool isEnpassantOnBoard() const;
 	
 	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece

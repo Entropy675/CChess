@@ -210,7 +210,7 @@ char Board::promotionMatchChar(std::string& s)
 	const char* charArr = "rnbq"; // cant promote to pawn or king
 	char temp = '\0';
 	
-	NcLog log(1);
+	Log log(1);
 	for(long unsigned int i = 0; i < sizeof(charArr); i++) // sizeof gives byte size, chars are all 1 byte though
 	{
 		if(std::tolower(s[0]) == std::tolower(charArr[i]))
@@ -233,7 +233,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return ChessStatus::FAIL;
 
-	NcLog log(1); // basic log level
+	Log log(1); // basic log level
 	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
 	log.append("FENs: " + toFENString() + "\n");
 	

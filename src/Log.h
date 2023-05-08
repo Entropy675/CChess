@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
+class View;
 
-// set higher for more logs, 1 means basic logs, >1 is more specific. 0 = no logs.
 #define LOG_LEVEL		2
 /*
 // BASIC LOG_LEVEL USAGE (for this project)
@@ -20,7 +20,7 @@ class Log
 {
 	public:
 	Log(int = 1);
-	virtual ~Log();
+	~Log();
 	
 	/*
 	// Append and logStr are based off of the global LOG_LEVEL, which is the level at which you want the message to show up.
@@ -32,18 +32,26 @@ class Log
 	// WARNING: Don't think you can log inside of const functions, they are supposed to be side-effect free, logging cannot be so.
 	*/
 	
-	virtual void logStr(std::string) = 0; // in case you just want to log something straight up, no shenanigans, not recommended.
+	void logStr(std::string); // in case you just want to log something straight up, no shenanigans, not recommended.
 	
 	// setLogLevel() set the local objects log level. Default is 1, can be set on creation of object (so you don't really need this often).
 	// [==>   append() allows you to build up a log message. Only appends if the log level matches (adds new line at end).
 	// [==>   flush() writes all logs saved up to the screen.
 	// *----- these two functions are the key to this class.
-	virtual void setLogLevel(int = 1) = 0;
-	virtual void append(std::string in) = 0;
-	virtual void flush() = 0;
+	void setLogLevel(int = 1);
+	void append(std::string in);
+	void appendLine(std::string in);
+	void flush();
+	
+	static void addView(View*);
+	static View* delViewById(int);
 	
 	private:
 	int logLevelLocal;
+	static std::vector<View*> views; 
+	// list of views, TODO: Optimize storage by ensuring added views are in order
+	// then the delViewById can be done much faster, this is not significant right now since we don't realllllllly 
+	// have concerns of too many people.... and if we did then that would probably be a different "problem"
 	static std::string message;
 };
 

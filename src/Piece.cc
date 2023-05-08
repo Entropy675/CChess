@@ -112,12 +112,12 @@ ChessStatus Piece::move(Pos cPos)
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // assume its a PAWNMOVE (since only ones that promote)
 	}
-	log.append("EP bool: set ");
+	log.append("EP bool: set ", 2);
 	if(game->isEnpassantOnBoard())
-		log.append("TRUE!");
+		log.append("TRUE!", 2);
 	else
-		log.append("FALSE!");
-	log.append("\n");
+		log.append("FALSE!", 2);
+	log.append("\n", 2);
 	
 	if(!isValid)
 	{

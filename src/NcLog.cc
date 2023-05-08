@@ -1,7 +1,6 @@
 #include "NcLog.h"
 
 std::string NcLog::message = "";
-int NcLog::logLevel = LOG_LEVEL;
 
 NcLog::NcLog(int locallog) : logLevelLocal(locallog)
 {
@@ -14,9 +13,9 @@ NcLog::~NcLog()
     endwin();
 }
 
-void NcLog::append(std::string in, int ll)
+void NcLog::append(std::string in) // ll can be used to change each messages log leval (default 1)
 {
-	if(logLevel < ll || logLevelLocal < ll)
+	if(logLevelLocal > LOG_LEVEL) // if the local log object is higher then the global, don't log
 		return;
 
 	if(message != "")
@@ -41,25 +40,25 @@ void NcLog::flush()
 	message = "";
 }
 
-void NcLog::logStr(std::string s, int ll)
+void NcLog::logStr(std::string s)
 {
-	if(logLevel < ll)
+	if(logLevelLocal > LOG_LEVEL)
 		return;
 
-  box(pwin, 0, 0);
-  mvwprintw(pwin, 2, 1, "%s", s.c_str());
-  wrefresh(pwin);
-  getch();
+	box(pwin, 0, 0);
+	mvwprintw(pwin, 2, 1, "%s", s.c_str());
+	wrefresh(pwin);
+	getch();
 }
 
 void NcLog::logStrP(std::string s)
 {
-  WINDOW *popup = newwin(15, s.length()+4, 1, 20);
-  mvwprintw(popup, 2, 2, "%s", s.c_str());
-  box(popup, 0, 0);
-  wrefresh(popup);
-  getch();
+	WINDOW *popup = newwin(15, s.length()+4, 1, 20);
+	mvwprintw(popup, 2, 2, "%s", s.c_str());
+	box(popup, 0, 0);
+	wrefresh(popup);
+	getch();
 
-  delwin(popup);
-  endwin();
+	delwin(popup);
+	endwin();
 }

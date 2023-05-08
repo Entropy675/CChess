@@ -17,6 +17,8 @@ class PawnMove : public MoveBehaviour
 
 	private:
 	void enPassantTarget(Piece*, int);
+	void enPassantValidAct(Piece*, bool);
+	
 	int turnToEP;
 	Piece* capturableViaEP;
 };

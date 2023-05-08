@@ -13,7 +13,8 @@
 enum class ChessStatus {
 	FAIL,
 	SUCCESS,
-	PROMOTE
+	PROMOTE,
+	PAWNMOVE
 };
 
 

@@ -8,7 +8,9 @@
 #include "piece_behav/CrossMove.h"
 
 
-Board::Board() : promotePiece(nullptr), turnCount(0)
+Board::Board() 
+	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
+	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -57,6 +59,94 @@ std::vector<Piece*>* Board::getBlackPieces() const
 	return blackPieces;
 }
 
+void Board::epActivate()
+{
+	enPassantActive = true;
+}
+
+void Board::epDeactivate()
+{
+	enPassantActive = false;
+}
+
+bool Board::isEnpassantOnBoard() const
+{
+	return enPassantActive;
+}
+
+std::string Board::toFENString() const
+{
+	std::string FENs = "";
+	int emptySquares = 0;
+	
+	for(int y = 0; y < MAX_ROW_COL; y++) // each row
+	{
+		for(int x = 0; x < MAX_ROW_COL; x++)
+		{
+			Piece* cPiece = getPiece(Pos(x,y));
+			if(cPiece == nullptr)
+				emptySquares++;
+			else
+			{
+				if(emptySquares > 0)
+				{
+					FENs += std::to_string(emptySquares);
+					emptySquares = 0;
+				}
+				FENs += cPiece->toFENChar();
+			}
+		}
+		
+		if(emptySquares > 0)
+		{
+            FENs += std::to_string(emptySquares);
+            emptySquares = 0;
+		}
+		
+		if(y != MAX_ROW_COL-1)
+			FENs += "/";
+	}
+	
+	
+	FENs += " ";
+	
+	if(whiteTurn)
+		FENs += "w";
+	else
+		FENs += "b";
+	
+	FENs += " ";
+	
+	if(whiteCastleKS)
+		FENs += "K";
+	else
+		FENs += "-";
+	if(whiteCastleQS)
+		FENs += "Q";
+	else
+		FENs += "-";
+	if(blackCastleKS)
+		FENs += "k";
+	else
+		FENs += "-";
+	if(blackCastleQS)
+		FENs += "q";
+	else
+		FENs += "-";
+	
+	FENs += " ";
+	
+	// add position of enpassant pawn
+	// check if ep bool is active,
+	
+	FENs += " ";
+	FENs += std::to_string(halfmoveCount);
+	FENs += " ";
+	FENs += std::to_string(halfmoveCount);
+	
+	return FENs;
+}
+	
 bool Board::registerPromotion(std::string& s)
 {
 	
@@ -119,11 +209,10 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		return ChessStatus::FAIL;
 
 	NcLog log(1); // basic log level
-	
 	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
-		
+
 	if(returnChessStatus == ChessStatus::FAIL)
 		log.append("Fail");
 	if(returnChessStatus == ChessStatus::PROMOTE)
@@ -133,11 +222,19 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		
 	promotePiece = getPiece(a); // keeps track of previous piece moved, for promotion
 	
+	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
+		halfmoveCount = 0;
+	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is 0th in enum
 	{
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
+		{
 			gameBoard[b.getX()][b.getY()]->die();
-
+			halfmoveCount = 0;
+		}
+		else
+			halfmoveCount++;
+		
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
 		

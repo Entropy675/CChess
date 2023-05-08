@@ -28,8 +28,8 @@ class Board
 	bool isWhiteTurn() const;
 	int getTurn() const;
 	Piece* getPiece(Pos) const;
-	
-	
+	std::string getEnPassantBoardPos() const;
+
 	void epActivate();
 	void epDeactivate();
 	bool isEnpassantOnBoard() const;

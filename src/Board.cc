@@ -10,7 +10,7 @@
 
 Board::Board() 
 	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
-	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCount(0)
+	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCount(1)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -135,16 +135,41 @@ std::string Board::toFENString() const
 		FENs += "-";
 	
 	FENs += " ";
-	
-	// add position of enpassant pawn
-	// check if ep bool is active,
+	FENs += getEnPassantBoardPos();
 	
 	FENs += " ";
 	FENs += std::to_string(halfmoveCount);
 	FENs += " ";
-	FENs += std::to_string(halfmoveCount);
+	FENs += std::to_string(turnCount);
 	
 	return FENs;
+}
+	
+std::string Board::getEnPassantBoardPos() const
+{
+	if(enPassantActive)
+	{		
+		for(long unsigned int i = whitePieces->size()/2; i < whitePieces->size(); i++)
+		{
+			const PawnMove* tmp = whitePieces->at(i)->getPawnBehaviour();
+			if(tmp != nullptr)
+			{
+				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				if(enPassantTarget != nullptr)
+					return enPassantTarget->getBoardPos();
+			}
+			
+			tmp = blackPieces->at(i)->getPawnBehaviour();
+			if(tmp != nullptr)
+			{
+				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				if(enPassantTarget != nullptr)
+					return enPassantTarget->getBoardPos();
+			}
+		}
+	}
+	
+	return "-";
 }
 	
 bool Board::registerPromotion(std::string& s)
@@ -210,6 +235,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 
 	NcLog log(1); // basic log level
 	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
+	log.append("FENs: " + toFENString() + "\n");
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
 

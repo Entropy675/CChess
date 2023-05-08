@@ -40,6 +40,7 @@ class Piece
 	void epActivate();
 	void die();
 	
+	std::string getBoardPos() const;
 	std::string toString() const;
 	Pos getPos() const;
 	char toFENChar() const;

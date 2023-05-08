@@ -17,6 +17,13 @@ Piece::~Piece()
 		delete movebehavArr[i];
 }
 
+std::string Piece::getBoardPos() const
+{
+	std::string out = "" + "abcdefgh"[pos.getX()]; // Pos class can only hold values between 0-7, so no mem issues!
+	out += std::to_string(pos.getY() + 1);
+	return out; // pos string
+}
+
 std::string Piece::toString() const
 {
 	std::string r = getCharacter() + ": " + getPos().toString() + ", is ";

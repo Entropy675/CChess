@@ -47,6 +47,11 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 
 	return false;
 }
+
+const Piece& PawnMove::getEnPassantTarget() const
+{
+	return *capturableViaEP;
+}
 	
 void PawnMove::enPassantTarget(Piece* p, int tep)
 {
@@ -74,14 +79,14 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 			if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2)) != nullptr)
 			{
 				PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
-				if (pm != nullptr)
+				if (pm != nullptr && from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
 					pm->enPassantTarget(from, from->getBoard()->getTurn() + 1);
 			}
 			
 			if(from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2)) != nullptr)
 			{
 				PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
-				if (pm != nullptr)
+				if (pm != nullptr&& from->getBoard()->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
 					pm->enPassantTarget(from, from->getBoard()->getTurn() + 1);
 			}
 		}

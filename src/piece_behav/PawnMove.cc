@@ -17,7 +17,6 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 {
 	NcLog a(3); // requires 3 global log level
 
-	//int dircheck = white ? -1 : 1;
 	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
 	if(capturableViaEP != nullptr && turnToEP != target.getBoard()->getTurn())
 	{
@@ -34,7 +33,7 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 		a.append("---> PASSQ1 " + std::to_string(p.getX()) + " " + std::to_string(p.getY()), 3);
 		a.append("PIECEMOV: " + std::to_string(capturableViaEP->getPos().getX()) + " " + std::to_string(capturableViaEP->getPos().getY()) + "\n", 3);
 
-		if((p.getY() == capturableViaEP->getPos().getY() - 1 || p.getY() == capturableViaEP->getPos().getY() + 1) && p.getX() == capturableViaEP->getPos().getX())
+		if(p.getY() == capturableViaEP->getPos().getY() + (target.isWhite() ? -1 : 1) && p.getX() == capturableViaEP->getPos().getX())
 		{
 			a.append("pass" + std::to_string(capturableViaEP->getPos().getY()), 3);
 			a.append(" ==ENPASSANT== ---*^\\> MATCH: " + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + "\n", 1);

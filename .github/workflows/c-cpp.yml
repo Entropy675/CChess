@@ -13,5 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Run Tests
-      uses: ./test.yml
+    - name: Build
+      run: make

@@ -137,7 +137,7 @@ ChessStatus Piece::move(Pos cPos)
 	
 	log.setLogLevel(1);
 	log.append("Valid: " + std::to_string(isValid) + "\n");
-	log.append("to Pos: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()));
+	log.append("to Pos: " + cPos.toString() + " | ");
 	for(long unsigned int i = 0; i < p.size(); i++)
 		log.append(p[i].toString());
 	

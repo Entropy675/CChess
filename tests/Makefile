@@ -4,7 +4,8 @@
 PATH2SRC = ../src/
 PATH2OBJ = ../obj/
 
-TEST_SOURCES := pawnpush2test.cc
+# include any test.cc files here, and create an appropriate .yml workflow in the .github/workflow folder
+TEST_SOURCES := pawnpush2test.cc pawnpromotiontest.cc
 TEST_TARGETS := $(patsubst %.cc,%,$(TEST_SOURCES))
 
 all: $(TEST_TARGETS)

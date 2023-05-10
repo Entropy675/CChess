@@ -1,51 +1,57 @@
-OBJ = obj/ChessGame.o obj/main.o obj/Pos.o obj/MoveBehaviour.o obj/PawnMove.o obj/KingMove.o obj/KnightMove.o obj/PlusMove.o obj/CrossMove.o obj/Piece.o obj/Board.o obj/View.o obj/Log.o obj/NcView.o
+
+PATH2SRC = src/
+PATH2OBJ = obj/
+
+OBJ = $(PATH2OBJ)ChessGame.o $(PATH2OBJ)Pos.o $(PATH2OBJ)MoveBehaviour.o $(PATH2OBJ)PawnMove.o $(PATH2OBJ)KingMove.o $(PATH2OBJ)KnightMove.o $(PATH2OBJ)PlusMove.o $(PATH2OBJ)CrossMove.o $(PATH2OBJ)Piece.o $(PATH2OBJ)Board.o $(PATH2OBJ)View.o $(PATH2OBJ)Log.o $(PATH2OBJ)NcView.o
 CC = g++ -Wall -g
 LIB = -lncursesw
 
-CChess:	$(OBJ)
-	$(CC) -o CChess $(OBJ) $(LIB)
 
-obj/ChessGame.o: src/ChessGame.cc src/ChessGame.h src/Log.h src/Board.h src/NcView.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/ChessGame.cc -o obj/ChessGame.o
+CChess:	$(OBJ) $(PATH2OBJ)main.o 
+	$(CC) -o CChess $(OBJ) $(LIB) $(PATH2OBJ)main.o 
 
-obj/main.o: src/main.cc obj/ChessGame.o
-	$(CC) -c src/main.cc -o obj/main.o
+$(PATH2OBJ)ChessGame.o: $(PATH2SRC)ChessGame.cc $(PATH2SRC)ChessGame.h $(PATH2SRC)Log.h $(PATH2SRC)Board.h $(PATH2SRC)NcView.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)ChessGame.cc -o $(PATH2OBJ)ChessGame.o
 
-obj/MoveBehaviour.o: src/MoveBehaviour.cc src/MoveBehaviour.h
-	$(CC) -c src/MoveBehaviour.cc -o obj/MoveBehaviour.o
+$(PATH2OBJ)main.o: $(PATH2SRC)main.cc $(PATH2OBJ)ChessGame.o
+	$(CC) -c $(PATH2SRC)main.cc -o $(PATH2OBJ)main.o
 
-obj/View.o:	src/View.cc src/View.h
-	$(CC) -c src/View.cc -o obj/View.o
+$(PATH2OBJ)MoveBehaviour.o: $(PATH2SRC)MoveBehaviour.cc $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)MoveBehaviour.cc -o $(PATH2OBJ)MoveBehaviour.o
 
-obj/Log.o: src/Log.cc src/Log.h
-	$(CC) -c src/Log.cc -o obj/Log.o
+$(PATH2OBJ)View.o:	$(PATH2SRC)View.cc $(PATH2SRC)View.h
+	$(CC) -c $(PATH2SRC)View.cc -o $(PATH2OBJ)View.o
 
-obj/NcView.o: src/NcView.cc src/NcView.h src/View.h src/Board.h
-	$(CC) -c src/NcView.cc -o obj/NcView.o
+$(PATH2OBJ)Log.o: $(PATH2SRC)Log.cc $(PATH2SRC)Log.h
+	$(CC) -c $(PATH2SRC)Log.cc -o $(PATH2OBJ)Log.o
 
-obj/Pos.o: src/Pos.cc src/Pos.h src/defs.h
-	$(CC) -c src/Pos.cc -o obj/Pos.o
+$(PATH2OBJ)NcView.o: $(PATH2SRC)NcView.cc $(PATH2SRC)NcView.h $(PATH2SRC)View.h $(PATH2SRC)Board.h
+	$(CC) -c $(PATH2SRC)NcView.cc -o $(PATH2OBJ)NcView.o
 
-obj/Piece.o: src/Piece.cc src/Piece.h src/Log.h src/Pos.h src/defs.h
-	$(CC) -c src/Piece.cc -o obj/Piece.o
+$(PATH2OBJ)Pos.o: $(PATH2SRC)Pos.cc $(PATH2SRC)Pos.h $(PATH2SRC)defs.h
+	$(CC) -c $(PATH2SRC)Pos.cc -o $(PATH2OBJ)Pos.o
 
-obj/Board.o: src/Board.cc src/Board.h src/Pos.h src/Piece.h src/defs.h src/piece_behav/PawnMove.h src/piece_behav/KingMove.h src/piece_behav/KnightMove.h src/piece_behav/PlusMove.h src/piece_behav/CrossMove.h
-	$(CC) -c src/Board.cc -o obj/Board.o
+$(PATH2OBJ)Piece.o: $(PATH2SRC)Piece.cc $(PATH2SRC)Piece.h $(PATH2SRC)Log.h $(PATH2SRC)Pos.h $(PATH2SRC)defs.h
+	$(CC) -c $(PATH2SRC)Piece.cc -o $(PATH2OBJ)Piece.o
 
-obj/PawnMove.o: src/piece_behav/PawnMove.cc src/piece_behav/PawnMove.h src/Pos.h src/Piece.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/piece_behav/PawnMove.cc -o obj/PawnMove.o
+$(PATH2OBJ)Board.o: $(PATH2SRC)Board.cc $(PATH2SRC)Board.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)piece_behav/PawnMove.h $(PATH2SRC)piece_behav/KingMove.h $(PATH2SRC)piece_behav/KnightMove.h $(PATH2SRC)piece_behav/PlusMove.h $(PATH2SRC)piece_behav/CrossMove.h
+	$(CC) -c $(PATH2SRC)Board.cc -o $(PATH2OBJ)Board.o
 
-obj/KingMove.o: src/piece_behav/KingMove.cc src/piece_behav/KingMove.h src/Pos.h src/Piece.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/piece_behav/KingMove.cc -o obj/KingMove.o
+$(PATH2OBJ)PawnMove.o: $(PATH2SRC)piece_behav/PawnMove.cc $(PATH2SRC)piece_behav/PawnMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)piece_behav/PawnMove.cc -o $(PATH2OBJ)PawnMove.o
 
-obj/KnightMove.o: src/piece_behav/KnightMove.cc src/piece_behav/KnightMove.h src/Pos.h src/Piece.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/piece_behav/KnightMove.cc -o obj/KnightMove.o
+$(PATH2OBJ)KingMove.o: $(PATH2SRC)piece_behav/KingMove.cc $(PATH2SRC)piece_behav/KingMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)piece_behav/KingMove.cc -o $(PATH2OBJ)KingMove.o
 
-obj/PlusMove.o:   src/piece_behav/PlusMove.cc src/piece_behav/PlusMove.h src/Pos.h src/Piece.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/piece_behav/PlusMove.cc -o obj/PlusMove.o
+$(PATH2OBJ)KnightMove.o: $(PATH2SRC)piece_behav/KnightMove.cc $(PATH2SRC)piece_behav/KnightMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)piece_behav/KnightMove.cc -o $(PATH2OBJ)KnightMove.o
 
-obj/CrossMove.o: src/piece_behav/CrossMove.cc src/piece_behav/CrossMove.h src/Pos.h src/Piece.h src/defs.h src/MoveBehaviour.h
-	$(CC) -c src/piece_behav/CrossMove.cc -o obj/CrossMove.o
+$(PATH2OBJ)PlusMove.o:   $(PATH2SRC)piece_behav/PlusMove.cc $(PATH2SRC)piece_behav/PlusMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)piece_behav/PlusMove.cc -o $(PATH2OBJ)PlusMove.o
+
+$(PATH2OBJ)CrossMove.o: $(PATH2SRC)piece_behav/CrossMove.cc $(PATH2SRC)piece_behav/CrossMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
+	$(CC) -c $(PATH2SRC)piece_behav/CrossMove.cc -o $(PATH2OBJ)CrossMove.o
+
 
 clean:
 		find . -type f -name '*.o' -delete

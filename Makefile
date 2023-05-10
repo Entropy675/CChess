@@ -52,7 +52,7 @@ $(PATH2OBJ)PlusMove.o:   $(PATH2SRC)piece_behav/PlusMove.cc $(PATH2SRC)piece_beh
 $(PATH2OBJ)CrossMove.o: $(PATH2SRC)piece_behav/CrossMove.cc $(PATH2SRC)piece_behav/CrossMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
 	$(CC) -c $(PATH2SRC)piece_behav/CrossMove.cc -o $(PATH2OBJ)CrossMove.o
 
-
+.PHONY: clean
 clean:
 		find . -type f -name '*.o' -delete
 		rm -f CChess

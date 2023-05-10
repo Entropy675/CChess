@@ -104,16 +104,17 @@ ChessStatus Piece::move(Pos cPos)
 	PawnMove* pm = getPawnBehaviour();
 	if(pm != nullptr)
 	{
+		returnChessStatus = ChessStatus::PAWNMOVE;
 		if(pm->enPassantCheckAct(cPos, *this)) // Act refers to instantly killing enpassant target when true
-		{
 			isValid = true;
-			returnChessStatus = ChessStatus::PAWNMOVE;
-		}
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // assume its a PAWNMOVE (since only ones that promote)
 	}
+	
+	log.append("CHESSSTATUS in PIECE: " + getChessStatusString(returnChessStatus) + "\n");
 	log.setLogLevel(2);
 	log.append("EP bool: set ");
+	
 	if(game->isEnpassantOnBoard())
 		log.append("TRUE!");
 	else
@@ -148,8 +149,7 @@ ChessStatus Piece::move(Pos cPos)
 		pos = cPos; 
 	}
 	else
-		if(returnChessStatus == ChessStatus::PROMOTE)
-			return ChessStatus::FAIL;
+		return ChessStatus::FAIL;
 	
 	return returnChessStatus;
 }

@@ -10,6 +10,8 @@
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32
 
+#include <string>
+
 enum class ChessStatus {
 	FAIL,
 	SUCCESS,
@@ -17,6 +19,19 @@ enum class ChessStatus {
 	PAWNMOVE
 };
 
+inline std::string getChessStatusString(ChessStatus stat) {
+    switch (stat) {
+        case ChessStatus::FAIL:
+            return "FAIL";
+        case ChessStatus::SUCCESS:
+            return "SUCCESS";
+        case ChessStatus::PROMOTE:
+            return "PROMOTE";
+        case ChessStatus::PAWNMOVE:
+            return "PAWNMOVE";
+    }
+    return "UNKNOWN"; // Handle unknown status gracefully
+}
 
 class ChessGame;
 

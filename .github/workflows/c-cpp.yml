@@ -15,7 +15,13 @@ jobs:
     - uses: actions/checkout@v3
     - name: make
       run: make
-#    - name: make check
-#      run: make check
-#    - name: make distcheck
-#      run: make distcheck
+    - name: Run Tests
+      run: |
+        cd tests/
+        make
+        ./test
+        exit_code=$?
+        if [ $exit_code -gt 0 ]; then
+          echo "Tests failed with exit code: $exit_code"
+          exit 1
+        fi

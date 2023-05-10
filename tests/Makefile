@@ -1,12 +1,17 @@
 -include ../Makefile
-.DEFAULT_GOAL := test
+.DEFAULT_GOAL := all
 
 PATH2SRC = ../src/
 PATH2OBJ = ../obj/
-	
-test: $(OBJ)
-	g++ -o test pawnpush2test.cc $(OBJ) $(LIB)
+
+TEST_SOURCES := pawnpush2test.cc
+TEST_TARGETS := $(patsubst %.cc,%,$(TEST_SOURCES))
+
+all: $(TEST_TARGETS)
+
+%: %.cc $(OBJ)
+	$(CC) -o $@ $< $(OBJ) $(LIB)
 
 .PHONY: clean
 clean:
-	rm -f test
+	rm -f $(TEST_TARGETS)

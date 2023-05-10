@@ -22,6 +22,7 @@ class View
 	virtual void print(const std::string&) = 0; // we gonna leave this non-const for compatability :(
 	virtual void log(std::string) = 0; // copies to avoid issues with heap alloc'd mem getting popped off, don't log HUGE things its slow
 	
+	void subscribeToGame(Board*);
 	int getId() const;
 	
 	protected:

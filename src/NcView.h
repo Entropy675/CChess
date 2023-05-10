@@ -13,7 +13,7 @@
 class NcView : public View
 {
 	public:
-	NcView(Board*); // must subscribe to a Board on creation
+	NcView(Board* = nullptr); // must subscribe to a Board on creation
 	virtual ~NcView();
 
 	virtual void update() override;

@@ -5,21 +5,30 @@
 #include <cstring>
 #include <regex>
 #include <iostream>
+#include <vector>
 
 #include "Board.h"
-#include "NcView.h"
+#include "View.h"
 #include "Log.h"
 
 class ChessGame
 {
 	public:
-	ChessGame();
+	ChessGame(View* = nullptr, View* = nullptr);
 	~ChessGame();
 
-	void startGame();
+	void startLocalNcursesGame(); // main control flow, for running directly.
+	
+	
+	// Starting to build API...
+	void addView(View*);
+	void updateAllSpectators();
+	
 
 	private:
-	View* view; // TODO: Turn this into a vector of view pointers. Change code to work with list of views.
+	View* whitePlayer;
+	View* blackPlayer;
+	std::vector<View*> otherViews;
 	Board* game;
 };
 

@@ -10,3 +10,8 @@ int View::getId() const
 {
 	return id;
 }
+
+void View::subscribeToGame(Board* g)
+{
+	game = g;
+}

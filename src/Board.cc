@@ -8,6 +8,7 @@
 #include "piece_behav/CrossMove.h"
 
 
+
 Board::Board() 
 	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
 	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCount(1)
@@ -200,8 +201,9 @@ bool Board::registerPromotion(std::string& s)
 	}
 	
 	promotePiece = nullptr;
+	if(!whiteTurn)
+		turnCount++;
 	whiteTurn = !whiteTurn;
-	turnCount++;
 	return true;
 }
 
@@ -238,40 +240,39 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	log.append("FENs: " + toFENString() + "\n");
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
-
-	if(returnChessStatus == ChessStatus::FAIL)
-		log.append("Fail");
-	if(returnChessStatus == ChessStatus::PROMOTE)
-		log.append("Promote");
-	if(returnChessStatus == ChessStatus::SUCCESS)
-		log.append("Success");
-		
+	log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
+	
 	promotePiece = getPiece(a); // keeps track of previous piece moved, for promotion
 	
 	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
 		halfmoveCount = 0;
 	
-	if(returnChessStatus != ChessStatus::FAIL) // FAIL is 0th in enum
+	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 		{
 			gameBoard[b.getX()][b.getY()]->die();
 			halfmoveCount = 0;
 		}
-		else
+		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
+		{
 			halfmoveCount++;
+			log.append("\nINCREMENTING HALFMOVE: " + getChessStatusString(returnChessStatus) + "\n");
+		}
 		
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
 		
 		if(returnChessStatus != ChessStatus::PROMOTE)
 		{
+			if(!whiteTurn)
+				turnCount++;
 			whiteTurn = !whiteTurn;
-			turnCount++;
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
 	}
 
+	
 	log.flush(); // log all movement comments to screen.
 	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }

@@ -25,11 +25,3 @@ jobs:
           echo "Tests failed with exit code: $exit_code"
           exit 1
         fi
-    - name: Update Pull Request Status
-      uses: peter-evans/create-pull-request-comment@v2
-      if: ${{ github.event_name == 'pull_request' }}
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          Test Results:
-          Status: ${{ steps.RunTests.outputs.status }}

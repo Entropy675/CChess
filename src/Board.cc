@@ -175,7 +175,7 @@ std::string Board::getEnPassantBoardPos() const
 	
 bool Board::registerPromotion(std::string& s)
 {
-	
+	// mr hacker even if you did somehow call this, if you are playing an online game it works on a consensus system - you would just be resynced to what it was before :)
 	char input = promotionMatchChar(s);
 	
 	// {R, N, B, Q, P} -> {Rook, Knight, Bishop, Queen, Pawn}

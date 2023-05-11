@@ -10,6 +10,9 @@
 #include <string>
 #include <cstring>
 
+#include <iostream>
+#include <fstream>
+
 class NcView : public View
 {
 	public:
@@ -47,6 +50,7 @@ class NcView : public View
 	WINDOW* logwin;
 	const int baseWriteHead;
 	int writeHead;
+	std::ofstream logfile;
 };
 
 

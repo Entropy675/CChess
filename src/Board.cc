@@ -11,7 +11,7 @@
 
 Board::Board() 
 	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
-	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
+	  enPassantActive(false), promotePiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -288,7 +288,7 @@ void Board::setStartingBoard(bool startingColor)
 {
 	// place pieces in their starting positions,
 	// populate the vectors corresponding to the black/white pieces.
-	whiteTurn = startingColor;
+	whitePerspective = startingColor;
 
 	for(int x = 0; x < MAX_ROW_COL; x++)
 	{

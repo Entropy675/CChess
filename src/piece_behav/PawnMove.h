@@ -16,8 +16,8 @@ class PawnMove : public MoveBehaviour
 	virtual bool isValidMove(const Pos& to, Piece* from) override;
 
 	private:
-	void enPassantTarget(Piece*, int);
-	void enPassantValidAct(Piece*, bool);
+	void EPSetTarget(Piece*, int);
+	void EPValidateTarget(Piece*, bool);
 	
 	int turnToEP;
 	Piece* capturableViaEP;

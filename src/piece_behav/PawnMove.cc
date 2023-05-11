@@ -53,7 +53,7 @@ const Piece& PawnMove::getEnPassantTarget() const
 	return *capturableViaEP;
 }
 	
-void PawnMove::enPassantTarget(Piece* p, int tep)
+void PawnMove::EPSetTarget(Piece* p, int tep)
 {
 	capturableViaEP = p;
 	turnToEP = tep;
@@ -61,7 +61,7 @@ void PawnMove::enPassantTarget(Piece* p, int tep)
 }
 
 // helper function used when calculating valid moves, sets the enPassantTarget when its valid for it to be set.
-void PawnMove::enPassantValidAct(Piece* from, bool right)
+void PawnMove::EPValidateTarget(Piece* from, bool right)
 {
 	int dircheck = from->isWhite() ? -1 : 1;
 	int leftOrRight = right ? 1 : -1;
@@ -69,7 +69,7 @@ void PawnMove::enPassantValidAct(Piece* from, bool right)
 	{
 		PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() + leftOrRight, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
 		if (pm != nullptr && from->getBoard()->getPiece(Pos(from->getPos().getX() + leftOrRight, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
-			pm->enPassantTarget(from, from->getBoard()->getMoves() + 1);
+			pm->EPSetTarget(from, from->getBoard()->getMoves() + 1);
 	}
 }
 
@@ -91,8 +91,8 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
 
 			// the following two check if either of the pieces next to this pawn is a pawn, then sets their enPassantTarget to this guy.
-			enPassantValidAct(from, true);
-			enPassantValidAct(from, false);
+			EPValidateTarget(from, true);
+			EPValidateTarget(from, false);
 		}
 	}
 

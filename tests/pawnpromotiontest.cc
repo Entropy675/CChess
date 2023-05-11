@@ -43,6 +43,7 @@ int main()
 	if(!valid)
 	{
 		std::cout << "The promotion registration was invalid." << std::endl;
+		delete game;
 		return 2;
 	}
 	else
@@ -58,6 +59,8 @@ int main()
 	std::cout << "!!!\nWarning! This test case does not properly consider castling! When castling is implemented, this will fail incorrectly.\n!!!" << std::endl;
 	
 	std::string test = "rnbQkbnr/1ppp1ppp/8/8/8/8/P1P1PPPP/nNBQKBNR w KQkq - 0 6";
+	
+	delete game;
 	if(fs != test)
 	{
 		std::cout << fs << std::endl << test << std::endl << "FAIL";

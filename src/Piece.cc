@@ -92,8 +92,13 @@ ChessStatus Piece::move(Pos cPos)
 	Log log(1);
 	std::vector<Pos> p; 
 	
-	game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
-	log.append("EP bool is deactivated, weather used or not.");
+	bool onSuccessDeactivateEP = false;
+	if(game->isEnpassantOnBoard())
+	{
+		game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
+		log.append("EP bool is deactivated, weather used or not.");
+		onSuccessDeactivateEP = true;
+	}
 	
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		movebehavArr[i]->validMoves(p, this); // sets EP check
@@ -106,14 +111,16 @@ ChessStatus Piece::move(Pos cPos)
 	{
 		returnChessStatus = ChessStatus::PAWNMOVE;
 		if(pm->enPassantCheckAct(cPos, *this)) // Act refers to instantly killing enpassant target when true
+		{
 			isValid = true;
+			log.append("EP CHECK ACT PASS\n");
+		}
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // assume its a PAWNMOVE (since only ones that promote)
 	}
 	
-	log.append("CHESSSTATUS in PIECE: " + getChessStatusString(returnChessStatus) + "\n");
 	log.setLogLevel(2);
-	log.append("EP bool: set ");
+	log.append("was EP bool set? ");
 	
 	if(game->isEnpassantOnBoard())
 		log.append("TRUE!");
@@ -136,6 +143,7 @@ ChessStatus Piece::move(Pos cPos)
 	}
 	
 	log.setLogLevel(1);
+	log.append("CHESSSTATUS in PIECE: " + getChessStatusString(returnChessStatus) + "\n");
 	log.append("Valid: " + std::to_string(isValid) + "\n");
 	log.append("to Pos: " + cPos.toString() + " | ");
 	for(long unsigned int i = 0; i < p.size(); i++)
@@ -143,14 +151,18 @@ ChessStatus Piece::move(Pos cPos)
 	
 	if(isValid) // if isValid was never found, we don't move
 	{
-		log.append(" ======= ---*^\\> MATCH: " + std::to_string(cPos.getX()) + ", " + std::to_string(cPos.getY()) + "\n");
+		
+		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
 		if(!moved)
 			moved = true;
 		pos = cPos; 
 	}
 	else
+	{	
+		if(onSuccessDeactivateEP)
+			game->epActivate(); // reactivate it since it failed
 		return ChessStatus::FAIL;
-	
+	}
 	return returnChessStatus;
 }
 

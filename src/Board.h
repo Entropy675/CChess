@@ -20,7 +20,7 @@ class Board
 	Board();
 	~Board();
 
-	void setStartingBoard(bool flag);
+	void setStartingBoard(bool flag = true);
 	bool registerPromotion(std::string&);
 	void clearPiece(Pos);
 
@@ -56,6 +56,7 @@ class Board
 
 	Piece* promotePiece; // last piece moved
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
+	bool whitePerspective;
 	bool whiteTurn;
 	int halfmoveCount;
 	int turnCountFEN;

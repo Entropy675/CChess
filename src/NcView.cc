@@ -4,7 +4,7 @@
 ** NcView
 ** Ncurses based implementation of the View class. This is the main dev version
 */
-NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead)
+NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead), logfile("log.txt")
 {
 	initNcurses();
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
@@ -28,6 +28,7 @@ NcView::~NcView()
 {
 	delwin(logwin);
 	cleanupNcurses();
+	logfile.close(); 
 }
 
 
@@ -96,12 +97,18 @@ void NcView::update()
 	refresh();
 }
 
-void NcView::log(std::string s)
+void NcView::log(const std::string sin)
 {
+	std::string s(sin);
 	std::size_t pos = 0;
 	while ((pos = s.find('\n', pos)) != std::string::npos) {
 		s.replace(pos, 1, "\n  ");
 		pos += 3; // move past the newly inserted characters
+	}
+	
+	if(logfile.is_open())
+	{
+		logfile << s << std::endl;
 	}
 	
 	mvwprintw(logwin, 3, 2, "%s", s.c_str());

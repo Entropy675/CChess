@@ -56,6 +56,8 @@ int main()
 	std::cout << "\nchecking...\n" << std::endl;
 	
 	std::string test = "rnbqkbnr/8/8/pppppppp/PPPPPPPP/8/8/RNBQKBNR w KQkq - 0 9";
+	
+	delete game;
 	if(fs != test)
 	{
 		std::cout << fs << std::endl << test << std::endl << "FAIL";

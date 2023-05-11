@@ -11,7 +11,7 @@
 
 Board::Board() 
 	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
-	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCount(1)
+	  enPassantActive(false), promotePiece(nullptr), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -45,11 +45,16 @@ void Board::clearPiece(Pos a)
 	gameBoard[a.getX()][a.getY()] = nullptr;
 }
 
-int Board::getTurn() const
+int Board::getTurnFEN() const
 {
-	return turnCount;
+	return turnCountFEN;
 }
 
+int Board::getMoves() const
+{
+	return moveCount;
+}
+	
 std::vector<Piece*>* Board::getWhitePieces() const
 {
 	return whitePieces;
@@ -141,7 +146,7 @@ std::string Board::toFENString() const
 	FENs += " ";
 	FENs += std::to_string(halfmoveCount);
 	FENs += " ";
-	FENs += std::to_string(turnCount);
+	FENs += std::to_string(turnCountFEN);
 	
 	return FENs;
 }
@@ -202,7 +207,8 @@ bool Board::registerPromotion(std::string& s)
 	
 	promotePiece = nullptr;
 	if(!whiteTurn)
-		turnCount++;
+		turnCountFEN++;
+	moveCount++;
 	whiteTurn = !whiteTurn;
 	return true;
 }
@@ -266,7 +272,8 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		if(returnChessStatus != ChessStatus::PROMOTE)
 		{
 			if(!whiteTurn)
-				turnCount++;
+				turnCountFEN++;
+			moveCount++;
 			whiteTurn = !whiteTurn;
 			returnChessStatus = ChessStatus::SUCCESS;
 		}

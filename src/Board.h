@@ -26,7 +26,8 @@ class Board
 
 	std::string toFENString() const;
 	bool isWhiteTurn() const;
-	int getTurn() const;
+	int getTurnFEN() const;
+	int getMoves() const;
 	Piece* getPiece(Pos) const;
 
 	void epActivate();
@@ -57,8 +58,8 @@ class Board
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
 	bool whiteTurn;
 	int halfmoveCount;
-	int turnCount;
-	
+	int turnCountFEN;
+	int moveCount;
 };
 
 

@@ -17,8 +17,8 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead),
 	}
 	else
 	{
-		sqSize.set(2, 2); // more tight fitting board
-		offset.set(1, 1); 
+		sqSize.set(4, 2); // SQUARE board, visually clearer
+		offset.set(2, 1); 
 	}
 	
 	logwin = newwin(15, 100, 1, 20); // for logging
@@ -32,6 +32,24 @@ NcView::~NcView()
 	logfile.close(); 
 }
 
+void NcView::toggleSize()
+{
+	largeBoard = !largeBoard;
+	
+	if(largeBoard)
+	{
+		sqSize.set(6, 4);
+		offset.set(3, 2);  // from top left corner of square			
+	}
+	else
+	{
+
+		sqSize.set(4, 2); // more tight fitting board
+		offset.set(2, 1); 
+	}
+	
+	update();
+}
 
 void NcView::initNcurses()
 {
@@ -46,27 +64,6 @@ void NcView::initNcurses()
 void NcView::cleanupNcurses()
 {
 	endwin();
-}
-
-void NcView::toggleSize()
-{
-	largeBoard = !largeBoard;
-	
-	if(largeBoard)
-	{
-		sqSize.set(6, 4);
-		offset.set(3, 2); // from top left corner of square		
-		//sqSize.set(6, 3);
-		//offset.set(3, 1); // from top left corner of square		
-	}
-	else
-	{
-
-		sqSize.set(2, 2); // more tight fitting board
-		offset.set(1, 1); 
-	}
-	
-	update();
 }
 
 void NcView::userInput(std::string& uinp)

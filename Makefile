@@ -56,4 +56,5 @@ $(PATH2OBJ)CrossMove.o: $(PATH2SRC)piece_behav/CrossMove.cc $(PATH2SRC)piece_beh
 clean:
 		find . -type f -name '*.o' -delete
 		rm -f CChess
+		rm -f log.txt
 

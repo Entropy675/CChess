@@ -3,7 +3,7 @@
 CrossMove::CrossMove() {}
 CrossMove::~CrossMove() {}
 
-
+// returns false meaning continue searching - have yet to hit a piece or invalid square.
 bool CrossMove::checkPosition(Pos& origin, Pos& cPos, std::vector<Pos>& out, Piece* from, Board* game)
 {
 	Log log(1);

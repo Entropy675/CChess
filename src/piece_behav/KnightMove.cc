@@ -3,6 +3,7 @@
 KnightMove::KnightMove() {}
 KnightMove::~KnightMove() {}
 
+// returns true meaning cPos was added to out.
 bool KnightMove::checkPosition(Pos& origin, Pos& cPos, std::vector<Pos>& out, Piece* from, Board* game)
 {
 	Log log(1);

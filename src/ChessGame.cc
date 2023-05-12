@@ -32,7 +32,7 @@ void ChessGame::updateAllSpectators()
 void ChessGame::startLocalNcursesGame()
 {
 	game->setStartingBoard(true);
-	
+
 	whitePlayer->update();
 	whitePlayer->print("Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
 	whitePlayer->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");

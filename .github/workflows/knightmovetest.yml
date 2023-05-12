@@ -1,0 +1,26 @@
+name: Run knightmovetest
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Test
+      run: |
+        make
+        cd tests/
+        make
+        ./knightmovetest
+        exit_code=$?
+        if [ $exit_code -gt 0 ]; then
+          echo "Knight movement test failed with exit code: $exit_code"
+          exit 1
+        fi

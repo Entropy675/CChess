@@ -22,6 +22,7 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead),
 	}
 	
 	logwin = newwin(15, 100, 1, 20); // for logging
+	logfile << "============= NEW GAME =============" << std::endl;
 }
 
 NcView::~NcView()

@@ -24,6 +24,19 @@ bool KnightMove::checkPosition(Pos& origin, Pos& cPos, std::vector<Pos>& out, Pi
 	return false;
 }
 
+bool KnightMove::checkPositionIntermediate(Pos& origin, Pos& cPos, std::vector<Pos>& out, Piece* from, Board* game)
+{
+	Log log(1);
+	
+	if(cPos != origin)
+	{
+		out.push_back(cPos);
+		return true;
+	}
+	return false;
+}
+
+
 void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 {
 	Log log(2);
@@ -34,7 +47,7 @@ void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 	
 	Pos cPos(origin);
 	cPos.setX(cPos.getX() + 2);
-	if(checkPosition(origin, cPos, temp, from, game))
+	if(checkPositionIntermediate(origin, cPos, temp, from, game))
 	{
 		Pos cTemp = temp.at(temp.size() - 1);
 		
@@ -49,7 +62,7 @@ void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 	
 	cPos = origin;
 	cPos.setX(cPos.getX() - 2);
-	if(checkPosition(origin, cPos, temp, from, game))
+	if(checkPositionIntermediate(origin, cPos, temp, from, game))
 	{
 		Pos cTemp = temp.at(temp.size() - 1);
 		
@@ -64,7 +77,7 @@ void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 		
 	cPos = origin;
 	cPos.setY(cPos.getY() + 2);
-	if(checkPosition(origin, cPos, temp, from, game))
+	if(checkPositionIntermediate(origin, cPos, temp, from, game))
 	{
 		Pos cTemp = temp.at(temp.size() - 1);
 		
@@ -79,7 +92,7 @@ void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 	
 	cPos = origin;
 	cPos.setY(cPos.getY() - 2);
-	if(checkPosition(origin, cPos, temp, from, game))
+	if(checkPositionIntermediate(origin, cPos, temp, from, game))
 	{
 		Pos cTemp = temp.at(temp.size() - 1);
 		

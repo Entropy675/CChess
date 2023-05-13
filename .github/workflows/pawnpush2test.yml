@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  pawnpush2test:
 
     runs-on: ubuntu-latest
 

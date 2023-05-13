@@ -14,6 +14,7 @@ class KnightMove : public MoveBehaviour
 	
 	private:
 	bool checkPosition(Pos&, Pos&, std::vector<Pos>&, Piece*, Board*);
+	bool checkPositionIntermediate(Pos&, Pos&, std::vector<Pos>&, Piece*, Board*);
 };
 
 #endif

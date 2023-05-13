@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  rookmovestest:
 
     runs-on: ubuntu-latest
 

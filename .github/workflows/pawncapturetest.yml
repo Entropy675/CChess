@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  pawncapturetest:
 
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
       run: |
         make
         cd tests/
-        make
+        make pawncapturetest
         ./pawncapturetest
         exit_code=$?
         if [ $exit_code -gt 0 ]; then

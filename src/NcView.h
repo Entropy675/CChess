@@ -51,6 +51,7 @@ class NcView : public View
 	const int baseWriteHead;
 	int writeHead;
 	std::ofstream logfile;
+	std::string logstring;
 };
 
 

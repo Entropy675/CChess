@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  pawnpush2test:
 
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
       run: |
         make
         cd tests/
-        make
+        make pawnpush2test
         ./pawnpush2test
         exit_code=$?
         if [ $exit_code -gt 0 ]; then

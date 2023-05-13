@@ -243,7 +243,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 
 	Log log(1); // basic log level
 	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
-	log.append("FENs: " + toFENString() + "\n");
+	log.append("Pre Move:  FENs: " + toFENString() + "\n");
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
 	log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
@@ -280,6 +280,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	}
 
 	
+	log.append("Post Move: FENs: " + toFENString() + "\n");
 	log.flush(); // log all movement comments to screen.
 	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }

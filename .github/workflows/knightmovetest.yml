@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  knightmovetest:
 
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
       run: |
         make
         cd tests/
-        make
+        make knightmovetest
         ./knightmovetest
         exit_code=$?
         if [ $exit_code -gt 0 ]; then

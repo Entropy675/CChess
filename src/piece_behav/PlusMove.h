@@ -13,7 +13,7 @@ class PlusMove : public MoveBehaviour
 	virtual bool isValidMove(const Pos& to, Piece* from) override;
 	
 	private:
-	bool checkPosition(Pos&, Pos&, std::vector<Pos>&, Piece*, Board*);
+	bool checkPosition(int, int, std::vector<Pos>&, Piece*, Board*);
 };
 
 #endif

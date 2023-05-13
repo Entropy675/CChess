@@ -11,7 +11,7 @@ Pos::Pos(const Pos& o)
 	set(o.x, o.y);
 }
 
-bool Pos::isValid(const int ix, const int iy) const
+bool Pos::isValid(const int ix, const int iy)
 {
 	if(ix >= MAX_ROW_COL || ix < 0 || iy >= MAX_ROW_COL || iy < 0)
 		return false;

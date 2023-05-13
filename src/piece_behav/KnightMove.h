@@ -13,7 +13,7 @@ class KnightMove : public MoveBehaviour
 	virtual bool isValidMove(const Pos& to, Piece* from) override;
 	
 	private:
-	bool checkPosition(Pos&, Pos&, std::vector<Pos>&, Piece*, Board*);
+	void checkPosition(int, int, std::vector<Pos>&, Piece*, Board*);
 };
 
 #endif

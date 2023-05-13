@@ -4,7 +4,7 @@
 ** NcView
 ** Ncurses based implementation of the View class. This is the main dev version
 */
-NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead), logfile("log.txt")
+NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead), logfile("log.txt"), logstring("")
 {
 	initNcurses();
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
@@ -21,7 +21,7 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead),
 		offset.set(2, 1); 
 	}
 	
-	logwin = newwin(15, 100, 1, 20); // for logging
+	logwin = newwin(15, 100, 1, 36); // for logging
 	logfile << "============= NEW GAME =============" << std::endl;
 }
 
@@ -90,9 +90,12 @@ void NcView::update()
 	drawPieces();
 	drawPieceBar();
 	writeHead = baseWriteHead;
-	
-	moveToInputPos();
 	refresh();
+	
+	mvwprintw(logwin, 1, 2, "=== LOG ===\n  %s", logstring.c_str());
+	box(logwin, 0, 0);
+	wrefresh(logwin);
+	moveToInputPos();
 }
 
 void NcView::log(const std::string sin)
@@ -109,10 +112,10 @@ void NcView::log(const std::string sin)
 		logfile << s << std::endl;
 	}
 	
-	mvwprintw(logwin, 3, 2, "%s", s.c_str());
-	box(logwin, 0, 0);
-	wrefresh(logwin);
-	getch();
+	logstring = s;
+//	mvwprintw(logwin, 3, 2, "%s", s.c_str());
+//	box(logwin, 0, 0);
+//	wrefresh(logwin);
 }
 
 void NcView::printAt(int x, int y, const std::string& s) const

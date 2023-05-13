@@ -4,19 +4,17 @@ PlusMove::PlusMove() {}
 PlusMove::~PlusMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool PlusMove::checkPosition(Pos& origin, Pos& cPos, std::vector<Pos>& out, Piece* from, Board* game)
+bool PlusMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from, Board* game)
 {
-	Log log(1);
-	
-	if(cPos != origin)
+	if(Pos::isValid(x, y))
 	{
-		Piece* temp = game->getPiece(cPos);
+		Piece* temp = game->getPiece(Pos(x,y));
 		if(temp == nullptr)
-			out.push_back(cPos);
+			out.push_back(Pos(x,y));
 		else
 		{
 			if(temp->isWhite() != from->isWhite())
-				out.push_back(cPos);
+				out.push_back(Pos(x,y));
 			return true;
 		}
 		return false;
@@ -37,32 +35,16 @@ void PlusMove::validMoves(std::vector<Pos>& out, Piece* from)
 	for(int i = 1; i < 8; i++)
 	{
 		if(!stopR)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() + i);
-			stopR = checkPosition(origin, cPos, out, from, game);
-		}
+			stopR = checkPosition(origin.getX() + i, origin.getY(), out, from, game);
 		
 		if(!stopL)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() - i);
-			stopL = checkPosition(origin, cPos, out, from, game);
-		}
+			stopL = checkPosition(origin.getX() - i, origin.getY(), out, from, game);
 		
 		if(!stopD)
-		{
-			Pos cPos(origin);
-			cPos.setY(cPos.getY() + i);
-			stopD = checkPosition(origin, cPos, out, from, game);
-		}
+			stopD = checkPosition(origin.getX(), origin.getY() + i, out, from, game);
 		
 		if(!stopU)
-		{
-			Pos cPos(origin);
-			cPos.setY(cPos.getY() - i);
-			stopU = checkPosition(origin, cPos, out, from, game);
-		}
+			stopU = checkPosition(origin.getX(), origin.getY() - i, out, from, game);
 		
 		if(stopU && stopD && stopR && stopL)
 			break;

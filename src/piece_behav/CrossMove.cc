@@ -4,25 +4,22 @@ CrossMove::CrossMove() {}
 CrossMove::~CrossMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool CrossMove::checkPosition(Pos& origin, Pos& cPos, std::vector<Pos>& out, Piece* from, Board* game)
-{
-	Log log(1);
-	
-	if(cPos != origin)
+bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from, Board* game)
+{	
+	if(Pos::isValid(x, y))
 	{
-		Piece* temp = game->getPiece(cPos);
+		Piece* temp = game->getPiece(Pos(x, y));
 		if(temp == nullptr)
-			out.push_back(cPos);
+			out.push_back(Pos(x, y));
 		else
 		{
 			if(temp->isWhite() != from->isWhite())
-				out.push_back(cPos);
+				out.push_back(Pos(x, y));
 			return true;
 		}
-		
 		return false;
 	}
-	return true;
+	return true;			
 }
 
 void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
@@ -38,36 +35,16 @@ void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
 	for(int i = 1; i < 8; i++)
 	{
 		if(!stopTL)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() - i);
-			cPos.setY(cPos.getY() - i);
-			stopTL = checkPosition(origin, cPos, out, from, game);
-		}
+			stopTL = checkPosition(origin.getX() - i, origin.getY() - i, out, from, game);
 		
 		if(!stopTR)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() + i);
-			cPos.setY(cPos.getY() - i);
-			stopTR = checkPosition(origin, cPos, out, from, game);
-		}
+			stopTR = checkPosition(origin.getX() + i, origin.getY() - i, out, from, game);
 		
 		if(!stopBR)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() + i);
-			cPos.setY(cPos.getY() + i);
-			stopBR = checkPosition(origin, cPos, out, from, game);
-		}
+			stopBR = checkPosition(origin.getX() + i, origin.getY() + i, out, from, game);
 		
 		if(!stopBL)
-		{
-			Pos cPos(origin);
-			cPos.setX(cPos.getX() - i);
-			cPos.setY(cPos.getY() + i);
-			stopBL = checkPosition(origin, cPos, out, from, game);
-		}
+			stopBL = checkPosition(origin.getX() - i, origin.getY() + i, out, from, game);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;

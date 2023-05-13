@@ -15,6 +15,7 @@ class Pos
 
 	Pos& operator=(const Pos&);
 	void set(const Pos p);
+	static bool isValid(int ix, int iy); // check if the position is valid, this class cannot store an invalid pos
 
 	// following return C_NOK for invalid position (else C_OK)
 	int set(const int ix, const int iy);
@@ -41,7 +42,6 @@ class Pos
 	Pos& operator-=(const Pos&);
 
 	private:
-	bool isValid(int ix, int iy) const; // check if the position is valid, for internal use, do not save invalid pos
 
 	int x, y;
 };

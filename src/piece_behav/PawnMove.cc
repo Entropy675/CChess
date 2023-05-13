@@ -8,11 +8,9 @@ PawnMove::~PawnMove()
 	capturableViaEP = nullptr;
 }
 
-// this will probably happen in a branch on the condition of hasPawnBehaviour() not null when trying to move a piece.
-// before trying to move to a position, use this check on that position 
-// if this returns true, then that means that you just performed an enPassant.
-// When this returns true, it kills the enPassantTarget. It is then the move funcs
-// responsibility to move this pawn to the position and update values (like has moved etc) as per normal.
+// Before trying to move a pawn to a position, use this check on that position.
+// When this returns true, it kills the enPassantTarget. 
+// It is then the move funcs responsibility to move this pawn to the position and update values (like has moved etc) as per normal.
 bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 {
 	Log a(1);
@@ -74,10 +72,10 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 }
 
 
-// not gonna lie, this is slightly sus unreadable code, TODO: refactor when you have time using new Pos overloaded ops, make more readable
+// TODO: refactor to something cleaner when you have time
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
-	Log log(2); // requires >=2 global log level, disables local logs <2
+	Log log(2);
 	int dircheck = from->isWhite() ? -1 : 1;
 
 	// forward moves
@@ -85,7 +83,6 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 	{
 		p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
 		
-		// double move if first move, sets EP logic.
 		if(!from->hasMoved() && from->getBoard()->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
 		{
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));

@@ -16,7 +16,7 @@ jobs:
       run: |
         make
         cd tests/
-        make
+        make pawnpromotiontest
         ./pawnpromotiontest
         exit_code=$?
         if [ $exit_code -gt 0 ]; then

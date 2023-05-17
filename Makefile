@@ -2,7 +2,7 @@
 PATH2SRC = src/
 PATH2OBJ = obj/
 
-OBJ = $(PATH2OBJ)ChessGame.o $(PATH2OBJ)Pos.o $(PATH2OBJ)MoveBehaviour.o $(PATH2OBJ)PawnMove.o $(PATH2OBJ)KingMove.o $(PATH2OBJ)KnightMove.o $(PATH2OBJ)PlusMove.o $(PATH2OBJ)CrossMove.o $(PATH2OBJ)Piece.o $(PATH2OBJ)Board.o $(PATH2OBJ)View.o $(PATH2OBJ)Log.o $(PATH2OBJ)NcView.o
+OBJ = $(PATH2OBJ)ChessGame.o $(PATH2OBJ)Pos.o $(PATH2OBJ)MoveBehaviour.o $(PATH2OBJ)PawnMove.o $(PATH2OBJ)KingMove.o $(PATH2OBJ)KnightMove.o $(PATH2OBJ)PlusMove.o $(PATH2OBJ)CrossMove.o $(PATH2OBJ)Piece.o $(PATH2OBJ)Board.o $(PATH2OBJ)View.o $(PATH2OBJ)Log.o $(PATH2OBJ)NcView.o $(PATH2OBJ)Bitboard.o
 CC = g++ -Wall -g
 LIB = -lncursesw
 
@@ -36,6 +36,9 @@ $(PATH2OBJ)Piece.o: $(PATH2SRC)Piece.cc $(PATH2SRC)Piece.h $(PATH2SRC)Log.h $(PA
 
 $(PATH2OBJ)Board.o: $(PATH2SRC)Board.cc $(PATH2SRC)Board.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)piece_behav/PawnMove.h $(PATH2SRC)piece_behav/KingMove.h $(PATH2SRC)piece_behav/KnightMove.h $(PATH2SRC)piece_behav/PlusMove.h $(PATH2SRC)piece_behav/CrossMove.h
 	$(CC) -c $(PATH2SRC)Board.cc -o $(PATH2OBJ)Board.o
+
+$(PATH2OBJ)Bitboard.o: $(PATH2SRC)Bitboard.cc $(PATH2SRC)Bitboard.h $(PATH2SRC)Pos.h $(PATH2SRC)defs.h 
+	$(CC) -c $(PATH2SRC)Bitboard.cc -o $(PATH2OBJ)Bitboard.o
 
 $(PATH2OBJ)PawnMove.o: $(PATH2SRC)piece_behav/PawnMove.cc $(PATH2SRC)piece_behav/PawnMove.h $(PATH2SRC)Pos.h $(PATH2SRC)Piece.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
 	$(CC) -c $(PATH2SRC)piece_behav/PawnMove.cc -o $(PATH2OBJ)PawnMove.o

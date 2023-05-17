@@ -34,10 +34,12 @@ void ChessGame::startLocalNcursesGame()
 	game->setStartingBoard(true);
 	
 	whitePlayer->update();
+	whitePlayer->print("");
 	whitePlayer->print("Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
 	whitePlayer->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
-	Log::delViewById(0); // to prevent double logging to the same view, since in local the are the same.
+	Log::delViewById(0); // to prevent double logging to the same view, since in local game w/b are the same.
 	
+	Log log(1);
 	bool redraw;
 
 	while(true)
@@ -56,7 +58,8 @@ void ChessGame::startLocalNcursesGame()
 
 		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex
 		ChessStatus promotionAsk = ChessStatus::FAIL;
-
+		log.append("Pre move:  " + game->toFENString() + "\n");
+		
 		if(regex_match(uinp, pattern))
 		{
 			// this is a valid input
@@ -67,7 +70,8 @@ void ChessGame::startLocalNcursesGame()
 
 			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
-
+			
+			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
 			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
 		}
 
@@ -99,7 +103,6 @@ void ChessGame::startLocalNcursesGame()
 				
 				validInput = game->registerPromotion(uinp);
 				
-				Log log(1);
 				log.append("Checking promotion... : ");
 				if(validInput)
 					log.append("Valid!");
@@ -108,6 +111,10 @@ void ChessGame::startLocalNcursesGame()
 				log.flush();
 			}
 		}
+		
+		
+		log.append("Post move: " + game->toFENString() + "\n");
+		log.flush();
 
 
 		if(redraw)

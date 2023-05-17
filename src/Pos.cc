@@ -58,6 +58,11 @@ int Pos::operator[](int i) const
 	throw std::out_of_range("Index out of range in Pos::operator[]. Only 0 or 1 allowed.");
 }
 
+int Pos::convertToIndex() const
+{
+    return y * 8 + x;
+}
+
 void Pos::set(const Pos p)
 {
 	*this = p;

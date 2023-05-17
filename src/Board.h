@@ -54,7 +54,7 @@ class Board
 
 	bool enPassantActive;
 
-	Piece* promotePiece; // last piece moved
+	Piece* previousPiece; // last piece moved
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
 	bool whitePerspective;
 	bool whiteTurn;

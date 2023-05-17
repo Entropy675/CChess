@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include "Pos.h"
+#include "Bitboard.h"
 #include "Piece.h"
 
 #include <vector>

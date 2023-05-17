@@ -83,17 +83,9 @@ Bitboard PawnMove::validMoves(Piece* from)
 	if(game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck)) == nullptr)
 	{
 		bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
-		
 		if(!from->hasMoved() && game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
-		{
 			bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
-
-			// the following two check if either of the pieces next to this pawn is a pawn, then sets their enPassantTarget to this one.
-			EPValidateTarget(from, true);
-			EPValidateTarget(from, false);
-		}
 	}
-
 
 	// piece capture (diagonal) -1 for left, 1 for right.
 	if(game->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr)
@@ -119,9 +111,6 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 		{
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
 
-			// the following two check if either of the pieces next to this pawn is a pawn, then sets their enPassantTarget to this one.
-			EPValidateTarget(from, true);
-			EPValidateTarget(from, false);
 		}
 	}
 

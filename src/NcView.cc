@@ -92,6 +92,7 @@ void NcView::update()
 	writeHead = baseWriteHead;
 	refresh();
 	
+	wclear(logwin);
 	mvwprintw(logwin, 1, 2, "=== LOG ===\n  %s", logstring.c_str());
 	box(logwin, 0, 0);
 	wrefresh(logwin);

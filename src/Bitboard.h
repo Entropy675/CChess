@@ -13,13 +13,16 @@ class Bitboard
     void setBit(int pos);
 	void clearBit(int pos);
 	
-    Bitboard operator|(const Bitboard& other) const;
-    Bitboard operator&(const Bitboard& other) const;
-    Bitboard operator^(const Bitboard& other) const;
+	bool operator[](int) const; // get the value of a single position in the bitboard
+	bool operator[](Pos) const; // get the value of a single position in the bitboard
+	
+    Bitboard operator|(const Bitboard&) const;
+    Bitboard operator&(const Bitboard&) const;
+    Bitboard operator^(const Bitboard&) const;
     Bitboard operator~() const;
 
-    bool operator==(const Bitboard& other) const;
-    bool operator!=(const Bitboard& other) const;
+    bool operator==(const Bitboard&) const;
+    bool operator!=(const Bitboard&) const;
 
 	private:
     uint64_t value;

@@ -9,11 +9,13 @@ class PlusMove : public MoveBehaviour
 	PlusMove();
 	~PlusMove();
 
+	virtual Bitboard validMoves(Piece* from) override;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
 	virtual bool isValidMove(const Pos& to, Piece* from) override;
 	
 	private:
-	bool checkPosition(int, int, std::vector<Pos>&, Piece*, Board*);
+	bool checkPosition(int, int, std::vector<Pos>&, Piece*);
+	bool checkPosition(int, int, Bitboard&, Piece*);
 };
 
 #endif

@@ -9,11 +9,13 @@ class KnightMove : public MoveBehaviour
 	KnightMove();
 	~KnightMove();
 
+	virtual Bitboard validMoves(Piece* from) override;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
 	virtual bool isValidMove(const Pos& to, Piece* from) override;
 	
 	private:
-	void checkPosition(int, int, std::vector<Pos>&, Piece*, Board*);
+	void checkPosition(int, int, std::vector<Pos>&, Piece*);
+	void checkPosition(int, int, Bitboard&, Piece*);
 };
 
 #endif

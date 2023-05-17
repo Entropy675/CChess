@@ -27,25 +27,28 @@ class Piece
 	
 	public:
 	Piece(Pos p, char c = '0', bool w = false, Board* g = nullptr);
-
 	~Piece();
+
+	Bitboard validMoves();
+	ChessStatus move(const Pos);
 	bool isValidMove(const Pos p);
 	void validMoves(std::vector<Pos>& p);
-	ChessStatus move(const Pos);
 
 	bool isWhite() const;
 	bool isDead() const;
 	bool hasMoved() const;
 	
+	Pos getPos() const;
+	std::string toString() const;
+	std::string getBoardPos() const;
+	
+	void promote(const char);
 	void epActivate();
 	void die();
 	
-	std::string getBoardPos() const;
-	std::string toString() const;
-	Pos getPos() const;
 	char toFENChar() const;
 	char getCharacter() const;
-	void promote(const char);
+	
 	Board* getBoard() const;
 	
 	PawnMove* getPawnBehaviour() const;

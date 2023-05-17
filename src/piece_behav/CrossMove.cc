@@ -4,11 +4,11 @@ CrossMove::CrossMove() {}
 CrossMove::~CrossMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from, Board* game)
-{	
+bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
+{
 	if(Pos::isValid(x, y))
 	{
-		Piece* temp = game->getPiece(Pos(x, y));
+		Piece* temp = from->getBoard()->getPiece(Pos(x, y));
 		if(temp == nullptr)
 			out.push_back(Pos(x, y));
 		else
@@ -22,48 +22,81 @@ bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from, 
 	return true;			
 }
 
-void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
+bool CrossMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
 {
-	Log log(2);
-	Pos origin = from->getPos();
-	Board* game = from->getBoard();
+	if(Pos::isValid(x, y))
+	{
+		Piece* temp = from->getBoard()->getPiece(Pos(x, y));
+		if(temp == nullptr)
+			bb.setBit(Pos(x, y));
+		else
+		{
+			if(temp->isWhite() != from->isWhite())
+				bb.setBit(Pos(x, y));
+			return true;
+		}
+		return false;
+	}
+	return true;			
+}
+
+Bitboard CrossMove::validMoves(Piece* from)
+{
+	Bitboard bb;
+	
 	bool stopTR = false;
 	bool stopTL = false;
 	bool stopBR = false;
 	bool stopBL = false;
 	
-	for(int i = 1; i < 8; i++)
+	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopTL)
-			stopTL = checkPosition(origin.getX() - i, origin.getY() - i, out, from, game);
+			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, bb, from);
 		
 		if(!stopTR)
-			stopTR = checkPosition(origin.getX() + i, origin.getY() - i, out, from, game);
+			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, bb, from);
 		
 		if(!stopBR)
-			stopBR = checkPosition(origin.getX() + i, origin.getY() + i, out, from, game);
+			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, bb, from);
 		
 		if(!stopBL)
-			stopBL = checkPosition(origin.getX() - i, origin.getY() + i, out, from, game);
+			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, bb, from);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;
 	}
 	
-	// logging, all possible moves are logged at level 2
-	log.append("CROSS VALID MOVE: VArr " + std::to_string(out.size()) + ":");
-	for (auto &x : out)
-		log.append(x.toString() + ", ");
-	log.setLogLevel(1);
-	log.append(" trn: " + std::to_string(game->getTurnFEN()) + "total moves: " + std::to_string(game->getMoves()) + "\n");
+	return bb;
+}
+	
+void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
+{
+	bool stopTR = false;
+	bool stopTL = false;
+	bool stopBR = false;
+	bool stopBL = false;
+	
+	for(int i = 1; i < MAX_ROW_COL; i++)
+	{
+		if(!stopTL)
+			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, out, from);
+		
+		if(!stopTR)
+			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, out, from);
+		
+		if(!stopBR)
+			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, out, from);
+		
+		if(!stopBL)
+			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, out, from);
+		
+		if(stopTR && stopTL && stopBR && stopBL)
+			break;
+	}
 }
 
 bool CrossMove::isValidMove(const Pos& to, Piece* from)
 {
-	std::vector<Pos> templist;
-	validMoves(templist, from);
-	for(long unsigned int i = 0; i < templist.size(); i++)
-		if(templist[i] == to)
-			return true;
-	return false;
+    return validMoves(from)[to];
 }

@@ -11,7 +11,7 @@
 
 Board::Board() 
 	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
-	  enPassantActive(false), promotePiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
+	  enPassantActive(false), previousPiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
 	blackPieces = new std::vector<Piece*>;
@@ -160,7 +160,7 @@ std::string Board::getEnPassantBoardPos() const
 			const PawnMove* tmp = whitePieces->at(i)->getPawnBehaviour();
 			if(tmp != nullptr)
 			{
-				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				const Piece* enPassantTarget = tmp->getEnPassantTarget();
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}
@@ -168,7 +168,7 @@ std::string Board::getEnPassantBoardPos() const
 			tmp = blackPieces->at(i)->getPawnBehaviour();
 			if(tmp != nullptr)
 			{
-				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				const Piece* enPassantTarget = tmp->getEnPassantTarget();
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}
@@ -184,28 +184,28 @@ bool Board::registerPromotion(std::string& s)
 	char input = promotionMatchChar(s);
 	
 	// {R, N, B, Q, P} -> {Rook, Knight, Bishop, Queen, Pawn}
-	if(input == '\0' || promotePiece == nullptr)
+	if(input == '\0' || previousPiece == nullptr)
 		return false;
 	
 	switch(std::tolower(input))
 	{
 		case 'r':
-			promotePiece->promote('r');
+			previousPiece->promote('r');
 			break;
 		case 'n':
-			promotePiece->promote('n');
+			previousPiece->promote('n');
 			break;
 		case 'b':
-			promotePiece->promote('b');
+			previousPiece->promote('b');
 			break;
 		case 'q':
-			promotePiece->promote('q');
+			previousPiece->promote('q');
 			break;	
 		default:
 			return false;
 	}
 	
-	promotePiece = nullptr;
+	previousPiece = nullptr;
 	if(!whiteTurn)
 		turnCountFEN++;
 	moveCount++;
@@ -240,15 +240,11 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return ChessStatus::FAIL;
-
-	Log log(1); // basic log level
-	log.append("Attempt: " + a.toString() + " " + b.toString() + "\n");
-	log.append("Pre Move:  FENs: " + toFENString() + "\n");
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
-	log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
+	//log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
 	
-	promotePiece = getPiece(a); // keeps track of previous piece moved, for promotion
+	previousPiece = getPiece(a); // keeps track of previous piece moved, for promotion
 	
 	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
 		halfmoveCount = 0;
@@ -261,10 +257,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			halfmoveCount = 0;
 		}
 		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-		{
 			halfmoveCount++;
-			log.append("\nINCREMENTING HALFMOVE: " + getChessStatusString(returnChessStatus) + "\n");
-		}
 		
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
@@ -278,10 +271,6 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
 	}
-
-	
-	log.append("Post Move: FENs: " + toFENString() + "\n");
-	log.flush(); // log all movement comments to screen.
 	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }
 

@@ -25,6 +25,8 @@ class Pos
 	int getX() const;
 	int getY() const;
 
+	int convertToIndex() const;
+
 	std::string toString() const;
 	
 	// not defining a < or > for this because its too subjective

@@ -46,9 +46,9 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 	return false;
 }
 
-const Piece& PawnMove::getEnPassantTarget() const
+const Piece* PawnMove::getEnPassantTarget() const
 {
-	return *capturableViaEP;
+	return capturableViaEP;
 }
 	
 void PawnMove::EPSetTarget(Piece* p, int tep)
@@ -61,21 +61,43 @@ void PawnMove::EPSetTarget(Piece* p, int tep)
 // helper function used when calculating valid moves, sets the enPassantTarget when its valid for it to be set.
 void PawnMove::EPValidateTarget(Piece* from, bool right)
 {
-	int dircheck = from->isWhite() ? -1 : 1;
-	int leftOrRight = right ? 1 : -1;
-	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + leftOrRight, from->getPos().getY() + dircheck*2)) != nullptr)
+	Board* game = from->getBoard();
+	Piece* target = game->getPiece(Pos(from->getPos().getX() + (right ? 1 : -1), from->getPos().getY() + (from->isWhite() ? -1 : 1)*2));
+	if(target != nullptr)
 	{
-		PawnMove* pm = from->getBoard()->getPiece(Pos(from->getPos().getX() + leftOrRight, from->getPos().getY() + dircheck*2))->getPawnBehaviour();
-		if (pm != nullptr && from->getBoard()->getPiece(Pos(from->getPos().getX() + leftOrRight, from->getPos().getY() + dircheck*2))->isWhite() != from->isWhite())
-			pm->EPSetTarget(from, from->getBoard()->getMoves() + 1);
+		PawnMove* pm = target->getPawnBehaviour();
+		if (pm != nullptr && target->isWhite() != from->isWhite())
+			pm->EPSetTarget(from, game->getMoves() + 1);
 	}
 }
 
+Bitboard PawnMove::validMoves(Piece* from)
+{
+	Bitboard bb;
+	int dircheck = from->isWhite() ? -1 : 1;
+	Board* game = from->getBoard();
+
+	// forward moves
+	if(game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck)) == nullptr)
+	{
+		bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
+		if(!from->hasMoved() && game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
+			bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
+	}
+
+	// piece capture (diagonal) -1 for left, 1 for right.
+	if(game->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr)
+		bb.setBit(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
+
+	if(game->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
+		bb.setBit(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
+	
+	return bb;
+}
 
 // TODO: refactor to something cleaner when you have time
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
-	Log log(2);
 	int dircheck = from->isWhite() ? -1 : 1;
 
 	// forward moves
@@ -87,9 +109,6 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 		{
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
 
-			// the following two check if either of the pieces next to this pawn is a pawn, then sets their enPassantTarget to this guy.
-			EPValidateTarget(from, true);
-			EPValidateTarget(from, false);
 		}
 	}
 
@@ -100,22 +119,9 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 
 	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
-
-
-	// logging, all possible moves are logged at level 2
-	log.append("PAWN VALID MOVE: VArr " + std::to_string(p.size()) + ":");
-	for (auto &x : p)
-		log.append(x.toString() + ", ");
-	log.setLogLevel(1);
-	log.append(" trn: " + std::to_string(from->getBoard()->getTurnFEN()) + "total moves: " + std::to_string(from->getBoard()->getMoves()) + "\n");
 }
 
 bool PawnMove::isValidMove(const Pos& to, Piece* from)
 {
-	std::vector<Pos> templist;
-	validMoves(templist, from);
-	for(long unsigned int i = 0; i < templist.size(); i++)
-		if(templist[i] == to)
-			return true;
-	return false;
+    return validMoves(from)[to];
 }

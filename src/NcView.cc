@@ -4,7 +4,7 @@
 ** NcView
 ** Ncurses based implementation of the View class. This is the main dev version
 */
-NcView::NcView(Board* g) : View(g), baseWriteHead(20), writeHead(baseWriteHead), logfile("log.txt"), logstring("")
+NcView::NcView(Board* g) : View(g), baseWriteHead(19), writeHead(baseWriteHead), logfile("log.txt"), logstring("")
 {
 	initNcurses();
 	setcchar(&li, L"─", A_NORMAL, 0, NULL);
@@ -209,8 +209,12 @@ void NcView::drawPieceBar()
 	move(sqSize.getY()*MAX_ROW_COL + 4, 0);
 	cchar_t ctemp;
 	
+	const char* spaces = "        ";
+	
+	
 	// TODO: refactor these 2 for loops to eliminate getWhitePieces/getBlackPieces if possible
 	// or make more functions
+	addstr(spaces);
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
 		if(game->getWhitePieces()->at(i)->isDead())
@@ -221,10 +225,17 @@ void NcView::drawPieceBar()
 	}
 	
 	wideChessConversion('K', game->isWhiteTurn(), ctemp);
-	addstr("\n - --<<");
+	addstr("\n");
+	addstr(spaces);
+	addstr("- --<<");
 	add_wch(&ctemp);
-	addstr(">>-- - \n");
+	add_wch(&ctemp);
+	add_wch(&ctemp);
+	addstr(">>-- -");
+	addstr(spaces);
+	addstr("\n");
 	
+	addstr(spaces);
 	for(long unsigned int i = 0; i < NUM_PIECES/2; i++)
 	{
 		if(game->getBlackPieces()->at(i)->isDead())

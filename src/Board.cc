@@ -160,7 +160,7 @@ std::string Board::getEnPassantBoardPos() const
 			const PawnMove* tmp = whitePieces->at(i)->getPawnBehaviour();
 			if(tmp != nullptr)
 			{
-				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				const Piece* enPassantTarget = tmp->getEnPassantTarget();
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}
@@ -168,7 +168,7 @@ std::string Board::getEnPassantBoardPos() const
 			tmp = blackPieces->at(i)->getPawnBehaviour();
 			if(tmp != nullptr)
 			{
-				const Piece* enPassantTarget = &tmp->getEnPassantTarget();
+				const Piece* enPassantTarget = tmp->getEnPassantTarget();
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}

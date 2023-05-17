@@ -46,11 +46,9 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 	return false;
 }
 
-const Piece& PawnMove::getEnPassantTarget() const
+const Piece* PawnMove::getEnPassantTarget() const
 {
-	if (capturableViaEP == nullptr) 
-		throw std::logic_error("Fatal error: En passant target is nullptr when getting target. Something is wrong with control flow, this mustn't be called before appropriate checks are made.");
-	return *capturableViaEP;
+	return capturableViaEP;
 }
 	
 void PawnMove::EPSetTarget(Piece* p, int tep)

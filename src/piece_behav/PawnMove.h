@@ -11,7 +11,7 @@ class PawnMove : public MoveBehaviour
 
 	void EPValidateTarget(Piece*, bool);
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move.
-	const Piece& getEnPassantTarget() const;
+	const Piece* getEnPassantTarget() const;
 	
 	virtual Bitboard validMoves(Piece* from) override;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 

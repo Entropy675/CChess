@@ -4,8 +4,7 @@ Bitboard::Bitboard(uint64_t value) : value(value) {}
 
 void Bitboard::setBit(Pos p) 
 {
-	int pos = p.convertToIndex();
-	setBit(pos);
+	setBit(p.convertToIndex());
 }
 
 void Bitboard::setBit(int pos)
@@ -13,11 +12,30 @@ void Bitboard::setBit(int pos)
     value |= (1ULL << pos);
 }
 
+void Bitboard::clearBit(Pos p) 
+{
+	clearBit(p.convertToIndex());
+}
+
 void Bitboard::clearBit(int pos) 
 {
 	value &= ~(1ULL << pos);
 }
 
+std::string Bitboard::toString() const
+{
+	std::string r = "  01234567 \n";
+	for(int y = 0; y < MAX_ROW_COL; y++)
+	{
+		r += std::to_string(y) + "|";
+		for(int x = 0; x < MAX_ROW_COL; x++)
+			r += (*this)[Pos(x,y)] ? 'X' : ' ';
+		r += "|\n";
+	}
+	r += "  01234567 ";
+	return r;
+}
+	
 bool Bitboard::operator[](int index) const 
 {
 	uint64_t mask = 1ULL << index; // 1ULL = 00..01, bit shift to the right to move it to the index pos.

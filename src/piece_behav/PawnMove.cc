@@ -71,6 +71,21 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 	}
 }
 
+Bitboard PawnMove::validPawnCaptures(Piece* from)
+{
+	Bitboard bb;
+	
+	int dircheck = from->isWhite() ? -1 : 1;
+	
+	if(Pos::isValid(from->getPos().getX() - 1, from->getPos().getY() + dircheck))
+		bb.setBit(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
+	
+	if(Pos::isValid(from->getPos().getX() + 1, from->getPos().getY() + dircheck))
+		bb.setBit(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
+	
+	return bb;
+}
+
 Bitboard PawnMove::validMoves(Piece* from)
 {
 	Bitboard bb;
@@ -86,10 +101,10 @@ Bitboard PawnMove::validMoves(Piece* from)
 	}
 
 	// piece capture (diagonal) -1 for left, 1 for right.
-	if(game->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr)
+	if(game->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr && Pos::isValid(from->getPos().getX() - 1, from->getPos().getY() + dircheck))
 		bb.setBit(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
 
-	if(game->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
+	if(game->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr && Pos::isValid(from->getPos().getX() + 1, from->getPos().getY() + dircheck))
 		bb.setBit(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
 	
 	return bb;

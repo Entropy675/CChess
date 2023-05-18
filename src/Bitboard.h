@@ -11,10 +11,13 @@ class Bitboard
 
     void setBit(Pos p);
     void setBit(int pos);
+	void clearBit(Pos p);
 	void clearBit(int pos);
 	
+	std::string toString() const;
+	
 	bool operator[](int) const; // get the value of a single position in the bitboard
-	bool operator[](Pos) const; // get the value of a single position in the bitboard
+	bool operator[](Pos) const;
 	
     Bitboard operator|(const Bitboard&) const;
     Bitboard operator&(const Bitboard&) const;

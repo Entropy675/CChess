@@ -3,7 +3,14 @@
 
 #include <iostream>
 #include <string>
+#include "defs.h"
 
+
+// The Pos class only holds valid positions on the chess board. Attempting to add or change to an
+// invalid position will result in no change. Initializing a new object with an invalid position returns 
+// a Pos object of the position 0,0. Beware, do not use Pos to hold invalid positions even temporarily. 
+// If something is ending up on the top left corner for no reason, its defaulting because the value its
+// initialized with is invalid.
 class Pos
 {
 	friend std::ostream& operator<<(std::ostream&, const Pos&);

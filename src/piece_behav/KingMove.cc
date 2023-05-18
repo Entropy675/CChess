@@ -5,6 +5,8 @@ KingMove::~KingMove() {}
 
 void KingMove::validMoves(std::vector<Pos>& out, Piece* from)
 {
+	//if(!Pos::isValid(x,y))
+		//return;
 	
 }
 

@@ -21,7 +21,7 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(19), writeHead(baseWriteHead),
 		offset.set(2, 1); 
 	}
 	
-	logwin = newwin(15, 100, 1, 36); // for logging
+	logwin = newwin(20, 100, 0, 36); // for logging (size of logger is first 2#, second 2 are position.)
 	logfile << "============= NEW GAME =============" << std::endl;
 }
 
@@ -143,7 +143,7 @@ void NcView::drawBoard()
 		for(int line = 1; line < sqSize.getY()*MAX_ROW_COL; line++)
 		{
 			move(line, sqSize.getX()*x);
-			add_wch(&ld);
+			add_wch(&ld); // ld is "─" wide character
 		}
 	}
 
@@ -151,7 +151,7 @@ void NcView::drawBoard()
 	{
 		move(sqSize.getY()*y, 1);
 		for(int line = 0; line < sqSize.getX()*MAX_ROW_COL - 1; line++)
-			add_wch(&li);
+			add_wch(&li); // li is "│" wide character
 	}
 
 	for(int y = 1; y <= MAX_ROW_COL -1; y++)

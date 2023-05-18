@@ -1,7 +1,7 @@
 #include "defs.h"
 #include "Pos.h"
 
-Pos::Pos(const int ix, const int iy) : x(-1), y(-1)
+Pos::Pos(const int ix, const int iy) : x(0), y(0)
 {
 	set(ix, iy);
 }

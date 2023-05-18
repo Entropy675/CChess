@@ -7,7 +7,7 @@
 ** View
 ** Virtual class that can be implemented with any graphics library.
 ** Program will work with any implementation of the View class, allowing for different
-** views and different methods of creating views. (Will be useful for web version later)
+** views and different methods of creating views. (Will be useful for web/windows/sockets version later)
 ** A view must support logging functionality (via the log function).
 */
 class View

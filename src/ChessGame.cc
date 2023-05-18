@@ -28,6 +28,44 @@ void ChessGame::updateAllSpectators()
 		otherViews[i]->update();
 }
 	
+// only merge strings of same '/n' newline count
+std::string mergeStrings(const std::string& str1, const std::string& str2) 
+{
+    std::string mergedString;
+	std::string str2offset(str2);
+	str2offset += "\n"; // (the second one needs to be offset by at least one /n)
+	
+	unsigned long size = str1.size() + str2.size();
+	unsigned long str1c = 0;
+	unsigned long str2c = 0;
+	
+	bool flip = false;
+	while(str1c + str2c < size)
+	{
+		char current;
+		if(flip)
+			current = str1[str1c++];
+		else
+			current = str2offset[str2c++];
+			
+		if(current == '\n')
+		{
+			flip = !flip;
+			if(flip)
+			{
+				mergedString += "  ";
+				size += 2;
+			}
+			else
+				mergedString += current;
+		}
+		else
+			mergedString += current;
+	}
+
+    return mergedString;
+}
+
 // for this ncurses implementation we will assume that the whitePlayer = blackPlayer (local machine)
 void ChessGame::startLocalNcursesGame()
 {
@@ -114,6 +152,8 @@ void ChessGame::startLocalNcursesGame()
 		
 		
 		log.append("Post move: " + game->toFENString() + "\n");
+		log.append("Attack map:\n" + mergeStrings(game->getWhiteAttackMap().toString(), game->getBlackAttackMap().toString()));
+		//log.append(game->getWhiteAttackMap().toString());
 		log.flush();
 
 

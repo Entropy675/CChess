@@ -30,56 +30,6 @@ Board::~Board()
 	delete blackPieces;
 }
 
-bool Board::isWhiteTurn() const
-{
-	return whiteTurn;
-}
-
-Piece* Board::getPiece(Pos a) const
-{
-	return gameBoard[a.getX()][a.getY()];
-}
-
-void Board::clearPiece(Pos a)
-{
-	gameBoard[a.getX()][a.getY()] = nullptr;
-}
-
-int Board::getTurnFEN() const
-{
-	return turnCountFEN;
-}
-
-int Board::getMoves() const
-{
-	return moveCount;
-}
-	
-std::vector<Piece*>* Board::getWhitePieces() const
-{
-	return whitePieces;
-}
-
-std::vector<Piece*>* Board::getBlackPieces() const
-{
-	return blackPieces;
-}
-
-void Board::epActivate()
-{
-	enPassantActive = true;
-}
-
-void Board::epDeactivate()
-{
-	enPassantActive = false;
-}
-
-bool Board::isEnpassantOnBoard() const
-{
-	return enPassantActive;
-}
-
 std::string Board::toFENString() const
 {
 	std::string FENs = "";
@@ -339,4 +289,71 @@ void Board::setStartingBoard(bool startingColor)
 		blackPieces->push_back(gameBoard[i][1]);
 		whitePieces->push_back(gameBoard[i][MAX_ROW_COL-2]);
 	}
+}
+
+Bitboard Board::getWhiteAttackMap() const
+{
+	Bitboard attackMap;
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		attackMap = attackMap | whitePieces->at(i)->validCaptures();
+	return attackMap;
+}
+
+Bitboard Board::getBlackAttackMap() const
+{
+	Bitboard attackMap;
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		attackMap = attackMap | blackPieces->at(i)->validCaptures();
+	return attackMap;
+}
+
+	
+bool Board::isWhiteTurn() const
+{
+	return whiteTurn;
+}
+
+Piece* Board::getPiece(Pos a) const
+{
+	return gameBoard[a.getX()][a.getY()];
+}
+
+void Board::clearPiece(Pos a)
+{
+	gameBoard[a.getX()][a.getY()] = nullptr;
+}
+
+int Board::getTurnFEN() const
+{
+	return turnCountFEN;
+}
+
+int Board::getMoves() const
+{
+	return moveCount;
+}
+	
+std::vector<Piece*>* Board::getWhitePieces() const
+{
+	return whitePieces;
+}
+
+std::vector<Piece*>* Board::getBlackPieces() const
+{
+	return blackPieces;
+}
+
+void Board::epActivate()
+{
+	enPassantActive = true;
+}
+
+void Board::epDeactivate()
+{
+	enPassantActive = false;
+}
+
+bool Board::isEnpassantOnBoard() const
+{
+	return enPassantActive;
 }

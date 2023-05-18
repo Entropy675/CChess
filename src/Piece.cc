@@ -28,7 +28,6 @@ ChessStatus Piece::move(Pos cPos)
 	{
 		onSuccessDeactivateEP = true;
 		game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
-		log.append("EP bool is deactivated, weather used or not.");
 	}
 	
 	Bitboard moves = validMoves();
@@ -95,6 +94,19 @@ Bitboard Piece::validMoves()
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		moves = moves | movebehavArr[i]->validMoves(this);
+	return moves;
+}
+
+Bitboard Piece::validCaptures()
+{
+	Bitboard moves;
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+	{
+		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
+			moves = moves | pawnMove->validPawnCaptures(this);
+		else
+			moves = moves | movebehavArr[i]->validMoves(this);
+	}
 	return moves;
 }
 

@@ -7,6 +7,9 @@ KnightMove::~KnightMove() {}
 void KnightMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
 {
 	Piece* temp = from->getBoard()->getPiece(Pos(x,y));
+		
+	if(!Pos::isValid(x,y))
+		return;
 	
 	if(temp == nullptr)
 		out.push_back(Pos(x,y));
@@ -17,6 +20,9 @@ void KnightMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
 void KnightMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
 {
 	Piece* temp = from->getBoard()->getPiece(Pos(x,y));
+		
+	if(!Pos::isValid(x,y))
+		return;
 	
 	if(temp == nullptr)
 		bb.setBit(Pos(x,y));

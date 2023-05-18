@@ -21,27 +21,29 @@ class Board
 	Board();
 	~Board();
 
-	void setStartingBoard(bool flag = true);
+	void setStartingBoard(bool = true);
 	bool registerPromotion(std::string&);
+
+	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
+	Piece* getPiece(Pos) const;
 	void clearPiece(Pos);
 
-	std::string toFENString() const;
 	bool isWhiteTurn() const;
-	int getTurnFEN() const;
 	int getMoves() const;
-	Piece* getPiece(Pos) const;
+	int getTurnFEN() const;
+	std::string toFENString() const;
 
-	void epActivate();
-	void epDeactivate();
 	std::string getEnPassantBoardPos() const;
 	bool isEnpassantOnBoard() const;
-	
-	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
-	
+	void epActivate();
+	void epDeactivate();
+		
 	// TODO: overload [] and/or [][] for the board interface
 	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
+	Bitboard getWhiteAttackMap() const;
+	Bitboard getBlackAttackMap() const;
 
 	private:
 	char promotionMatchChar(std::string&);
@@ -57,8 +59,10 @@ class Board
 
 	Piece* previousPiece; // last piece moved
 	Piece* gameBoard[MAX_ROW_COL][MAX_ROW_COL];
-	bool whitePerspective;
+	
+	bool whitePerspective; // for which way to display the board, display board flipped for black (nothing to do with gamelogic, only view)
 	bool whiteTurn;
+	
 	int halfmoveCount;
 	int turnCountFEN;
 	int moveCount;

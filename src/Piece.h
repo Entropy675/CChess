@@ -30,6 +30,7 @@ class Piece
 	~Piece();
 
 	Bitboard validMoves();
+	Bitboard validCaptures();
 	ChessStatus move(const Pos);
 	bool isValidMove(const Pos p);
 	void validMoves(std::vector<Pos>& p);

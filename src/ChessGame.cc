@@ -111,6 +111,7 @@ void ChessGame::startLocalNcursesGame()
 			
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
 			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
+			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
 
 		regex pattern2("[kqrbnp][a-h][1-8]"); // lets just use regex

@@ -59,15 +59,6 @@ ChessStatus Piece::move(Pos cPos)
 		isValid = true; // you cant set isValid = moves[cPos] because isValid might already be true
 	
 	log.setLogLevel(1);
-	log.append("CHESSSTATUS in PIECE: " + getChessStatusString(returnChessStatus) + "\n");
-	log.append("Valid: " + std::to_string(isValid) + "\n");
-	log.append("to Pos: " + cPos.toString() + " | ");
-	std::vector<Pos> pVec; 
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		movebehavArr[i]->validMoves(pVec, this);
-	for(long unsigned int i = 0; i < pVec.size(); i++)
-		log.append(pVec[i].toString());
-	log.append("\n");
 
 	if(isValid) // if isValid was never found, we don't move
 	{

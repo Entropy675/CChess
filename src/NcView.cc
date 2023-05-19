@@ -21,7 +21,7 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(19), writeHead(baseWriteHead),
 		offset.set(2, 1); 
 	}
 	
-	logwin = newwin(20, 100, 0, 36); // for logging (size of logger is first 2#, second 2 are position.)
+	logwin = newwin(logwinHeight, logwinWidth, logwinY, logwinX); // for logging (size of logger is first 2#, second 2 are position.)
 	logfile << "============= NEW GAME =============" << std::endl;
 }
 
@@ -39,13 +39,21 @@ void NcView::toggleSize()
 	if(largeBoard)
 	{
 		sqSize.set(6, 4);
-		offset.set(3, 2);  // from top left corner of square			
+		offset.set(3, 2);  // from top left corner of square	
+		logwinX += 16;
+		logwinHeight += 15;
+		wresize(logwin, logwinHeight, logwinWidth);
+		mvwin(logwin, logwinY, logwinX);
 	}
 	else
 	{
 
 		sqSize.set(4, 2); // more tight fitting board
 		offset.set(2, 1); 
+		logwinX -= 16;
+		logwinHeight -= 15;
+		wresize(logwin, logwinHeight, logwinWidth);
+		mvwin(logwin, logwinY, logwinX);
 	}
 	
 	update();

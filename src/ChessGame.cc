@@ -137,6 +137,7 @@ void ChessGame::startLocalNcursesGame()
 				uinp = "";
 				
 				whitePlayer->update();
+				whitePlayer->print("");
 				whitePlayer->print("Pawn can be promoted! Input promotion (Q, N, R, B). ");
 				whitePlayer->userInput(uinp);
 				

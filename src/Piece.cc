@@ -41,16 +41,6 @@ ChessStatus Piece::move(Pos cPos)
 		if(isValid)
 			log.append("EP CHECK ACT PASS\n");
 		
-		if(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2) == cPos)
-		{
-			if(!hasMoved() && game->getPiece(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1))) == nullptr && game->getPiece(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2)) == nullptr)
-			{
-				pm->EPValidateTarget(this, true);
-				pm->EPValidateTarget(this, false);
-			}
-		}
-
-		
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // PROMOTE is PAWNMOVE because only pawns promote
 	}
@@ -62,6 +52,14 @@ ChessStatus Piece::move(Pos cPos)
 
 	if(isValid) // if isValid was never found, we don't move
 	{
+				
+		if(pm != nullptr && Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2) == cPos)
+		{
+			// set the left and right pawn to enpassant this one if its moved up two, can only happen if isValid & pawnmove & moved up two
+			pm->EPValidateTarget(this, true);
+			pm->EPValidateTarget(this, false);
+		}
+		
 		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
 		if(!moved)
 			moved = true;

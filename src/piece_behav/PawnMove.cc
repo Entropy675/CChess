@@ -13,7 +13,7 @@ PawnMove::~PawnMove()
 // It is then the move funcs responsibility to move this pawn to the position and update values (like has moved etc) as per normal.
 bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 {
-	Log a(1);
+	Log a(2);
 
 	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
 	if(capturableViaEP != nullptr && turnToEP != target.getBoard()->getMoves())
@@ -25,13 +25,8 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 		a.flush();
 	}
 	
-	a.append("---> Entering EP check.\n");
-	a.setLogLevel(3);
 	if(capturableViaEP != nullptr)
 	{
-		a.append("capturableViaEP: " + capturableViaEP->getPos().toString()+ "\n");
-		a.setLogLevel(1);
-		
 		if(p.getY() == capturableViaEP->getPos().getY() + (target.isWhite() ? -1 : 1) && p.getX() == capturableViaEP->getPos().getX())
 		{
 			a.append(" ==ENPASSANT== ---*^\\> MATCH: " + p.toString() + "\n");
@@ -41,8 +36,6 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 		}
 		a.append("fail" + std::to_string(capturableViaEP->getPos().getY()));
 	}
-
-	a.append("---> Exiting EP check.\n");
 	return false;
 }
 
@@ -74,6 +67,8 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 Bitboard PawnMove::validPawnCaptures(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	
 	int dircheck = from->isWhite() ? -1 : 1;
 	
@@ -89,6 +84,8 @@ Bitboard PawnMove::validPawnCaptures(Piece* from)
 Bitboard PawnMove::validMoves(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	int dircheck = from->isWhite() ? -1 : 1;
 	Board* game = from->getBoard();
 
@@ -113,6 +110,8 @@ Bitboard PawnMove::validMoves(Piece* from)
 // TODO: refactor to something cleaner when you have time
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
+	if(from->isDead())
+		return;
 	int dircheck = from->isWhite() ? -1 : 1;
 
 	// forward moves

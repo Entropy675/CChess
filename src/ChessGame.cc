@@ -28,12 +28,11 @@ void ChessGame::updateAllSpectators()
 		otherViews[i]->update();
 }
 	
-// only merge strings of same '/n' newline count
-std::string mergeStrings(const std::string& str1, const std::string& str2) 
+// only merge strings of same '\n' newline count, or str1 < str2 '\n's (I lazy, theres probably a better way to write this but I did this in a min)
+std::string ChessGame::mergeStrings(const std::string& str1, std::string str2) 
 {
     std::string mergedString;
-	std::string str2offset(str2);
-	str2offset += "\n"; // (the second one needs to be offset by at least one /n)
+	str2 += "\n"; // (the second one needs to be offset by at least one \n)
 	
 	unsigned long size = str1.size() + str2.size();
 	unsigned long str1c = 0;
@@ -46,7 +45,7 @@ std::string mergeStrings(const std::string& str1, const std::string& str2)
 		if(flip)
 			current = str1[str1c++];
 		else
-			current = str2offset[str2c++];
+			current = str2[str2c++];
 			
 		if(current == '\n')
 		{
@@ -92,11 +91,13 @@ void ChessGame::startLocalNcursesGame()
 
 		// for valid input, must be of format "c# c#", where c = char in "abcdefgh"
 		// could also support p = kqrnbp in format "pc#", where only one valid move can go there.
-		// could also support "c#" where only one valid move exists (this is cringe but completely doable)
+		// (requires some assumptions about where the pieces are in the array & some validity checks)
+		// (could also just scan through all pieces, there are only 16... its not really slow.)
 
-		regex pattern("[a-h][1-8] [a-h][1-8]"); // lets just use regex
 		ChessStatus promotionAsk = ChessStatus::FAIL;
 		log.append("Pre move:  " + game->toFENString() + "\n");
+		
+		regex pattern("[a-h][1-8] [a-h][1-8]");
 		
 		if(regex_match(uinp, pattern))
 		{
@@ -111,9 +112,10 @@ void ChessGame::startLocalNcursesGame()
 			
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
 			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
+			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
 
-		regex pattern2("[kqrbnp][a-h][1-8]"); // lets just use regex
+		regex pattern2("[kqrbnp][a-h][1-8]");
 
 		if(regex_match(uinp, pattern2))
 		{
@@ -136,12 +138,14 @@ void ChessGame::startLocalNcursesGame()
 				uinp = "";
 				
 				whitePlayer->update();
+				whitePlayer->print(""); // get the write header to the same position as the bar 
+				whitePlayer->print("");
 				whitePlayer->print("Pawn can be promoted! Input promotion (Q, N, R, B). ");
 				whitePlayer->userInput(uinp);
 				
 				validInput = game->registerPromotion(uinp);
 				
-				log.append("Checking promotion... : ");
+				log.append("Checking promotion... ");
 				if(validInput)
 					log.append("Valid!");
 				else

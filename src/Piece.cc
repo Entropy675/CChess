@@ -41,16 +41,6 @@ ChessStatus Piece::move(Pos cPos)
 		if(isValid)
 			log.append("EP CHECK ACT PASS\n");
 		
-		if(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2) == cPos)
-		{
-			if(!hasMoved() && game->getPiece(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1))) == nullptr && game->getPiece(Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2)) == nullptr)
-			{
-				pm->EPValidateTarget(this, true);
-				pm->EPValidateTarget(this, false);
-			}
-		}
-
-		
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
 			returnChessStatus = ChessStatus::PROMOTE; // PROMOTE is PAWNMOVE because only pawns promote
 	}
@@ -59,18 +49,17 @@ ChessStatus Piece::move(Pos cPos)
 		isValid = true; // you cant set isValid = moves[cPos] because isValid might already be true
 	
 	log.setLogLevel(1);
-	log.append("CHESSSTATUS in PIECE: " + getChessStatusString(returnChessStatus) + "\n");
-	log.append("Valid: " + std::to_string(isValid) + "\n");
-	log.append("to Pos: " + cPos.toString() + " | ");
-	std::vector<Pos> pVec; 
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		movebehavArr[i]->validMoves(pVec, this);
-	for(long unsigned int i = 0; i < pVec.size(); i++)
-		log.append(pVec[i].toString());
-	log.append("\n");
 
 	if(isValid) // if isValid was never found, we don't move
 	{
+				
+		if(pm != nullptr && Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2) == cPos)
+		{
+			// set the left and right pawn to enpassant this one if its moved up two, can only happen if isValid & pawnmove & moved up two
+			pm->EPValidateTarget(this, true);
+			pm->EPValidateTarget(this, false);
+		}
+		
 		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
 		if(!moved)
 			moved = true;

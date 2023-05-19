@@ -1,14 +1,35 @@
-
 PATH2SRC = src/
 PATH2OBJ = obj/
 
-OBJ = $(PATH2OBJ)ChessGame.o $(PATH2OBJ)Pos.o $(PATH2OBJ)MoveBehaviour.o $(PATH2OBJ)PawnMove.o $(PATH2OBJ)KingMove.o $(PATH2OBJ)KnightMove.o $(PATH2OBJ)PlusMove.o $(PATH2OBJ)CrossMove.o $(PATH2OBJ)Piece.o $(PATH2OBJ)Board.o $(PATH2OBJ)View.o $(PATH2OBJ)Log.o $(PATH2OBJ)NcView.o $(PATH2OBJ)Bitboard.o
-CC = g++ -Wall -g
-LIB = -lncursesw
+OBJ = $(PATH2OBJ)ChessGame.o $(PATH2OBJ)Pos.o $(PATH2OBJ)MoveBehaviour.o $(PATH2OBJ)PawnMove.o $(PATH2OBJ)KingMove.o $(PATH2OBJ)KnightMove.o $(PATH2OBJ)PlusMove.o $(PATH2OBJ)CrossMove.o $(PATH2OBJ)Piece.o $(PATH2OBJ)Board.o $(PATH2OBJ)View.o $(PATH2OBJ)Log.o $(PATH2OBJ)Bitboard.o
+
+#WIN_SOURCES = $(OBJ) $(PATH2OBJ)WinView.o
+LINUX_SOURCES = $(OBJ) $(PATH2OBJ)NcView.o
+
+# assuming MinGW toolchain for compiling on windows
+#ifeq ($(OS),Windows_NT)
+#    TARGET = CChess.exe
+#    LIB = -luser32
+#    CC = g++
+#else 
+ifeq ($(shell uname),Linux)
+    TARGET = CChess
+    LIB = -lncursesw
+    CC = g++ -Wall -g
+else
+    $(error Unsupported operating system: $(OS))
+endif
+
+all: $(TARGET)
+
+#CChess.exe:
+#    # Build for Windows
+#    g++ -o windows_target $(WIN_SOURCES) $(LIBS)
+#
 
 # main is kept seperate for the testing makefile
-CChess:	$(OBJ) $(PATH2OBJ)main.o
-	$(CC) -o CChess $(OBJ) $(LIB) $(PATH2OBJ)main.o 
+CChess:	$(LINUX_SOURCES) $(PATH2OBJ)main.o
+	$(CC) -o CChess $(LINUX_SOURCES) $(LIB) $(PATH2OBJ)main.o 
 
 $(PATH2OBJ)ChessGame.o: $(PATH2SRC)ChessGame.cc $(PATH2SRC)ChessGame.h $(PATH2SRC)Log.h $(PATH2SRC)Board.h $(PATH2SRC)NcView.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
 	$(CC) -c $(PATH2SRC)ChessGame.cc -o $(PATH2OBJ)ChessGame.o
@@ -59,5 +80,5 @@ $(PATH2OBJ)CrossMove.o: $(PATH2SRC)piece_behav/CrossMove.cc $(PATH2SRC)piece_beh
 clean:
 		find . -type f -name '*.o' -delete
 		rm -f CChess
+		rm -f CChess.exe
 		rm -f log.txt
-

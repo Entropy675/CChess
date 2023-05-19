@@ -34,6 +34,8 @@ void KnightMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
 Bitboard KnightMove::validMoves(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	
 	if(Pos::isValid(from->getPos().getX() + 2, from->getPos().getY()))
 	{
@@ -64,6 +66,9 @@ Bitboard KnightMove::validMoves(Piece* from)
 	
 void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 {
+	if(from->isDead())
+		return;
+
 	if(Pos::isValid(from->getPos().getX() + 2, from->getPos().getY()))
 	{
 		checkPosition(from->getPos().getX() + 2, from->getPos().getY() + 1, out, from);

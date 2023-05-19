@@ -291,6 +291,8 @@ void Board::setStartingBoard(bool startingColor)
 		blackPieces->push_back(gameBoard[i][1]);
 		whitePieces->push_back(gameBoard[i][MAX_ROW_COL-2]);
 	}
+	
+	updateAttackMaps();
 }
 
 void Board::updateAttackMaps()

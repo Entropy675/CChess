@@ -91,18 +91,7 @@ Bitboard Piece::validCaptures()
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-	{
-		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
-			moves = moves | pawnMove->validPawnCaptures(this);
-		else if(KingMove* kingMove = dynamic_cast<KingMove*>(movebehavArr.at(i)))
-		{
-			Log log(1);
-			log.append(pos.toString());
-			moves = moves | movebehavArr[i]->validMoves(this);
-		}
-		else
-			moves = moves | movebehavArr[i]->validMoves(this);
-	}
+		moves = moves | movebehavArr[i]->validCaptures(this);
 	return moves;
 }
 

@@ -9,13 +9,14 @@ class KingMove : public MoveBehaviour
 	KingMove();
 	~KingMove();
 
+	virtual Bitboard validCaptures(Piece* from) override;
+	
 	virtual Bitboard validMoves(Piece* from) override;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
-	virtual bool isValidMove(const Pos& to, Piece* from) override;
 	
 	private:
-	void checkPosition(int x, int y, std::vector<Pos>&, Bitboard&, Piece*);
-	void checkPosition(int x, int y, Bitboard&, Bitboard&, Piece*);
+	void checkPosition(int x, int y, std::vector<Pos>&, Piece*);
+	void checkPosition(int x, int y, Bitboard&, Piece*, bool = true);
 };
 
 #endif

@@ -103,8 +103,3 @@ void PlusMove::validMoves(std::vector<Pos>& out, Piece* from)
 			break;
 	}
 }
-
-bool PlusMove::isValidMove(const Pos& to, Piece* from)
-{
-    return validMoves(from)[to];
-}

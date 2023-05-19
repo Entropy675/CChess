@@ -100,8 +100,3 @@ void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
 			break;
 	}
 }
-
-bool CrossMove::isValidMove(const Pos& to, Piece* from)
-{
-    return validMoves(from)[to];
-}

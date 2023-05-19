@@ -221,6 +221,8 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
 	}
+	
+	updateAttackMaps();
 	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }
 
@@ -291,22 +293,27 @@ void Board::setStartingBoard(bool startingColor)
 	}
 }
 
-Bitboard Board::getWhiteAttackMap() const
+void Board::updateAttackMaps()
 {
-	Bitboard attackMap;
+	whiteAttackMap.clear();
+	blackAttackMap.clear();
+	
 	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		attackMap = attackMap | whitePieces->at(i)->validCaptures();
-	return attackMap;
-}
-
-Bitboard Board::getBlackAttackMap() const
-{
-	Bitboard attackMap;
+		whiteAttackMap = whiteAttackMap | whitePieces->at(i)->validCaptures();
+	
 	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		attackMap = attackMap | blackPieces->at(i)->validCaptures();
-	return attackMap;
+		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();
 }
 
+const Bitboard& Board::getWhiteAttackMap() const
+{
+	return whiteAttackMap;
+}
+
+const Bitboard& Board::getBlackAttackMap() const
+{
+	return blackAttackMap;
+}
 	
 bool Board::isWhiteTurn() const
 {

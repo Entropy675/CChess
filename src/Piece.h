@@ -39,7 +39,7 @@ class Piece
 	bool isDead() const;
 	bool hasMoved() const;
 	
-	Pos getPos() const;
+	const Pos& getPos() const;
 	std::string toString() const;
 	std::string getBoardPos() const;
 	

@@ -22,6 +22,11 @@ void Bitboard::clearBit(int pos)
 	value &= ~(1ULL << pos);
 }
 
+void Bitboard::clear()
+{
+	value = 0;
+}
+
 std::string Bitboard::toString() const
 {
 	std::string r = "  01234567 \n";

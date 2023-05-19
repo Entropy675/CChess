@@ -42,12 +42,13 @@ class Board
 	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
-	Bitboard getWhiteAttackMap() const;
-	Bitboard getBlackAttackMap() const;
+	const Bitboard& getWhiteAttackMap() const;
+	const Bitboard& getBlackAttackMap() const;
 
 	private:
 	char promotionMatchChar(std::string&);
-
+	void updateAttackMaps();
+	
 	std::vector<Piece*>* whitePieces;
 	bool whiteCastleKS;
 	bool whiteCastleQS;
@@ -55,6 +56,9 @@ class Board
 	bool blackCastleKS;
 	bool blackCastleQS;
 
+	Bitboard whiteAttackMap;
+	Bitboard blackAttackMap;
+	
 	bool enPassantActive;
 
 	Piece* previousPiece; // last piece moved

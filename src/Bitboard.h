@@ -14,6 +14,8 @@ class Bitboard
 	void clearBit(Pos p);
 	void clearBit(int pos);
 	
+	void clear();
+	
 	std::string toString() const;
 	
 	bool operator[](int) const; // get the value of a single position in the bitboard

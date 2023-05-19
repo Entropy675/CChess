@@ -64,7 +64,7 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 	}
 }
 
-Bitboard PawnMove::validPawnCaptures(Piece* from)
+Bitboard PawnMove::validCaptures(Piece* from)
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -107,7 +107,6 @@ Bitboard PawnMove::validMoves(Piece* from)
 	return bb;
 }
 
-// TODO: refactor to something cleaner when you have time
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
 	if(from->isDead())
@@ -133,9 +132,4 @@ void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 
 	if(from->getBoard()->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr)
 		p.push_back(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
-}
-
-bool PawnMove::isValidMove(const Pos& to, Piece* from)
-{
-    return validMoves(from)[to];
 }

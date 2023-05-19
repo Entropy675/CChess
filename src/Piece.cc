@@ -4,6 +4,7 @@
 #include "piece_behav/CrossMove.h"
 #include "piece_behav/PlusMove.h"
 #include "piece_behav/KnightMove.h"
+#include "piece_behav/KingMove.h"
 
 #include <cctype>
 
@@ -90,12 +91,7 @@ Bitboard Piece::validCaptures()
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-	{
-		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
-			moves = moves | pawnMove->validPawnCaptures(this);
-		else
-			moves = moves | movebehavArr[i]->validMoves(this);
-	}
+		moves = moves | movebehavArr[i]->validCaptures(this);
 	return moves;
 }
 
@@ -221,7 +217,7 @@ bool Piece::hasMoved() const
 	return moved;
 }
 
-Pos Piece::getPos() const
+const Pos& Piece::getPos() const
 {
 	return pos;
 }

@@ -20,9 +20,11 @@ public:
 	MoveBehaviour();
 	virtual ~MoveBehaviour();
 
+	virtual Bitboard validCaptures(Piece* from);
+	virtual bool isValidMove(const Pos& to, Piece* from);
+	
 	virtual Bitboard validMoves(Piece* from) = 0;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) = 0; // ptr cant be const ref because of pawn EP set & kill
-	virtual bool isValidMove(const Pos& to, Piece* from) = 0;
 };
 
 

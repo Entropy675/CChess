@@ -93,8 +93,3 @@ void KnightMove::validMoves(std::vector<Pos>& out, Piece* from)
 		checkPosition(from->getPos().getX() - 1, from->getPos().getY() - 2, out, from);
 	}
 }
-
-bool KnightMove::isValidMove(const Pos& to, Piece* from)
-{
-    return validMoves(from)[to];
-}

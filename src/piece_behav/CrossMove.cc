@@ -43,6 +43,8 @@ bool CrossMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
 Bitboard CrossMove::validMoves(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	
 	bool stopTR = false;
 	bool stopTL = false;
@@ -72,6 +74,9 @@ Bitboard CrossMove::validMoves(Piece* from)
 	
 void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
 {
+	if(from->isDead())
+		return;
+	
 	bool stopTR = false;
 	bool stopTL = false;
 	bool stopBR = false;

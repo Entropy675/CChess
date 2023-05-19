@@ -44,6 +44,8 @@ bool PlusMove::checkPosition(int x, int y, Bitboard& out, Piece* from)
 Bitboard PlusMove::validMoves(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	
 	bool stopR = false;
 	bool stopL = false;
@@ -74,6 +76,9 @@ Bitboard PlusMove::validMoves(Piece* from)
 
 void PlusMove::validMoves(std::vector<Pos>& out, Piece* from)
 {
+	if(from->isDead())
+		return;
+	
 	Log log(2);
 	bool stopR = false;
 	bool stopL = false;

@@ -67,6 +67,8 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 Bitboard PawnMove::validPawnCaptures(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	
 	int dircheck = from->isWhite() ? -1 : 1;
 	
@@ -82,6 +84,8 @@ Bitboard PawnMove::validPawnCaptures(Piece* from)
 Bitboard PawnMove::validMoves(Piece* from)
 {
 	Bitboard bb;
+	if(from->isDead())
+		return bb;
 	int dircheck = from->isWhite() ? -1 : 1;
 	Board* game = from->getBoard();
 
@@ -106,6 +110,8 @@ Bitboard PawnMove::validMoves(Piece* from)
 // TODO: refactor to something cleaner when you have time
 void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
 {
+	if(from->isDead())
+		return;
 	int dircheck = from->isWhite() ? -1 : 1;
 
 	// forward moves

@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build and Test
+    - name: Build and Test Pushing all Pawns
       run: |
         make
         cd tests/

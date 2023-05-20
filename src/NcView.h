@@ -40,6 +40,10 @@ class NcView : public View
 
 	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 
+	int logwinX = 36;
+	int logwinY = 0;
+	int logwinWidth = 100;
+	int logwinHeight = 20;	
 	Pos sqSize; // size of a singe square on board
 	Pos offset; // offset of where the center of that square is
 

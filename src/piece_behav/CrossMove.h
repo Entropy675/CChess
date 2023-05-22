@@ -8,7 +8,7 @@ class CrossMove : public MoveBehaviour
 	public:
 	CrossMove();
 	~CrossMove();
-
+	
 	virtual Bitboard validMoves(Piece* from) override;
 	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
 	

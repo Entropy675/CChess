@@ -9,7 +9,7 @@
 #include <cctype>
 
 Piece::Piece(Pos p, char c, bool w, Board* g) 
-	: pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
+	: enPassantActive(false), pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
 
 // piece cleans up its behaviour array
 Piece::~Piece() 
@@ -22,7 +22,9 @@ ChessStatus Piece::move(Pos cPos)
 {
 	Log log(1);
 	bool isValid = false;
+	Bitboard moves = validMoves();
 	ChessStatus returnChessStatus = ChessStatus::FAIL;
+
 	bool onSuccessDeactivateEP = false;
 	
 	if(game->isEnpassantOnBoard())
@@ -31,9 +33,7 @@ ChessStatus Piece::move(Pos cPos)
 		game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
 	}
 	
-	Bitboard moves = validMoves();
 	PawnMove* pm = getPawnBehaviour();
-	
 	if(pm != nullptr)
 	{
 		returnChessStatus = ChessStatus::PAWNMOVE;
@@ -67,6 +67,8 @@ ChessStatus Piece::move(Pos cPos)
 		pos = cPos; 
 		if(returnChessStatus == ChessStatus::FAIL) // ensures that PROMOTE stays the same
 			returnChessStatus = ChessStatus::SUCCESS;
+			
+		game->updateWhiteBlackChecks();
 	}
 	else
 	{	
@@ -175,9 +177,17 @@ void Piece::clearAllBehavs()
 	
 PawnMove* Piece::getPawnBehaviour() const
 {
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
 		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
 			return pawnMove;
+	return nullptr;
+}
+
+KingMove* Piece::getKingBehaviour() const
+{
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
+		if(KingMove* kingMove = dynamic_cast<KingMove*>(movebehavArr.at(i)))
+			return kingMove;
 	return nullptr;
 }
 

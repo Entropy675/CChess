@@ -21,23 +21,29 @@ class Board
 	Board();
 	~Board();
 
+	void disableCheck();
 	void setStartingBoard(bool = true);
 	bool registerPromotion(std::string&);
 
 	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
 	Piece* getPiece(Pos) const;
 	void clearPiece(Pos);
-
+		
+	const Piece& getWhiteKing() const;
+	const Piece& getBlackKing() const;
+	
 	bool isWhiteTurn() const;
 	int getMoves() const;
+	
 	int getTurnFEN() const;
 	std::string toFENString() const;
 
-	std::string getEnPassantBoardPos() const;
+	std::string getEnPassantBoardPosFEN() const;
 	bool isEnpassantOnBoard() const;
 	void epActivate();
 	void epDeactivate();
-		
+	
+	void updateWhiteBlackChecks();
 	// TODO: overload [] and/or [][] for the board interface
 	
 	std::vector<Piece*>* getWhitePieces() const;
@@ -50,9 +56,14 @@ class Board
 	void updateAttackMaps();
 	
 	std::vector<Piece*>* whitePieces;
+	Piece* whiteKing;
+	bool whiteCheck;
 	bool whiteCastleKS;
 	bool whiteCastleQS;
+	
 	std::vector<Piece*>* blackPieces;
+	Piece* blackKing;
+	bool blackCheck;
 	bool blackCastleKS;
 	bool blackCastleQS;
 

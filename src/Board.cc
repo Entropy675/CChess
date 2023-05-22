@@ -10,7 +10,7 @@
 
 
 Board::Board() 
-	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
+	: whiteKing(nullptr), whiteCheck(false), whiteCastleKS(true), whiteCastleQS(true), blackKing(nullptr), blackCheck(false), blackCastleKS(true), blackCastleQS(true), 
 	  enPassantActive(false), previousPiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
@@ -28,6 +28,75 @@ Board::~Board()
 
 	delete whitePieces;
 	delete blackPieces;
+}
+
+ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
+{
+
+	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
+		return ChessStatus::FAIL;
+
+	bool wKingInCheck = whiteCheck;
+	bool bKingInCheck = blackCheck;
+	
+	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
+	//log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
+	
+	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
+		halfmoveCount = 0;
+	
+	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
+	{
+		if(gameBoard[b.getX()][b.getY()] != nullptr)
+		{
+			gameBoard[b.getX()][b.getY()]->die();
+			halfmoveCount = 0;
+		}
+		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
+			halfmoveCount++;
+		
+		gameBoard[b.getX()][b.getY()] = getPiece(a);
+		clearPiece(a);
+				
+		updateAttackMaps();
+		
+		if(blackAttackMap[whiteKing->getPos()])
+			whiteCheck = true;
+		else
+			whiteCheck = false;
+		
+		if(whiteAttackMap[blackKing->getPos()])
+			blackCheck = true;
+		else
+			blackCheck = false;
+	
+		if(((wKingInCheck || getPiece(b)->isWhite()) && whiteCheck) || ((bKingInCheck || !getPiece(b)->isWhite() ) && blackCheck))
+		{
+			gameBoard[a.getX()][a.getY()] = getPiece(b);
+			clearPiece(b);
+			updateAttackMaps();
+			return ChessStatus::FAIL;
+		}
+		
+		if(returnChessStatus != ChessStatus::PROMOTE)
+		{
+			if(!whiteTurn)
+				turnCountFEN++;
+			moveCount++;
+			whiteTurn = !whiteTurn;
+			returnChessStatus = ChessStatus::SUCCESS;
+		}
+
+		previousPiece = getPiece(a); // keeps track of last piece moved, for promotion
+	}
+
+	Log log(1);
+	log.append(std::string("SUCCESS: checks: ") + (wKingInCheck ? "1" : "") + ", " + (bKingInCheck ? "1" : "") + " | " + (whiteCheck ? "1" : "") + ", " + (blackCheck ? "1" : ""));
+
+
+	log.append("\n");
+	
+	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }
 
 std::string Board::toFENString() const
@@ -91,7 +160,7 @@ std::string Board::toFENString() const
 		FENs += "-";
 	
 	FENs += " ";
-	FENs += getEnPassantBoardPos();
+	FENs += getEnPassantBoardPosFEN();
 	
 	FENs += " ";
 	FENs += std::to_string(halfmoveCount);
@@ -101,7 +170,7 @@ std::string Board::toFENString() const
 	return FENs;
 }
 	
-std::string Board::getEnPassantBoardPos() const
+std::string Board::getEnPassantBoardPosFEN() const
 {
 	if(enPassantActive)
 	{		
@@ -126,6 +195,12 @@ std::string Board::getEnPassantBoardPos() const
 	}
 	
 	return "-";
+}
+
+void Board::disableCheck()
+{
+	whiteCheck = false;
+	blackCheck = false;
 }
 	
 bool Board::registerPromotion(std::string& s)
@@ -185,47 +260,6 @@ char Board::promotionMatchChar(std::string& s)
 	return temp;
 }
 
-ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
-{
-
-	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
-		return ChessStatus::FAIL;
-	
-	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
-	//log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
-	
-	previousPiece = getPiece(a); // keeps track of previous piece moved, for promotion
-	
-	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
-		halfmoveCount = 0;
-	
-	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
-	{
-		if(gameBoard[b.getX()][b.getY()] != nullptr)
-		{
-			gameBoard[b.getX()][b.getY()]->die();
-			halfmoveCount = 0;
-		}
-		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-			halfmoveCount++;
-		
-		gameBoard[b.getX()][b.getY()] = getPiece(a);
-		clearPiece(a);
-		
-		if(returnChessStatus != ChessStatus::PROMOTE)
-		{
-			if(!whiteTurn)
-				turnCountFEN++;
-			moveCount++;
-			whiteTurn = !whiteTurn;
-			returnChessStatus = ChessStatus::SUCCESS;
-		}
-	}
-	
-	updateAttackMaps();
-	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
-}
-
 void Board::setStartingBoard(bool startingColor)
 {
 	// place pieces in their starting positions,
@@ -237,6 +271,7 @@ void Board::setStartingBoard(bool startingColor)
 		for(int y = 0; y < MAX_ROW_COL; y++)
 		{
 			gameBoard[x][y] = nullptr;
+			bool king = false;
 
 			if((x == 0 || x == MAX_ROW_COL-1) && (y == MAX_ROW_COL-1 || y == 0))
 			{
@@ -269,6 +304,7 @@ void Board::setStartingBoard(bool startingColor)
 				// King
 				gameBoard[x][y] = new Piece(Pos(x,y), 'K', (y == 0) ? !startingColor : startingColor, this);
 				gameBoard[x][y]->addBehav(new KingMove());
+				king = true;
 			}
 			else if (y == 1 || y == MAX_ROW_COL-2)
 			{
@@ -279,10 +315,18 @@ void Board::setStartingBoard(bool startingColor)
 
 
 			if(y == 0)
+			{
 				blackPieces->push_back(gameBoard[x][y]);
+				if (king)
+					blackKing = gameBoard[x][y];
+			}
 			else if(y == MAX_ROW_COL-1)
+			{
 				whitePieces->push_back(gameBoard[x][y]);
-
+				if (king)
+					whiteKing = gameBoard[x][y];
+			}
+			
 		}
 	}
 
@@ -305,6 +349,21 @@ void Board::updateAttackMaps()
 	
 	for(long unsigned int i = 0; i < blackPieces->size(); i++)
 		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();
+}
+
+void Board::updateWhiteBlackChecks()
+{
+
+}
+
+const Piece& Board::getWhiteKing() const
+{
+	return *whiteKing;
+}
+
+const Piece& Board::getBlackKing() const
+{
+	return *blackKing;
 }
 
 const Bitboard& Board::getWhiteAttackMap() const

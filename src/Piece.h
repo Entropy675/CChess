@@ -11,6 +11,7 @@
 #include "Board.h"
 class MoveBehaviour;
 class PawnMove;
+class KingMove;
 //#include "MoveBehaviour.h" this is always used as a ptr so it can all be linked
 //#include "piece_behav/PawnMove.h"
 
@@ -28,13 +29,16 @@ class Piece
 	public:
 	Piece(Pos p, char c = '0', bool w = false, Board* g = nullptr);
 	~Piece();
+	
 
-	Bitboard validMoves();
-	Bitboard validCaptures();
 	ChessStatus move(const Pos);
+	Board* getBoard() const;
+
 	bool isValidMove(const Pos p);
 	void validMoves(std::vector<Pos>& p);
-
+	Bitboard validMoves();
+	Bitboard validCaptures();
+	
 	bool isWhite() const;
 	bool isDead() const;
 	bool hasMoved() const;
@@ -50,15 +54,18 @@ class Piece
 	char toFENChar() const;
 	char getCharacter() const;
 	
-	Board* getBoard() const;
-	
 	PawnMove* getPawnBehaviour() const;
+	KingMove* getKingBehaviour() const;
 	void addBehav(MoveBehaviour*);
 
 	protected:
 	void clearAllBehavs();
-	bool enPassantActive;
 	
+	Bitboard cachedAttacks;
+	Bitboard cachedMoves;
+	
+	bool enPassantActive;
+
 	Pos pos;
 
 	bool moved;

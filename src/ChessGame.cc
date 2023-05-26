@@ -75,7 +75,7 @@ void ChessGame::startLocalNcursesGame()
 	whitePlayer->print("Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
 	whitePlayer->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
 	Log::delViewById(0); // to prevent double logging to the same view, since in local game w/b are the same.
-	
+
 	Log log(1);
 	bool redraw;
 

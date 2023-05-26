@@ -61,13 +61,9 @@ class Piece
 	protected:
 	void clearAllBehavs();
 	
-	Bitboard cachedAttacks;
-	Bitboard cachedMoves;
-	
 	bool enPassantActive;
-
 	Pos pos;
-
+	
 	bool moved;
 	bool dead;
 	char chr; // {R, N, B, K, Q, P} -> {Rook, Knight, Bishop, King, Queen, Pawn}

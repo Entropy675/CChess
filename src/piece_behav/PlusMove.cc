@@ -1,10 +1,10 @@
 #include "PlusMove.h"
 
-PlusMove::PlusMove() {}
+PlusMove::PlusMove(Piece* from) : MoveBehaviour(from) {}
 PlusMove::~PlusMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool PlusMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
+bool PlusMove::checkPosition(int x, int y, std::vector<Pos>& out)
 {
 	if(Pos::isValid(x, y))
 	{
@@ -22,7 +22,7 @@ bool PlusMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
 	return true;
 }
 
-bool PlusMove::checkPosition(int x, int y, Bitboard& out, Piece* from)
+bool PlusMove::checkPosition(int x, int y, Bitboard& out)
 {
 	if(Pos::isValid(x, y))
 	{
@@ -41,7 +41,7 @@ bool PlusMove::checkPosition(int x, int y, Bitboard& out, Piece* from)
 }
 
 
-Bitboard PlusMove::validMoves(Piece* from)
+Bitboard PlusMove::validMoves()
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -55,16 +55,16 @@ Bitboard PlusMove::validMoves(Piece* from)
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopR)
-			stopR = checkPosition(from->getPos().getX() + i, from->getPos().getY(), bb, from);
+			stopR = checkPosition(from->getPos().getX() + i, from->getPos().getY(), bb);
 		
 		if(!stopL)
-			stopL = checkPosition(from->getPos().getX() - i, from->getPos().getY(), bb, from);
+			stopL = checkPosition(from->getPos().getX() - i, from->getPos().getY(), bb);
 		
 		if(!stopD)
-			stopD = checkPosition(from->getPos().getX(), from->getPos().getY() + i, bb, from);
+			stopD = checkPosition(from->getPos().getX(), from->getPos().getY() + i, bb);
 		
 		if(!stopU)
-			stopU = checkPosition(from->getPos().getX(), from->getPos().getY() - i, bb, from);
+			stopU = checkPosition(from->getPos().getX(), from->getPos().getY() - i, bb);
 		
 		if(stopU && stopD && stopR && stopL)
 			break;
@@ -74,7 +74,7 @@ Bitboard PlusMove::validMoves(Piece* from)
 }
 
 
-void PlusMove::validMoves(std::vector<Pos>& out, Piece* from)
+void PlusMove::validMoves(std::vector<Pos>& out)
 {
 	if(from->isDead())
 		return;
@@ -88,16 +88,16 @@ void PlusMove::validMoves(std::vector<Pos>& out, Piece* from)
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopR)
-			stopR = checkPosition(from->getPos().getX() + i, from->getPos().getY(), out, from);
+			stopR = checkPosition(from->getPos().getX() + i, from->getPos().getY(), out);
 		
 		if(!stopL)
-			stopL = checkPosition(from->getPos().getX() - i, from->getPos().getY(), out, from);
+			stopL = checkPosition(from->getPos().getX() - i, from->getPos().getY(), out);
 		
 		if(!stopD)
-			stopD = checkPosition(from->getPos().getX(), from->getPos().getY() + i, out, from);
+			stopD = checkPosition(from->getPos().getX(), from->getPos().getY() + i, out);
 		
 		if(!stopU)
-			stopU = checkPosition(from->getPos().getX(), from->getPos().getY() - i, out, from);
+			stopU = checkPosition(from->getPos().getX(), from->getPos().getY() - i, out);
 		
 		if(stopU && stopD && stopR && stopL)
 			break;

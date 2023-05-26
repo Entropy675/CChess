@@ -6,17 +6,16 @@
 class KingMove : public MoveBehaviour
 {
 	public:
-	KingMove();
+	KingMove(Piece* from = nullptr);
 	~KingMove();
 
-	virtual Bitboard validCaptures(Piece* from) override;
-	
-	virtual Bitboard validMoves(Piece* from) override;
-	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
+	virtual Bitboard validCaptures() override;
+	virtual Bitboard validMoves() override;
+	virtual void validMoves(std::vector<Pos>& out) override; 
 	
 	private:
-	void checkPosition(int x, int y, std::vector<Pos>&, Piece*);
-	void checkPosition(int x, int y, Bitboard&, Piece*, bool = true);
+	void checkPosition(int x, int y, std::vector<Pos>&);
+	void checkPosition(int x, int y, Bitboard&, bool = true);
 };
 
 #endif

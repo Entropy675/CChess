@@ -1,14 +1,22 @@
 #include "MoveBehaviour.h"
 
-MoveBehaviour::MoveBehaviour() {}
+MoveBehaviour::MoveBehaviour(Piece* p) : from(p) {}
 MoveBehaviour::~MoveBehaviour() {}
 
-Bitboard MoveBehaviour::validCaptures(Piece* from)
+
+Piece* MoveBehaviour::setFrom(Piece* p)
 {
-	return validMoves(from);
+	Piece* r = from;
+	from = p;
+	return r;
 }
 
-bool MoveBehaviour::isValidMove(const Pos& to, Piece* from)
+Bitboard MoveBehaviour::validCaptures()
 {
-    return validMoves(from)[to];
+	return validMoves();
+}
+
+bool MoveBehaviour::isValidMove(const Pos& to)
+{
+    return validMoves()[to];
 }

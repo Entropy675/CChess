@@ -6,15 +6,15 @@
 class CrossMove : public MoveBehaviour
 {
 	public:
-	CrossMove();
+	CrossMove(Piece* from = nullptr);
 	~CrossMove();
 	
-	virtual Bitboard validMoves(Piece* from) override;
-	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
+	virtual Bitboard validMoves() override;
+	virtual void validMoves(std::vector<Pos>& out) override; 
 	
 	private:
-	bool checkPosition(int, int, std::vector<Pos>&, Piece*);
-	bool checkPosition(int, int, Bitboard&, Piece*);
+	bool checkPosition(int, int, std::vector<Pos>&);
+	bool checkPosition(int, int, Bitboard&);
 };
 
 #endif

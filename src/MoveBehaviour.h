@@ -17,14 +17,19 @@
 class MoveBehaviour
 {
 public:
-	MoveBehaviour();
+	MoveBehaviour(Piece* from = nullptr);
 	virtual ~MoveBehaviour();
-
-	virtual Bitboard validCaptures(Piece* from);
-	virtual bool isValidMove(const Pos& to, Piece* from);
 	
-	virtual Bitboard validMoves(Piece* from) = 0;
-	virtual void validMoves(std::vector<Pos>& out, Piece* from) = 0; // ptr cant be const ref because of pawn EP set & kill
+	Piece* setFrom(Piece*);
+
+	virtual Bitboard validCaptures();
+	virtual bool isValidMove(const Pos& to);
+	
+	virtual Bitboard validMoves() = 0;
+	virtual void validMoves(std::vector<Pos>& out) = 0; // ptr cant be const ref because of pawn EP set & kill
+
+protected:
+	Piece* from;
 };
 
 

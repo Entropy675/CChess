@@ -1,10 +1,10 @@
 #include "CrossMove.h"
 
-CrossMove::CrossMove() {}
+CrossMove::CrossMove(Piece* p) : MoveBehaviour(p)  {}
 CrossMove::~CrossMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
+bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out)
 {
 	if(Pos::isValid(x, y))
 	{
@@ -22,7 +22,7 @@ bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
 	return true;			
 }
 
-bool CrossMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
+bool CrossMove::checkPosition(int x, int y, Bitboard& bb)
 {
 	if(Pos::isValid(x, y))
 	{
@@ -40,7 +40,7 @@ bool CrossMove::checkPosition(int x, int y, Bitboard& bb, Piece* from)
 	return true;			
 }
 
-Bitboard CrossMove::validMoves(Piece* from)
+Bitboard CrossMove::validMoves()
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -54,16 +54,16 @@ Bitboard CrossMove::validMoves(Piece* from)
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopTL)
-			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, bb, from);
+			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, bb);
 		
 		if(!stopTR)
-			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, bb, from);
+			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, bb);
 		
 		if(!stopBR)
-			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, bb, from);
+			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, bb);
 		
 		if(!stopBL)
-			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, bb, from);
+			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, bb);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;
@@ -72,7 +72,7 @@ Bitboard CrossMove::validMoves(Piece* from)
 	return bb;
 }
 	
-void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
+void CrossMove::validMoves(std::vector<Pos>& out)
 {
 	if(from->isDead())
 		return;
@@ -85,16 +85,16 @@ void CrossMove::validMoves(std::vector<Pos>& out, Piece* from)
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopTL)
-			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, out, from);
+			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, out);
 		
 		if(!stopTR)
-			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, out, from);
+			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, out);
 		
 		if(!stopBR)
-			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, out, from);
+			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, out);
 		
 		if(!stopBL)
-			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, out, from);
+			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, out);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;

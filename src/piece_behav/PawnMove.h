@@ -6,17 +6,17 @@
 class PawnMove : public MoveBehaviour
 {
 	public:
-	PawnMove();
+	PawnMove(Piece* from = nullptr);
 	~PawnMove();
 
 	void EPValidateTarget(Piece*, bool);
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move.
 	const Piece* getEnPassantTarget() const;	
 	
-	virtual Bitboard validCaptures(Piece* from) override;
+	virtual Bitboard validCaptures() override;
 	
-	virtual Bitboard validMoves(Piece* from) override;
-	virtual void validMoves(std::vector<Pos>& out, Piece* from) override; 
+	virtual Bitboard validMoves() override;
+	virtual void validMoves(std::vector<Pos>& out) override; 
 
 	private:
 	void EPSetTarget(Piece*, int);

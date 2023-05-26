@@ -10,7 +10,7 @@
 
 
 Board::Board() 
-	: whiteCastleKS(true), whiteCastleQS(true), blackCastleKS(true), blackCastleQS(true), 
+	: whiteKing(nullptr), whiteCheck(false), whiteCastleKS(true), whiteCastleQS(true), blackKing(nullptr), blackCheck(false), blackCastleKS(true), blackCastleQS(true), 
 	  enPassantActive(false), previousPiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
@@ -28,6 +28,100 @@ Board::~Board()
 
 	delete whitePieces;
 	delete blackPieces;
+}
+
+// Overload [] for individual rows, chains with proxy to make [][] operation possible.
+Board::Proxy Board::operator[](int row) const
+{
+	return Proxy(gameBoard[row]);
+}
+
+// Overload () for access individual elements.
+Piece* Board::operator()(int row, int col) const
+{
+	return gameBoard[row][col];
+}
+	
+Piece* Board::operator[](Pos p) const
+{
+	return (*this)(p[0], p[1]);
+}
+	
+ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
+{
+
+	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
+		return ChessStatus::FAIL;
+
+	
+	Log log(1);
+	log.append(std::string("pre checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
+	
+	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move***
+	
+	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
+		halfmoveCount = 0;
+	
+	bool prevWhiteCheck = whiteCheck;
+	bool prevBlackCheck = blackCheck;
+	
+	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
+	{
+		// Update the halfmove count and kill the piece according to rules
+		if(gameBoard[b.getX()][b.getY()] != nullptr)
+		{
+			gameBoard[b.getX()][b.getY()]->die();
+			halfmoveCount = 0;
+		}
+		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
+			halfmoveCount++;
+		
+		// ***Move Piece***
+		gameBoard[b.getX()][b.getY()] = getPiece(a);
+		clearPiece(a);
+		updateAttackMaps(); // now the kings know if they are under attack
+		
+		// update white & black checks 
+		if(blackAttackMap[whiteKing->getPos()])
+			whiteCheck = true;
+		else
+			whiteCheck = false;
+		
+		if(whiteAttackMap[blackKing->getPos()])
+			blackCheck = true;
+		else
+			blackCheck = false;
+		
+		log.append(std::string("post checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
+		
+		if((whiteCheck && getPiece(b)->isWhite()) || (blackCheck && !getPiece(b)->isWhite()))
+		{
+			// ***Undo Move***
+			gameBoard[a.getX()][a.getY()] = getPiece(b);
+			clearPiece(b);
+			updateAttackMaps();
+			
+			// **Reset Checks**
+			whiteCheck = prevWhiteCheck;
+			blackCheck = prevBlackCheck;
+			
+			return ChessStatus::FAIL;
+		}
+		
+		if(returnChessStatus != ChessStatus::PROMOTE)
+		{
+			if(!whiteTurn)
+				turnCountFEN++;
+			moveCount++;
+			whiteTurn = !whiteTurn;
+			returnChessStatus = ChessStatus::SUCCESS;
+		}
+
+		log.append("SUCCESS.\n");
+		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
+	}
+
+	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
 }
 
 std::string Board::toFENString() const
@@ -91,7 +185,7 @@ std::string Board::toFENString() const
 		FENs += "-";
 	
 	FENs += " ";
-	FENs += getEnPassantBoardPos();
+	FENs += getEnPassantBoardPosFEN();
 	
 	FENs += " ";
 	FENs += std::to_string(halfmoveCount);
@@ -101,7 +195,7 @@ std::string Board::toFENString() const
 	return FENs;
 }
 	
-std::string Board::getEnPassantBoardPos() const
+std::string Board::getEnPassantBoardPosFEN() const
 {
 	if(enPassantActive)
 	{		
@@ -127,11 +221,30 @@ std::string Board::getEnPassantBoardPos() const
 	
 	return "-";
 }
+
+void Board::disableCheck()
+{
+	whiteCheck = false;
+	blackCheck = false;
+}
+
+bool Board::isCheckOnBoard() const
+{
+	return whiteCheck || blackCheck;
+}
+	
 	
 bool Board::registerPromotion(std::string& s)
 {
 	// mr hacker even if you did somehow call this, if you are playing an online game it works on a consensus system - you would just be resynced to what it was before :)
 	char input = promotionMatchChar(s);
+	Log log(1);
+	
+	std::string outstring = "promotionMatchChar? ";
+	outstring += input;
+	outstring += " previousPiece: " + ((previousPiece == nullptr) ? "NULL!" : previousPiece->toString());
+	
+	log.append(outstring);
 	
 	// {R, N, B, Q, P} -> {Rook, Knight, Bishop, Queen, Pawn}
 	if(input == '\0' || previousPiece == nullptr)
@@ -166,64 +279,10 @@ bool Board::registerPromotion(std::string& s)
 char Board::promotionMatchChar(std::string& s)
 {
 	const char* charArr = "rnbq"; // cant promote to pawn or king
-	char temp = '\0';
-	
-	Log log(1);
 	for(long unsigned int i = 0; i < sizeof(charArr); i++) // sizeof gives byte size, chars are all 1 byte though
-	{
 		if(std::tolower(s[0]) == std::tolower(charArr[i]))
-		{
-			temp = charArr[i];
-			break;
-		}
-	}
-	std::string outstring = "promotionMatchChar? ";
-	outstring += temp;
-	log.append(outstring);
-	log.flush();
-	
-	return temp;
-}
-
-ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
-{
-
-	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
-		return ChessStatus::FAIL;
-	
-	ChessStatus returnChessStatus = getPiece(a)->move(b); // attempt move
-	//log.append("CHESSSTATUS in BOARD: " + getChessStatusString(returnChessStatus) + "\n");
-	
-	previousPiece = getPiece(a); // keeps track of previous piece moved, for promotion
-	
-	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
-		halfmoveCount = 0;
-	
-	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
-	{
-		if(gameBoard[b.getX()][b.getY()] != nullptr)
-		{
-			gameBoard[b.getX()][b.getY()]->die();
-			halfmoveCount = 0;
-		}
-		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-			halfmoveCount++;
-		
-		gameBoard[b.getX()][b.getY()] = getPiece(a);
-		clearPiece(a);
-		
-		if(returnChessStatus != ChessStatus::PROMOTE)
-		{
-			if(!whiteTurn)
-				turnCountFEN++;
-			moveCount++;
-			whiteTurn = !whiteTurn;
-			returnChessStatus = ChessStatus::SUCCESS;
-		}
-	}
-	
-	updateAttackMaps();
-	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
+			return charArr[i];
+	return '\0';
 }
 
 void Board::setStartingBoard(bool startingColor)
@@ -237,6 +296,7 @@ void Board::setStartingBoard(bool startingColor)
 		for(int y = 0; y < MAX_ROW_COL; y++)
 		{
 			gameBoard[x][y] = nullptr;
+			bool king = false;
 
 			if((x == 0 || x == MAX_ROW_COL-1) && (y == MAX_ROW_COL-1 || y == 0))
 			{
@@ -269,6 +329,7 @@ void Board::setStartingBoard(bool startingColor)
 				// King
 				gameBoard[x][y] = new Piece(Pos(x,y), 'K', (y == 0) ? !startingColor : startingColor, this);
 				gameBoard[x][y]->addBehav(new KingMove());
+				king = true;
 			}
 			else if (y == 1 || y == MAX_ROW_COL-2)
 			{
@@ -279,10 +340,18 @@ void Board::setStartingBoard(bool startingColor)
 
 
 			if(y == 0)
+			{
 				blackPieces->push_back(gameBoard[x][y]);
+				if (king)
+					blackKing = gameBoard[x][y];
+			}
 			else if(y == MAX_ROW_COL-1)
+			{
 				whitePieces->push_back(gameBoard[x][y]);
-
+				if (king)
+					whiteKing = gameBoard[x][y];
+			}
+			
 		}
 	}
 
@@ -305,6 +374,16 @@ void Board::updateAttackMaps()
 	
 	for(long unsigned int i = 0; i < blackPieces->size(); i++)
 		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();
+}
+
+const Piece& Board::getWhiteKing() const
+{
+	return *whiteKing;
+}
+
+const Piece& Board::getBlackKing() const
+{
+	return *blackKing;
 }
 
 const Bitboard& Board::getWhiteAttackMap() const

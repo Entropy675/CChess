@@ -1,9 +1,9 @@
 #include "KingMove.h"
 
-KingMove::KingMove() {}
+KingMove::KingMove(Piece* p) : MoveBehaviour(p) {}
 KingMove::~KingMove() {}
 
-void KingMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
+void KingMove::checkPosition(int x, int y, std::vector<Pos>& out)
 {
 	Piece* temp = from->getBoard()->getPiece(Pos(x,y));
 	
@@ -23,7 +23,7 @@ void KingMove::checkPosition(int x, int y, std::vector<Pos>& out, Piece* from)
 		out.push_back(Pos(x,y));
 }
 
-void KingMove::checkPosition(int x, int y, Bitboard& bb, Piece* from, bool checkAtkMap)
+void KingMove::checkPosition(int x, int y, Bitboard& bb, bool checkAtkMap)
 {
 	Piece* temp = from->getBoard()->getPiece(Pos(x,y));
 	
@@ -46,7 +46,7 @@ void KingMove::checkPosition(int x, int y, Bitboard& bb, Piece* from, bool check
 		bb.setBit(Pos(x,y));
 }
 
-void KingMove::validMoves(std::vector<Pos>& out, Piece* from)
+void KingMove::validMoves(std::vector<Pos>& out)
 {	
 	Bitboard attackMap;
 
@@ -54,10 +54,10 @@ void KingMove::validMoves(std::vector<Pos>& out, Piece* from)
 	int size = sizeof(dirs)/sizeof(int);
 	for(int y = 0; y < size; y++)
 		for(int x = 0; x < size; x++)
-			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], out, from);
+			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], out);
 }
 
-Bitboard KingMove::validMoves(Piece* from)
+Bitboard KingMove::validMoves()
 {
 	Bitboard bb;
 
@@ -65,13 +65,13 @@ Bitboard KingMove::validMoves(Piece* from)
 	int size = sizeof(dirs)/sizeof(int);
 	for(int y = 0; y < size; y++)
 		for(int x = 0; x < size; x++)
-			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], bb, from);
+			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], bb);
 	
 	return bb;
 }
 
 // by ensuring that each piece can capture their surrounding squares, two kings can never get next to each other
-Bitboard KingMove::validCaptures(Piece* from)
+Bitboard KingMove::validCaptures()
 {
 	Bitboard bb;
 	
@@ -79,7 +79,7 @@ Bitboard KingMove::validCaptures(Piece* from)
 	int size = sizeof(dirs)/sizeof(int);
 	for(int y = 0; y < size; y++)
 		for(int x = 0; x < size; x++)
-			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], bb, from, false);
+			checkPosition(from->getPos().getX() + dirs[x], from->getPos().getY() + dirs[y], bb, false);
 	
 	return bb;
 }

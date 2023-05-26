@@ -9,7 +9,7 @@
 #include <cctype>
 
 Piece::Piece(Pos p, char c, bool w, Board* g) 
-	: pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
+	: enPassantActive(false), pos(p), moved(false), dead(false), chr(c), white(w), game(g) {}
 
 // piece cleans up its behaviour array
 Piece::~Piece() 
@@ -22,7 +22,9 @@ ChessStatus Piece::move(Pos cPos)
 {
 	Log log(1);
 	bool isValid = false;
+	Bitboard moves = validMoves();
 	ChessStatus returnChessStatus = ChessStatus::FAIL;
+
 	bool onSuccessDeactivateEP = false;
 	
 	if(game->isEnpassantOnBoard())
@@ -31,9 +33,7 @@ ChessStatus Piece::move(Pos cPos)
 		game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
 	}
 	
-	Bitboard moves = validMoves();
 	PawnMove* pm = getPawnBehaviour();
-	
 	if(pm != nullptr)
 	{
 		returnChessStatus = ChessStatus::PAWNMOVE;
@@ -83,7 +83,7 @@ Bitboard Piece::validMoves()
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		moves = moves | movebehavArr[i]->validMoves(this);
+		moves = moves | movebehavArr[i]->validMoves();
 	return moves;
 }
 
@@ -91,14 +91,14 @@ Bitboard Piece::validCaptures()
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		moves = moves | movebehavArr[i]->validCaptures(this);
+		moves = moves | movebehavArr[i]->validCaptures();
 	return moves;
 }
 
 bool Piece::isValidMove(const Pos p)
 {
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		if(movebehavArr[i]->isValidMove(p, this))
+		if(movebehavArr[i]->isValidMove(p))
 			return true;
 	return false;
 }
@@ -141,7 +141,15 @@ std::string Piece::getBoardPos() const
 
 std::string Piece::toString() const
 {
-	std::string r = getCharacter() + ": " + getPos().toString() + ", is ";
+	/*
+	std::string r = chr + ": , is ";
+	if(!dead)
+		r += "not ";
+	r += "dead.";
+	*/
+	std::string r = "Piece [";
+	r += chr;
+	r += "]:, is ";
 	if(!dead)
 		r += "not ";
 	r += "dead.";
@@ -175,14 +183,23 @@ void Piece::clearAllBehavs()
 	
 PawnMove* Piece::getPawnBehaviour() const
 {
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
 		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
 			return pawnMove;
 	return nullptr;
 }
 
+KingMove* Piece::getKingBehaviour() const
+{
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
+		if(KingMove* kingMove = dynamic_cast<KingMove*>(movebehavArr.at(i)))
+			return kingMove;
+	return nullptr;
+}
+
 void Piece::addBehav(MoveBehaviour* b)
 {
+	b->setFrom(this);
 	return movebehavArr.push_back(b);
 }
 

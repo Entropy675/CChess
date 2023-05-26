@@ -16,43 +16,75 @@
  */
 class Board
 {
+
 	public:
+	
+	
+	// proxy class overloads [] operator for the [][] operation.
+	class Proxy 
+	{
+		private:
+		Piece* const* row;
+		
+		public:
+		Proxy(Piece* const* rowData) : row(rowData) {}
+		
+		Piece* operator[](int col) const {
+			return row[col];
+		}
+	};
+	
+	Proxy operator[](int row) const; // proxy allows for [] operator.
+	Piece* operator[](Pos) const;
+	Piece* operator()(int row, int col) const;
+	
 
 	Board();
 	~Board();
 
-	void setStartingBoard(bool = true);
-	bool registerPromotion(std::string&);
-
 	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
 	Piece* getPiece(Pos) const;
 	void clearPiece(Pos);
+	
+	void setStartingBoard(bool = true);
+	bool registerPromotion(std::string&);
 
+	void disableCheck();
+	bool isCheckOnBoard() const;
+	
+	const Piece& getWhiteKing() const;
+	const Piece& getBlackKing() const;
+	
 	bool isWhiteTurn() const;
 	int getMoves() const;
+	
 	int getTurnFEN() const;
 	std::string toFENString() const;
 
-	std::string getEnPassantBoardPos() const;
+	std::string getEnPassantBoardPosFEN() const;
 	bool isEnpassantOnBoard() const;
 	void epActivate();
 	void epDeactivate();
-		
-	// TODO: overload [] and/or [][] for the board interface
 	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
 	const Bitboard& getWhiteAttackMap() const;
 	const Bitboard& getBlackAttackMap() const;
 
+
 	private:
 	char promotionMatchChar(std::string&);
 	void updateAttackMaps();
 	
 	std::vector<Piece*>* whitePieces;
+	Piece* whiteKing;
+	bool whiteCheck;
 	bool whiteCastleKS;
 	bool whiteCastleQS;
+	
 	std::vector<Piece*>* blackPieces;
+	Piece* blackKing;
+	bool blackCheck;
 	bool blackCastleKS;
 	bool blackCastleQS;
 

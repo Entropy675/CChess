@@ -27,9 +27,13 @@ void Bitboard::clear()
 	value = 0;
 }
 
-std::string Bitboard::toString() const
+std::string Bitboard::toString(bool addSpace) const
 {
-	std::string r = "  01234567 \n";
+	std::string r = "";
+	if(addSpace)
+		r += " ";
+	r += " 01234567 \n";
+	
 	for(int y = 0; y < MAX_ROW_COL; y++)
 	{
 		r += std::to_string(y) + "|";

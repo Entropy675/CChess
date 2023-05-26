@@ -1,7 +1,7 @@
 #include "PawnMove.h"
 #include "../Log.h"
 
-PawnMove::PawnMove() : turnToEP(-1), capturableViaEP(nullptr) {}
+PawnMove::PawnMove(Piece* p) : MoveBehaviour(p), turnToEP(-1), capturableViaEP(nullptr) {}
 
 PawnMove::~PawnMove()
 {
@@ -64,7 +64,7 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 	}
 }
 
-Bitboard PawnMove::validCaptures(Piece* from)
+Bitboard PawnMove::validCaptures()
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -81,7 +81,7 @@ Bitboard PawnMove::validCaptures(Piece* from)
 	return bb;
 }
 
-Bitboard PawnMove::validMoves(Piece* from)
+Bitboard PawnMove::validMoves()
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -107,7 +107,7 @@ Bitboard PawnMove::validMoves(Piece* from)
 	return bb;
 }
 
-void PawnMove::validMoves(std::vector<Pos>& p, Piece* from)
+void PawnMove::validMoves(std::vector<Pos>& p)
 {
 	if(from->isDead())
 		return;

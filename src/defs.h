@@ -12,14 +12,16 @@
 
 #include <string>
 
-enum class ChessStatus {
+enum class ChessStatus 
+{
 	FAIL,
 	SUCCESS,
 	PROMOTE,
 	PAWNMOVE
 };
 
-inline std::string getChessStatusString(ChessStatus stat) {
+inline std::string getChessStatusString(ChessStatus stat) 
+{
     switch (stat) {
         case ChessStatus::FAIL:
             return "FAIL";

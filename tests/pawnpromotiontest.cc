@@ -32,6 +32,11 @@ int main()
 	
 	std::cout << game->toFENString() << std::endl;
 	
+	game->movePiece(Pos(4, 0), Pos(3, 0));
+	game->movePiece(Pos(7, 6), Pos(7, 5));
+	
+	std::cout << game->toFENString() << std::endl;
+	
 	game->movePiece(Pos(1, 6), Pos(0, 7));
 	input = "K";
 	game->registerPromotion(input); // illegal
@@ -58,7 +63,7 @@ int main()
 	
 	std::cout << "!!!\nWarning! This test case does not properly consider castling! When castling is implemented, this will fail incorrectly.\n!!!" << std::endl;
 	
-	std::string test = "rnbQkbnr/1ppp1ppp/8/8/8/8/P1P1PPPP/nNBQKBNR w KQkq - 0 6";
+	std::string test = "rnbk1bnr/1ppp1ppp/8/8/8/7P/P1P1PPP1/nNBQKBNR w KQkq - 0 7";
 	
 	delete game;
 	if(fs != test)

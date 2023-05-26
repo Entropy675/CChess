@@ -16,7 +16,7 @@ class Bitboard
 	
 	void clear();
 	
-	std::string toString() const;
+	std::string toString(bool = true) const;
 	
 	bool operator[](int) const; // get the value of a single position in the bitboard
 	bool operator[](Pos) const;

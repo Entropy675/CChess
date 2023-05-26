@@ -29,7 +29,7 @@ void ChessGame::updateAllSpectators()
 }
 	
 // only merge strings of same '\n' newline count, or str1 < str2 '\n's (I lazy, theres probably a better way to write this but I did this in a min)
-std::string ChessGame::mergeStrings(const std::string& str1, std::string str2) 
+std::string ChessGame::mergeStrings(std::string str2, const std::string& str1) 
 {
     std::string mergedString;
 	str2 += "\n"; // (the second one needs to be offset by at least one \n)
@@ -46,7 +46,7 @@ std::string ChessGame::mergeStrings(const std::string& str1, std::string str2)
 			current = str1[str1c++];
 		else
 			current = str2[str2c++];
-			
+
 		if(current == '\n')
 		{
 			flip = !flip;
@@ -107,10 +107,14 @@ void ChessGame::startLocalNcursesGame()
 			p1.setX(uinp[0] - 'a'); // a
 			p1.setY(8 - (uinp[1] - '0')); // 1 -> 0
 
+			Piece* randomPiece = (*game)[p1.getX()][p1.getY()];
+		
 			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
 			
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
+			if(randomPiece != nullptr)
+				log.append(randomPiece->toString() + "\n");
 			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
 			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
@@ -156,7 +160,7 @@ void ChessGame::startLocalNcursesGame()
 		
 		
 		log.append("Post move: " + game->toFENString() + "\n");
-		log.append("Attack map:\n" + mergeStrings(game->getWhiteAttackMap().toString(), game->getBlackAttackMap().toString()));
+		log.append("Attack map:\n" + mergeStrings("W" + game->getWhiteAttackMap().toString(false), "B" + game->getBlackAttackMap().toString(false)));
 		//log.append(game->getWhiteAttackMap().toString());
 		log.flush();
 

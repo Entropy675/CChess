@@ -67,8 +67,6 @@ ChessStatus Piece::move(Pos cPos)
 		pos = cPos; 
 		if(returnChessStatus == ChessStatus::FAIL) // ensures that PROMOTE stays the same
 			returnChessStatus = ChessStatus::SUCCESS;
-			
-		game->updateWhiteBlackChecks();
 	}
 	else
 	{	
@@ -143,7 +141,15 @@ std::string Piece::getBoardPos() const
 
 std::string Piece::toString() const
 {
-	std::string r = getCharacter() + ": " + getPos().toString() + ", is ";
+	/*
+	std::string r = chr + ": , is ";
+	if(!dead)
+		r += "not ";
+	r += "dead.";
+	*/
+	std::string r = "Piece [";
+	r += chr;
+	r += "]:, is ";
 	if(!dead)
 		r += "not ";
 	r += "dead.";

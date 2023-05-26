@@ -118,7 +118,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		}
 
 		log.append("SUCCESS.\n");
-		previousPiece = getPiece(a); // keeps track of last piece moved, for promotion
+		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
 	}
 
 	return returnChessStatus; // if success, returns PROMOTE or SUCCESS
@@ -238,6 +238,13 @@ bool Board::registerPromotion(std::string& s)
 {
 	// mr hacker even if you did somehow call this, if you are playing an online game it works on a consensus system - you would just be resynced to what it was before :)
 	char input = promotionMatchChar(s);
+	Log log(1);
+	
+	std::string outstring = "promotionMatchChar? ";
+	outstring += input;
+	outstring += " previousPiece: " + ((previousPiece == nullptr) ? "NULL!" : previousPiece->toString());
+	
+	log.append(outstring);
 	
 	// {R, N, B, Q, P} -> {Rook, Knight, Bishop, Queen, Pawn}
 	if(input == '\0' || previousPiece == nullptr)
@@ -272,23 +279,10 @@ bool Board::registerPromotion(std::string& s)
 char Board::promotionMatchChar(std::string& s)
 {
 	const char* charArr = "rnbq"; // cant promote to pawn or king
-	char temp = '\0';
-	
-	Log log(1);
 	for(long unsigned int i = 0; i < sizeof(charArr); i++) // sizeof gives byte size, chars are all 1 byte though
-	{
 		if(std::tolower(s[0]) == std::tolower(charArr[i]))
-		{
-			temp = charArr[i];
-			break;
-		}
-	}
-	std::string outstring = "promotionMatchChar? ";
-	outstring += temp;
-	log.append(outstring);
-	log.flush();
-	
-	return temp;
+			return charArr[i];
+	return '\0';
 }
 
 void Board::setStartingBoard(bool startingColor)

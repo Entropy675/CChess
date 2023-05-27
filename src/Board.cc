@@ -68,11 +68,11 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
-		// Update the halfmove count and kill the piece according to rules
+		// Update the halfmove count and kill the piece according to rules (or fail if same color)
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 		{
-			if(gameBoard[b.getX()][b.getY()]->isWhite() == getPiece(a)->isWhite()) //**
-				return ChessStatus::FAIL; //**
+			if(gameBoard[b.getX()][b.getY()]->isWhite() == getPiece(a)->isWhite())
+				return ChessStatus::FAIL;
 			
 			ifSuccessKill = gameBoard[b.getX()][b.getY()];
 			tempHalfmoveCount = 0;
@@ -126,10 +126,9 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		}
 
 		if(ifSuccessKill != nullptr)
-		{
-			halfmoveCount = tempHalfmoveCount;
 			ifSuccessKill->die();
-		}
+		
+		halfmoveCount = tempHalfmoveCount;
 		
 		log.append("SUCCESS.\n");
 		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion

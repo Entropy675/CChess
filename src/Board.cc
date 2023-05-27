@@ -194,9 +194,12 @@ std::string Board::toFENString() const
 	return FENs;
 }
 	
+	// CHANGE HOW THIS WORKS!!! any pawn that moves up 2
 std::string Board::getEnPassantBoardPosFEN() const
 {
 	Log log(2);
+	
+	
 	
 	if(enPassantActive)
 	{		

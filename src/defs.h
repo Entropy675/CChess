@@ -10,6 +10,9 @@
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32
 
+
+#define LOG_LEVEL		0 // LOG LEVEL!
+
 #include <string>
 
 enum class ChessStatus 

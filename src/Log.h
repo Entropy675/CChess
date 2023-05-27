@@ -1,11 +1,12 @@
 #ifndef NCLOG_H
 #define NCLOG_H
 
+
+#include "defs.h"
 #include <string>
 #include <vector>
 class View;
 
-#define LOG_LEVEL		1
 /*
 // BASIC LOG_LEVEL USAGE (for this project)
 // 0 - NO LOGS. Set to 0 to have no logs at all.

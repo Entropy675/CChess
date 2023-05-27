@@ -42,7 +42,7 @@ class Board
 	Board();
 	~Board();
 
-	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on this piece
+	ChessStatus movePiece(Pos, Pos); // move from a to b if valid on the piece at the first position
 	Piece* getPiece(Pos) const;
 	void clearPiece(Pos);
 	
@@ -56,6 +56,7 @@ class Board
 	const Piece& getBlackKing() const;
 	
 	bool isWhiteTurn() const;
+	bool isWhitePerspective() const; // use this to determine weather to draw the board flipped
 	int getMoves() const;
 	
 	int getTurnFEN() const;

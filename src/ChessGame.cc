@@ -95,7 +95,9 @@ void ChessGame::startLocalNcursesGame()
 		// (could also just scan through all pieces, there are only 16... its not really slow.)
 
 		ChessStatus promotionAsk = ChessStatus::FAIL;
+		log.setLogLevel(2);
 		log.append("Pre move:  " + game->toFENString() + "\n");
+		log.setLogLevel(1);
 		
 		regex pattern("[a-h][1-8] [a-h][1-8]");
 		
@@ -104,8 +106,8 @@ void ChessGame::startLocalNcursesGame()
 			// this is a valid input
 			Pos p1, p2;
 
-			p1.setX(uinp[0] - 'a'); // a
-			p1.setY(8 - (uinp[1] - '0')); // 1 -> 0
+			p1.setX(uinp[0] - 'a'); // ['a', 'b', 'c'] -> [0, 1, 2]
+			p1.setY(8 - (uinp[1] - '0')); // ['8', '7', '6'] -> [0, 1, 2]
 
 			Piece* randomPiece = (*game)[p1.getX()][p1.getY()];
 		
@@ -115,7 +117,9 @@ void ChessGame::startLocalNcursesGame()
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
 			if(randomPiece != nullptr)
 				log.append(randomPiece->toString() + "\n");
-			promotionAsk = game->movePiece(p1, p2); // has access to board, has access to both pieces
+			
+			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board**** 
+			
 			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
 
@@ -133,7 +137,7 @@ void ChessGame::startLocalNcursesGame()
 		else if(uinp == string("exit"))
 			break;
 		
-
+		// if move was a promotion (which also means valid)...
 		if(promotionAsk == ChessStatus::PROMOTE)
 		{
 			bool validInput = false;

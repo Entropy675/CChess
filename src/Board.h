@@ -71,11 +71,13 @@ class Board
 	std::vector<Piece*>* getBlackPieces() const;
 	const Bitboard& getWhiteAttackMap() const;
 	const Bitboard& getBlackAttackMap() const;
+	const Bitboard& getWhiteMoveMap() const;
+	const Bitboard& getBlackMoveMap() const;
 
 
 	private:
 	char promotionMatchChar(std::string&);
-	void updateAttackMaps();
+	void updateMaps();
 	
 	std::vector<Piece*>* whitePieces;
 	Piece* whiteKing;
@@ -91,6 +93,8 @@ class Board
 
 	Bitboard whiteAttackMap;
 	Bitboard blackAttackMap;
+	Bitboard whiteMoveMap;
+	Bitboard blackMoveMap;
 	
 	bool enPassantActive;
 

@@ -13,17 +13,17 @@ void KingMove::checkPosition(int x, int y, std::vector<Pos>& out)
 		if(temp->isWhite() == from->isWhite())
 			return;
 	
-	Bitboard attackMap;
+	Bitboard illegalMap;
 	if(from->isWhite())
-		attackMap = from->getBoard()->getBlackAttackMap();
+		illegalMap = from->getBoard()->getBlackAttackMap();
 	else
-		attackMap = from->getBoard()->getWhiteAttackMap();
+		illegalMap = from->getBoard()->getWhiteAttackMap();
 	
-	if(!attackMap[Pos(x,y)])
+	if(!illegalMap[Pos(x,y)])
 		out.push_back(Pos(x,y));
 }
 
-void KingMove::checkPosition(int x, int y, Bitboard& bb, bool checkAtkMap)
+void KingMove::checkPosition(int x, int y, Bitboard& bb, bool vMoves)
 {
 	Piece* temp = from->getBoard()->getPiece(Pos(x,y));
 	
@@ -33,16 +33,34 @@ void KingMove::checkPosition(int x, int y, Bitboard& bb, bool checkAtkMap)
 		if(temp->isWhite() == from->isWhite())
 			return;
 		
-	Bitboard attackMap;
-	if(checkAtkMap)
+	Bitboard illegalMap;
+	if(vMoves)
 	{
 		if(from->isWhite())
-			attackMap = from->getBoard()->getBlackAttackMap();
+			illegalMap = from->getBoard()->getBlackAttackMap();
 		else
-			attackMap = from->getBoard()->getWhiteAttackMap();
+			illegalMap = from->getBoard()->getWhiteAttackMap();
+	}
+	else
+	{
+		if(from->isWhite())
+		{
+			Pos enemyKing = from->getBoard()->getBlackKing().getPos();
+			Pos here = from->getPos();
+			// ... calc manhatten distance between these two <= 1
+			// if true then go to inbetween square (move x and y in difference)
+			// and flip the illegalMap bit there so that neither piece can caputure their shared square.
+			illegalMap.setBit(here); // gonna do this a few times for each connecting pos.
+		}
+		else
+		{
+			
+			illegalMap = from->getBoard()->getWhiteMoveMap();
+			
+		}
 	}
 	
-	if(!attackMap[Pos(x,y)])
+	if(!illegalMap[Pos(x,y)])
 		bb.setBit(Pos(x,y));
 }
 

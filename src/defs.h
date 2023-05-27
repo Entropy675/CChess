@@ -11,7 +11,7 @@
 #define NUM_PIECES		32
 
 
-#define LOG_LEVEL		0 // LOG LEVEL!
+#define LOG_LEVEL		2 // LOG LEVEL!
 
 #include <string>
 

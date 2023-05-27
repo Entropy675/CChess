@@ -78,7 +78,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		// ***Move Piece***
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
-		updateAttackMaps(); // now the kings know if they are under attack
+		updateMaps(); // now the kings know if they are under attack
 		
 		// update white & black checks 
 		if(blackAttackMap[whiteKing->getPos()])
@@ -98,7 +98,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			// ***Undo Move***
 			gameBoard[a.getX()][a.getY()] = getPiece(b);
 			clearPiece(b);
-			updateAttackMaps();
+			updateMaps();
 			
 			// **Reset Checks**
 			whiteCheck = prevWhiteCheck;
@@ -368,19 +368,27 @@ void Board::setStartingBoard(bool startingColor)
 		whitePieces->push_back(gameBoard[i][MAX_ROW_COL-2]);
 	}
 	
-	updateAttackMaps();
+	updateMaps();
 }
 
-void Board::updateAttackMaps()
+void Board::updateMaps()
 {
 	whiteAttackMap.clear();
 	blackAttackMap.clear();
+	whiteMoveMap.clear();
+	blackMoveMap.clear();
 	
 	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+	{
 		whiteAttackMap = whiteAttackMap | whitePieces->at(i)->validCaptures();
+		whiteMoveMap = whiteMoveMap | whitePieces->at(i)->validMoves();
+	}
 	
 	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();
+	{
+		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();	
+		blackMoveMap = blackMoveMap | blackPieces->at(i)->validMoves();
+	}
 }
 
 const Piece& Board::getWhiteKing() const
@@ -403,6 +411,16 @@ const Bitboard& Board::getBlackAttackMap() const
 	return blackAttackMap;
 }
 	
+const Bitboard& Board::getWhiteMoveMap() const
+{
+	return whiteMoveMap;
+}
+
+const Bitboard& Board::getBlackMoveMap() const
+{
+	return blackMoveMap;
+}
+
 bool Board::isWhiteTurn() const
 {
 	return whiteTurn;

@@ -164,7 +164,9 @@ void ChessGame::startLocalNcursesGame()
 		
 		
 		log.append("Post move: " + game->toFENString() + "\n");
-		log.append("Attack map:\n" + mergeStrings("W" + game->getWhiteAttackMap().toString(false), "B" + game->getBlackAttackMap().toString(false)));
+		log.append(mergeStrings(
+			("Attack map:\n" + mergeStrings("W" + game->getWhiteAttackMap().toString(false), "B" + game->getBlackAttackMap().toString(false) + "\n"))
+			,("\t\t\tMove map:\n" + mergeStrings("W" + game->getWhiteMoveMap().toString(false), "B" + game->getBlackMoveMap().toString(false)))));
 		//log.append(game->getWhiteAttackMap().toString());
 		log.flush();
 

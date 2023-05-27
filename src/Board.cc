@@ -63,17 +63,25 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	
 	bool prevWhiteCheck = whiteCheck;
 	bool prevBlackCheck = blackCheck;
+	Piece* ifSuccessKill = nullptr;
+	int tempHalfmoveCount = halfmoveCount;
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
 		// Update the halfmove count and kill the piece according to rules
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 		{
-			gameBoard[b.getX()][b.getY()]->die();
-			halfmoveCount = 0;
+			if(gameBoard[b.getX()][b.getY()]->isWhite() == getPiece(a)->isWhite()) //**
+				return ChessStatus::FAIL; //**
+			
+			ifSuccessKill = gameBoard[b.getX()][b.getY()];
+			tempHalfmoveCount = 0;
 		}
 		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-			halfmoveCount++;
+			tempHalfmoveCount++;
+		
+		// ? -- Preposition: a function that returns the attack/move bit board of the game with a piece moved to a different pos.
+		// Use that function to make this one make way more sense please...
 		
 		// ***Move Piece***
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
@@ -95,9 +103,10 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		
 		if((whiteCheck && getPiece(b)->isWhite()) || (blackCheck && !getPiece(b)->isWhite()))
 		{
+			log.append("***undoing move***\n");
 			// ***Undo Move***
 			gameBoard[a.getX()][a.getY()] = getPiece(b);
-			clearPiece(b);
+			gameBoard[b.getX()][b.getY()] = ifSuccessKill;
 			updateMaps();
 			
 			// **Reset Checks**
@@ -116,6 +125,12 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
 
+		if(ifSuccessKill != nullptr)
+		{
+			halfmoveCount = tempHalfmoveCount;
+			ifSuccessKill->die();
+		}
+		
 		log.append("SUCCESS.\n");
 		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
 	}
@@ -419,6 +434,51 @@ const Bitboard& Board::getWhiteMoveMap() const
 const Bitboard& Board::getBlackMoveMap() const
 {
 	return blackMoveMap;
+}
+
+
+Bitboard Board::getWhiteAttackMap(const Piece& p, Pos* to) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		if(whitePieces->at(i) != &p)
+			tmp = tmp | whitePieces->at(i)->validCaptures();
+	
+	tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
+Bitboard Board::getBlackAttackMap(const Piece& p, Pos* to) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		if(blackPieces->at(i) != &p)
+			tmp = tmp | blackPieces->at(i)->validCaptures();
+	
+	tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
+Bitboard Board::getWhiteMoveMap(const Piece& p, Pos* to) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		if(whitePieces->at(i) != &p)
+			tmp = tmp | whitePieces->at(i)->validMoves();
+	
+	tmp = tmp | p.validMoves(to);
+	return tmp;
+}
+
+Bitboard Board::getBlackMoveMap(const Piece& p, Pos* to) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		if(blackPieces->at(i) != &p)
+			tmp = tmp | blackPieces->at(i)->validMoves();
+	
+	tmp = tmp | p.validMoves(to);
+	return tmp;
 }
 
 bool Board::isWhiteTurn() const

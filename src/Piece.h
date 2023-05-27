@@ -36,8 +36,8 @@ class Piece
 
 	bool isValidMove(const Pos p);
 	void validMoves(std::vector<Pos>& p);
-	Bitboard validMoves();
-	Bitboard validCaptures();
+	Bitboard validMoves(Pos* = nullptr) const;
+	Bitboard validCaptures(Pos* = nullptr) const;
 	
 	bool isWhite() const;
 	bool isDead() const;
@@ -49,7 +49,7 @@ class Piece
 	
 	void promote(const char);
 	void epActivate();
-	void die();
+	void die(bool = false);
 	
 	char toFENChar() const;
 	char getCharacter() const;

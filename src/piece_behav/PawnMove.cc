@@ -30,7 +30,7 @@ bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 		if(p.getY() == capturableViaEP->getPos().getY() + (target.isWhite() ? -1 : 1) && p.getX() == capturableViaEP->getPos().getX())
 		{
 			a.append(" ==ENPASSANT== ---*^\\> MATCH: " + p.toString() + "\n");
-			capturableViaEP->die(); 
+			capturableViaEP->die(true); 
 			capturableViaEP = nullptr;
 			return true;
 		}
@@ -64,45 +64,50 @@ void PawnMove::EPValidateTarget(Piece* from, bool right)
 	}
 }
 
-Bitboard PawnMove::validCaptures()
+Bitboard PawnMove::validCaptures(Pos* p) const
 {
 	Bitboard bb;
 	if(from->isDead())
 		return bb;
 	
+	Pos searchFrom = (p == nullptr) ? from->getPos() : *p;
+	
 	int dircheck = from->isWhite() ? -1 : 1;
 	
-	if(Pos::isValid(from->getPos().getX() - 1, from->getPos().getY() + dircheck))
-		bb.setBit(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
+	if(Pos::isValid(searchFrom.getX() - 1, searchFrom.getY() + dircheck))
+		bb.setBit(Pos(searchFrom.getX() - 1, searchFrom.getY() + dircheck));
 	
-	if(Pos::isValid(from->getPos().getX() + 1, from->getPos().getY() + dircheck))
-		bb.setBit(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
+	if(Pos::isValid(searchFrom.getX() + 1, searchFrom.getY() + dircheck))
+		bb.setBit(Pos(searchFrom.getX() + 1, searchFrom.getY() + dircheck));
 	
 	return bb;
 }
 
-Bitboard PawnMove::validMoves()
+Bitboard PawnMove::validMoves(Pos* p) const
 {
 	Bitboard bb;
 	if(from->isDead())
 		return bb;
+	
+	Pos searchFrom = (p == nullptr) ? from->getPos() : *p;
+	
 	int dircheck = from->isWhite() ? -1 : 1;
 	Board* game = from->getBoard();
 
 	// forward moves
-	if(game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck)) == nullptr)
+	if(game->getPiece(Pos(searchFrom.getX(), searchFrom.getY() + dircheck)) == nullptr)
 	{
-		bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
-		if(!from->hasMoved() && game->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
-			bb.setBit(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
+		bb.setBit(Pos(searchFrom.getX(), searchFrom.getY() + dircheck));
+		if(!from->hasMoved() && game->getPiece(Pos(searchFrom.getX(), searchFrom.getY() + dircheck*2)) == nullptr)
+			bb.setBit(Pos(searchFrom.getX(), searchFrom.getY() + dircheck*2));
 	}
 
 	// piece capture (diagonal) -1 for left, 1 for right.
-	if(game->getPiece(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck)) != nullptr && Pos::isValid(from->getPos().getX() - 1, from->getPos().getY() + dircheck))
-		bb.setBit(Pos(from->getPos().getX() - 1, from->getPos().getY() + dircheck));
+	if(game->getPiece(Pos(searchFrom.getX() - 1, searchFrom.getY() + dircheck)) != nullptr && Pos::isValid(searchFrom.getX() - 1, searchFrom.getY() + dircheck))
+		bb.setBit(Pos(searchFrom.getX() - 1, searchFrom.getY() + dircheck));
 
-	if(game->getPiece(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck)) != nullptr && Pos::isValid(from->getPos().getX() + 1, from->getPos().getY() + dircheck))
-		bb.setBit(Pos(from->getPos().getX() + 1, from->getPos().getY() + dircheck));
+	if(game->getPiece(Pos(searchFrom.getX() + 1, searchFrom.getY() + dircheck)) != nullptr && Pos::isValid(searchFrom.getX() + 1, searchFrom.getY() + dircheck))
+		bb.setBit(Pos(searchFrom.getX() + 1, searchFrom.getY() + dircheck));
 	
 	return bb;
 }
@@ -119,10 +124,7 @@ void PawnMove::validMoves(std::vector<Pos>& p)
 		p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck));
 		
 		if(!from->hasMoved() && from->getBoard()->getPiece(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2)) == nullptr)
-		{
 			p.push_back(Pos(from->getPos().getX(), from->getPos().getY() + dircheck*2));
-
-		}
 	}
 
 

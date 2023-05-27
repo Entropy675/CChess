@@ -22,12 +22,12 @@ bool CrossMove::checkPosition(int x, int y, std::vector<Pos>& out)
 	return true;			
 }
 
-bool CrossMove::checkPosition(int x, int y, Bitboard& bb)
+bool CrossMove::checkPosition(int x, int y, Bitboard& bb) const
 {
 	if(Pos::isValid(x, y))
 	{
 		Piece* temp = from->getBoard()->getPiece(Pos(x, y));
-		if(temp == nullptr)
+		if(temp == nullptr || temp == from) // if we are checking from a different position, we don't want to stop at the "ghost" of this piece, thus temp == from
 			bb.setBit(Pos(x, y));
 		else
 		{
@@ -40,11 +40,14 @@ bool CrossMove::checkPosition(int x, int y, Bitboard& bb)
 	return true;			
 }
 
-Bitboard CrossMove::validMoves()
+Bitboard CrossMove::validMoves(Pos* p) const
 {
 	Bitboard bb;
 	if(from->isDead())
 		return bb;
+	
+	Pos searchFrom = (p == nullptr) ? from->getPos() : *p;
+	
 	
 	bool stopTR = false;
 	bool stopTL = false;
@@ -54,16 +57,16 @@ Bitboard CrossMove::validMoves()
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopTL)
-			stopTL = checkPosition(from->getPos().getX() - i, from->getPos().getY() - i, bb);
+			stopTL = checkPosition(searchFrom.getX() - i, searchFrom.getY() - i, bb);
 		
 		if(!stopTR)
-			stopTR = checkPosition(from->getPos().getX() + i, from->getPos().getY() - i, bb);
+			stopTR = checkPosition(searchFrom.getX() + i, searchFrom.getY() - i, bb);
 		
 		if(!stopBR)
-			stopBR = checkPosition(from->getPos().getX() + i, from->getPos().getY() + i, bb);
+			stopBR = checkPosition(searchFrom.getX() + i, searchFrom.getY() + i, bb);
 		
 		if(!stopBL)
-			stopBL = checkPosition(from->getPos().getX() - i, from->getPos().getY() + i, bb);
+			stopBL = checkPosition(searchFrom.getX() - i, searchFrom.getY() + i, bb);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;

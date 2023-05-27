@@ -77,19 +77,19 @@ ChessStatus Piece::move(Pos cPos)
 	return returnChessStatus;
 }
 
-Bitboard Piece::validMoves()
+Bitboard Piece::validMoves(Pos* p) const
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		moves = moves | movebehavArr[i]->validMoves();
+		moves = moves | ((p == nullptr) ? movebehavArr[i]->validMoves() : movebehavArr[i]->validMoves(p));
 	return moves;
 }
 
-Bitboard Piece::validCaptures()
+Bitboard Piece::validCaptures(Pos* p) const
 {
 	Bitboard moves;
 	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
-		moves = moves | movebehavArr[i]->validCaptures();
+		moves = moves | ((p == nullptr) ? movebehavArr[i]->validCaptures() : movebehavArr[i]->validCaptures(p));
 	return moves;
 }
 
@@ -211,10 +211,11 @@ bool Piece::isDead() const
 	return dead;
 }
 
-void Piece::die()
+void Piece::die(bool clear)
 {
 	dead = true;
-	game->clearPiece(pos); // clear the piece ptr off the game board
+	if(clear)
+		game->clearPiece(pos); // clear the piece ptr off the game board
 }
 
 bool Piece::isWhite() const

@@ -13,7 +13,7 @@ PawnMove::~PawnMove()
 // It is then the move funcs responsibility to move this pawn to the position and update values (like has moved etc) as per normal.
 bool PawnMove::enPassantCheckAct(const Pos p, const Piece& target)
 {
-	Log a(2);
+	Log a(3);
 
 	// attempting to avoid case in which EnPassant is only required for the first turn after it is available
 	if(capturableViaEP != nullptr && turnToEP != target.getBoard()->getMoves())

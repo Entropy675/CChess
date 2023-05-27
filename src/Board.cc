@@ -53,11 +53,10 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return ChessStatus::FAIL;
 
-	
-	Log log(1);
+	Log log(2);
 	log.append(std::string("pre checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
 	
-	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move***
+	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move on piece***
 	
 	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
 		halfmoveCount = 0;
@@ -197,18 +196,22 @@ std::string Board::toFENString() const
 	
 std::string Board::getEnPassantBoardPosFEN() const
 {
+	Log log(2);
+	
 	if(enPassantActive)
 	{		
-		for(long unsigned int i = whitePieces->size()/2; i < whitePieces->size(); i++)
+		log.append("enPassantActive!!! " + std::to_string(whitePieces->size()) + "\n");
+		for(long unsigned int i = 0; i < whitePieces->size(); i++)
 		{
 			const PawnMove* tmp = whitePieces->at(i)->getPawnBehaviour();
+			
 			if(tmp != nullptr)
 			{
 				const Piece* enPassantTarget = tmp->getEnPassantTarget();
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}
-			
+
 			tmp = blackPieces->at(i)->getPawnBehaviour();
 			if(tmp != nullptr)
 			{
@@ -238,7 +241,7 @@ bool Board::registerPromotion(std::string& s)
 {
 	// mr hacker even if you did somehow call this, if you are playing an online game it works on a consensus system - you would just be resynced to what it was before :)
 	char input = promotionMatchChar(s);
-	Log log(1);
+	Log log(2);
 	
 	std::string outstring = "promotionMatchChar? ";
 	outstring += input;
@@ -289,6 +292,7 @@ void Board::setStartingBoard(bool startingColor)
 {
 	// place pieces in their starting positions,
 	// populate the vectors corresponding to the black/white pieces.
+	
 	whitePerspective = startingColor;
 
 	for(int x = 0; x < MAX_ROW_COL; x++)
@@ -416,6 +420,11 @@ int Board::getTurnFEN() const
 	return turnCountFEN;
 }
 
+bool Board::isWhitePerspective() const
+{
+	return whitePerspective;
+}
+	
 int Board::getMoves() const
 {
 	return moveCount;

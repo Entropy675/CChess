@@ -20,18 +20,13 @@ Piece::~Piece()
 
 ChessStatus Piece::move(Pos cPos)
 {
-	Log log(1);
+	Log log(3);
 	bool isValid = false;
 	Bitboard moves = validMoves();
 	ChessStatus returnChessStatus = ChessStatus::FAIL;
 
-	bool onSuccessDeactivateEP = false;
-	
-	if(game->isEnpassantOnBoard())
-	{
-		onSuccessDeactivateEP = true;
-		game->epDeactivate(); // deactivate enpassant check, if need be it will be reactivated by validMoves' pawn behavior
-	}
+	bool previousEpOnBoard = game->isEnpassantOnBoard();
+	game->epDeactivate(); // deactivate enpassant check, if needed it will be reactivated by validMoves' pawn behavior
 	
 	PawnMove* pm = getPawnBehaviour();
 	if(pm != nullptr)
@@ -43,38 +38,41 @@ ChessStatus Piece::move(Pos cPos)
 			log.append("EP CHECK ACT PASS\n");
 		
 		if(cPos.getY() == MAX_ROW_COL-1 || cPos.getY() == 0)
-			returnChessStatus = ChessStatus::PROMOTE; // PROMOTE is PAWNMOVE because only pawns promote
+			returnChessStatus = ChessStatus::PROMOTE;
 	}
 
 	if(moves[cPos])
-		isValid = true; // you cant set isValid = moves[cPos] because isValid might already be true
+		isValid = true;
 	
-	log.setLogLevel(1);
 
-	if(isValid) // if isValid was never found, we don't move
+	if(isValid) // legal move!
 	{
-				
+		// If pawn is moving up 2 squares ...
 		if(pm != nullptr && Pos(getPos().getX(), getPos().getY() + (isWhite() ? -1 : 1)*2) == cPos)
 		{
-			// set the left and right pawn to enpassant this one if its moved up two, can only happen if isValid & pawnmove & moved up two
+			// ... set the left and right pawn to enpassant this one (if they exist).
 			pm->EPValidateTarget(this, true);
 			pm->EPValidateTarget(this, false);
 		}
 		
-		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
 		if(!moved)
 			moved = true;
-		pos = cPos; 
-		if(returnChessStatus == ChessStatus::FAIL) // ensures that PROMOTE stays the same
-			returnChessStatus = ChessStatus::SUCCESS;
+		
+		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
+		pos = cPos; // ***change the position of the piece***
+		
+		if(returnChessStatus == ChessStatus::FAIL)
+			returnChessStatus = ChessStatus::SUCCESS; // PROMOTE stays the same, flips FAIL
 	}
 	else
 	{	
-		if(onSuccessDeactivateEP)
-			game->epActivate(); // reactivate it since it failed
+		if(previousEpOnBoard) // reset to the previous enpassant value
+			game->epActivate(); 
 		else
-			game->epDeactivate(); // in case the failed move wrongly activated it
-		return ChessStatus::FAIL;
+			game->epDeactivate();
+		
+		
+		return ChessStatus::FAIL; // if returnChessStatus = PROMOTE but its illegal, this is where it FAILs.
 	}
 	return returnChessStatus;
 }
@@ -134,19 +132,19 @@ void Piece::promote(const char c)
 
 std::string Piece::getBoardPos() const
 {
-	std::string out = "" + "abcdefgh"[pos.getX()]; // Pos class can only hold values between 0-7, so no mem issues!
-	out += std::to_string(pos.getY() + 1);
+	Log log(2);
+	
+	std::string out = "";
+	
+	out += "abcdefgh"[pos.getX()]; // Pos class can only hold values between 0-7, so no mem issues!
+	out += std::to_string(MAX_ROW_COL - pos.getY());
+	
+	log.append("EnPassant Target: " + out + "\n");
 	return out; // pos string
 }
 
 std::string Piece::toString() const
 {
-	/*
-	std::string r = chr + ": , is ";
-	if(!dead)
-		r += "not ";
-	r += "dead.";
-	*/
 	std::string r = "Piece [";
 	r += chr;
 	r += "]:, is ";
@@ -176,14 +174,14 @@ char Piece::toFENChar() const // all chars are stored in uppercase
 
 void Piece::clearAllBehavs()
 {
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
 		delete movebehavArr[i];
 	movebehavArr.clear();
 }
 	
 PawnMove* Piece::getPawnBehaviour() const
 {
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		if(PawnMove* pawnMove = dynamic_cast<PawnMove*>(movebehavArr.at(i)))
 			return pawnMove;
 	return nullptr;
@@ -191,7 +189,7 @@ PawnMove* Piece::getPawnBehaviour() const
 
 KingMove* Piece::getKingBehaviour() const
 {
-	for(long unsigned int i = 0; i < movebehavArr.size(); i++) // usually a piece will have either 1 or 2 behaviors... not slow under this condition.
+	for(long unsigned int i = 0; i < movebehavArr.size(); i++)
 		if(KingMove* kingMove = dynamic_cast<KingMove*>(movebehavArr.at(i)))
 			return kingMove;
 	return nullptr;

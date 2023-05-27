@@ -56,6 +56,7 @@ class Board
 	const Piece& getBlackKing() const;
 	
 	bool isWhiteTurn() const;
+	bool isWhitePerspective() const; // use this to determine weather to draw the board flipped
 	int getMoves() const;
 	
 	int getTurnFEN() const;

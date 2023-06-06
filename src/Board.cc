@@ -47,6 +47,14 @@ Piece* Board::operator[](Pos p) const
 	return (*this)(p[0], p[1]);
 }
 	
+// Refactor this entire function using the new 
+/*
+	Bitboard getWhiteAttackMap(const Piece& p, Pos* to) const;
+	Bitboard getBlackAttackMap(const Piece& p, Pos* to) const;
+	Bitboard getWhiteMoveMap(const Piece& p, Pos* to) const;
+	Bitboard getBlackMoveMap(const Piece& p, Pos* to) const;
+*/
+// functions.
 ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 

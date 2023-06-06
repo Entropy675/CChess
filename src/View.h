@@ -20,7 +20,7 @@ class View
 	virtual void toggleSize() = 0; // large/small
 	virtual void userInput(std::string&) = 0;
 	virtual void print(const std::string&) = 0; // we gonna leave this non-const for compatability :(
-	virtual void log(const std::string) = 0; // copies to avoid issues with heap alloc'd mem getting popped off, don't log HUGE things its slow
+	virtual void log(const std::string&) = 0; 
 	
 	void subscribeToGame(Board*);
 	int getId() const;

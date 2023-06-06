@@ -115,7 +115,7 @@ void NcView::update()
 	moveToInputPos();
 }
 
-void NcView::log(const std::string sin)
+void NcView::log(const std::string& sin)
 {
 	std::string s(sin);
 	std::size_t pos = 0;

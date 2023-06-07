@@ -63,24 +63,43 @@ void ChessGame::startLocalNcursesGame()
 		log.append("Pre move:  " + game->toFENString() + "\n");
 		log.setLogLevel(1);
 		
-		regex pattern("[a-h][1-8] [a-h][1-8]");
+		// positions, moving from p1 to p2
+		Pos p1(0,0), p2(0,0);
 		
+		regex pattern("[a-h][1-8] [a-h][1-8]");
 		if(regex_match(uinp, pattern))
 		{
-			// this is a valid input
-			Pos p1, p2;
-
 			p1.setX(uinp[0] - 'a'); // ['a', 'b', 'c'] -> [0, 1, 2]
 			p1.setY(8 - (uinp[1] - '0')); // ['8', '7', '6'] -> [0, 1, 2]
-
-			Piece* randomPiece = (*game)[p1.getX()][p1.getY()];
 		
 			p2.setX(uinp[3] - 'a');
 			p2.setY(8 - (uinp[4] - '0'));
+		}
+	
+		regex pattern1("[a-h][1-8][a-h][1-8]");
+		if(regex_match(uinp, pattern1))
+		{
+			p1.setX(uinp[0] - 'a'); // ['a', 'b', 'c'] -> [0, 1, 2]
+			p1.setY(8 - (uinp[1] - '0')); // ['8', '7', '6'] -> [0, 1, 2]
+
+			p2.setX(uinp[2] - 'a');
+			p2.setY(8 - (uinp[3] - '0'));
+		}
+		
+		regex pattern2("[kqrbnp][a-h][1-8]");
+		if(regex_match(uinp, pattern2))
+		{
+			// this is a valid input for single location given (only one possible valid move)
+			// TODO: check each valid move that leads to this square, if there are more then one then don't do anything
+		}
+		
+		log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
+		//log.append("game->movePiece(Pos" + p1.toString() + ", Pos" + p2.toString() + ");\n"); 
+		
+		if(p1 != p2)
+		{			
+			Piece* randomPiece = (*game)[p1.getX()][p1.getY()];
 			
-			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
-			//log.append("game->movePiece(Pos" + p1.toString() + ", Pos" + p2.toString() + ");\n"); 
-				
 			if(randomPiece != nullptr)
 				log.append(randomPiece->toString() + "\n");
 			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board***
@@ -88,13 +107,6 @@ void ChessGame::startLocalNcursesGame()
 			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
 
-		regex pattern2("[kqrbnp][a-h][1-8]");
-
-		if(regex_match(uinp, pattern2))
-		{
-			// this is a valid input for single location given (only one possible valid move)
-			// TODO: check each valid move that leads to this square, if there are more then one then don't do anything
-		}
 
 		if(uinp == string("tg"))
 			whitePlayer->toggleSize();

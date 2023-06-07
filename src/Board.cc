@@ -443,10 +443,9 @@ const Bitboard& Board::getBlackMoveMap() const
 	return blackMoveMap;
 }
 
-
 Bitboard Board::getWhiteAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, whitePieces);
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, whitePieces); 
 }
 
 Bitboard Board::getBlackAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
@@ -471,6 +470,8 @@ Bitboard Board::conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAtt
 	for(long unsigned int i = 0; i < pieces->size(); i++)
 		if(pieces->at(i) != &p)
 			tmp = tmp | func(*pieces->at(i));
+	// we assume that Function type = lambda function, thus calling that lambda function we defined with *pieces->at(i) and returning the corresponding piece.validMoves(); bitboard.
+	// Remember, compiler just creates different copies of this function based on the input passed! Validity is entirly based on whats passed... seems a little wacky but its good
 	
 	if(includePiecesAttacks)
 		tmp = tmp | p.validCaptures(to);

@@ -26,7 +26,6 @@ class ChessGame
 	
 
 	private:
-	std::string mergeStrings(std::string, const std::string&);
 	
 	View* whitePlayer;
 	View* blackPlayer;

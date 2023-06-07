@@ -11,9 +11,9 @@ Piece* MoveBehaviour::setFrom(Piece* p)
 	return r;
 }
 
-Bitboard MoveBehaviour::validCaptures()
+Bitboard MoveBehaviour::validCaptures(Pos* p) const
 {
-	return validMoves();
+	return (p == nullptr) ? validMoves() : validMoves(p);
 }
 
 bool MoveBehaviour::isValidMove(const Pos& to)

@@ -10,6 +10,9 @@
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32
 
+
+#define LOG_LEVEL		2 // LOG LEVEL!
+
 #include <string>
 
 enum class ChessStatus 
@@ -35,6 +38,42 @@ inline std::string getChessStatusString(ChessStatus stat)
     return "UNKNOWN"; // Handle unknown status gracefully
 }
 
+// only merge strings of same '\n' newline count, or str1 < str2 '\n's (I lazy, theres probably a better way to write this but I did this in a min)
+inline std::string mergeStrings(std::string str2, const std::string& str1) 
+{
+    std::string mergedString;
+	str2 += "\n"; // (the second one needs to be offset by at least one \n)
+	
+	unsigned long size = str1.size() + str2.size();
+	unsigned long str1c = 0;
+	unsigned long str2c = 0;
+	
+	bool flip = false;
+	while(str1c + str2c < size)
+	{
+		char current;
+		if(flip)
+			current = str1[str1c++];
+		else
+			current = str2[str2c++];
+
+		if(current == '\n')
+		{
+			flip = !flip;
+			if(flip)
+			{
+				mergedString += "  ";
+				size += 2;
+			}
+			else
+				mergedString += current;
+		}
+		else
+			mergedString += current;
+	}
+
+    return mergedString;
+}
 class ChessGame;
 
 class Board;

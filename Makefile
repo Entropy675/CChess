@@ -43,10 +43,10 @@ $(PATH2OBJ)MoveBehaviour.o: $(PATH2SRC)MoveBehaviour.cc $(PATH2SRC)MoveBehaviour
 $(PATH2OBJ)View.o:	$(PATH2SRC)View.cc $(PATH2SRC)View.h
 	$(CC) -c $(PATH2SRC)View.cc -o $(PATH2OBJ)View.o
 
-$(PATH2OBJ)Log.o: $(PATH2SRC)Log.cc $(PATH2SRC)Log.h
+$(PATH2OBJ)Log.o: $(PATH2SRC)Log.cc $(PATH2SRC)Log.h $(PATH2SRC)defs.h
 	$(CC) -c $(PATH2SRC)Log.cc -o $(PATH2OBJ)Log.o
 
-$(PATH2OBJ)NcView.o: $(PATH2SRC)NcView.cc $(PATH2SRC)NcView.h $(PATH2SRC)View.h $(PATH2SRC)Board.h
+$(PATH2OBJ)NcView.o: $(PATH2SRC)NcView.cc $(PATH2SRC)NcView.h $(PATH2SRC)View.h $(PATH2SRC)Board.h $(PATH2SRC)defs.h
 	$(CC) -c $(PATH2SRC)NcView.cc -o $(PATH2OBJ)NcView.o
 
 $(PATH2OBJ)Pos.o: $(PATH2SRC)Pos.cc $(PATH2SRC)Pos.h $(PATH2SRC)defs.h

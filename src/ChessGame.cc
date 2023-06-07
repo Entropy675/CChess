@@ -27,43 +27,7 @@ void ChessGame::updateAllSpectators()
 	for(long unsigned int i = 0; i < otherViews.size(); i++)
 		otherViews[i]->update();
 }
-	
-// only merge strings of same '\n' newline count, or str1 < str2 '\n's (I lazy, theres probably a better way to write this but I did this in a min)
-std::string ChessGame::mergeStrings(std::string str2, const std::string& str1) 
-{
-    std::string mergedString;
-	str2 += "\n"; // (the second one needs to be offset by at least one \n)
-	
-	unsigned long size = str1.size() + str2.size();
-	unsigned long str1c = 0;
-	unsigned long str2c = 0;
-	
-	bool flip = false;
-	while(str1c + str2c < size)
-	{
-		char current;
-		if(flip)
-			current = str1[str1c++];
-		else
-			current = str2[str2c++];
 
-		if(current == '\n')
-		{
-			flip = !flip;
-			if(flip)
-			{
-				mergedString += "  ";
-				size += 2;
-			}
-			else
-				mergedString += current;
-		}
-		else
-			mergedString += current;
-	}
-
-    return mergedString;
-}
 
 // for this ncurses implementation we will assume that the whitePlayer = blackPlayer (local machine)
 void ChessGame::startLocalNcursesGame()
@@ -115,10 +79,11 @@ void ChessGame::startLocalNcursesGame()
 			p2.setY(8 - (uinp[4] - '0'));
 			
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
+			//log.append("game->movePiece(Pos" + p1.toString() + ", Pos" + p2.toString() + ");\n"); 
+				
 			if(randomPiece != nullptr)
 				log.append(randomPiece->toString() + "\n");
-			
-			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board**** 
+			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board***
 			
 			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}
@@ -164,7 +129,9 @@ void ChessGame::startLocalNcursesGame()
 		
 		
 		log.append("Post move: " + game->toFENString() + "\n");
-		log.append("Attack map:\n" + mergeStrings("W" + game->getWhiteAttackMap().toString(false), "B" + game->getBlackAttackMap().toString(false)));
+		log.append(mergeStrings(
+			("Attack map:\n" + mergeStrings("W" + game->getWhiteAttackMap().toString(false), "B" + game->getBlackAttackMap().toString(false) + "\n"))
+			,("\t\t\tMove map:\n" + mergeStrings("W" + game->getWhiteMoveMap().toString(false), "B" + game->getBlackMoveMap().toString(false)))));
 		//log.append(game->getWhiteAttackMap().toString());
 		log.flush();
 

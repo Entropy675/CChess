@@ -13,9 +13,9 @@ class PawnMove : public MoveBehaviour
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move.
 	const Piece* getEnPassantTarget() const;	
 	
-	virtual Bitboard validCaptures() override;
+	virtual Bitboard validCaptures(Pos* p = nullptr) const override;
+	virtual Bitboard validMoves(Pos* p = nullptr) const override;
 	
-	virtual Bitboard validMoves() override;
 	virtual void validMoves(std::vector<Pos>& out) override; 
 
 	private:

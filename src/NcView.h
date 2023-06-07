@@ -22,8 +22,8 @@ class NcView : public View
 	virtual void update() override;
 	virtual void toggleSize() override; // large/small
 	virtual void userInput(std::string&) override;
-	virtual void print(const std::string& s) override;
-	virtual void log(std::string) override;
+	virtual void print(const std::string&) override;
+	virtual void log(const std::string&) override;
 	
 	void printAt(int x, int y, const std::string& s) const;
 	

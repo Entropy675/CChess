@@ -21,13 +21,15 @@ NcView::NcView(Board* g) : View(g), baseWriteHead(19), writeHead(baseWriteHead),
 		offset.set(2, 1); 
 	}
 	
-	logwin = newwin(logwinHeight, logwinWidth, logwinY, logwinX); // for logging (size of logger is first 2#, second 2 are position.)
+	if(LOG_LEVEL != 0)
+		logwin = newwin(logwinHeight, logwinWidth, logwinY, logwinX); // for logging (size of logger is first 2#, second 2 are position.)
 	logfile << "============= NEW GAME =============" << std::endl;
 }
 
 NcView::~NcView()
 {
-	delwin(logwin);
+	if(LOG_LEVEL != 0)
+		delwin(logwin);
 	cleanupNcurses();
 	logfile.close(); 
 }
@@ -100,6 +102,12 @@ void NcView::update()
 	writeHead = baseWriteHead;
 	refresh();
 	
+	if(LOG_LEVEL == 0)
+	{
+		moveToInputPos();
+		return;
+	}
+	
 	wclear(logwin);
 	mvwprintw(logwin, 1, 2, "=== LOG ===\n  %s", logstring.c_str());
 	box(logwin, 0, 0);
@@ -107,7 +115,7 @@ void NcView::update()
 	moveToInputPos();
 }
 
-void NcView::log(const std::string sin)
+void NcView::log(const std::string& sin)
 {
 	std::string s(sin);
 	std::size_t pos = 0;
@@ -235,13 +243,26 @@ void NcView::drawPieceBar()
 	
 	wideChessConversion('K', game->isWhiteTurn(), ctemp);
 	addstr("\n");
-	addstr(spaces);
+	if(game->isCheckOnBoard())
+	{
+		if(game->isWhiteTurn())
+			addstr("  WHITE ");
+		else
+			addstr("  BLACK ");
+	}
+	else 
+		addstr(spaces);
+	
 	addstr("- --<<");
 	add_wch(&ctemp);
 	add_wch(&ctemp);
 	add_wch(&ctemp);
 	addstr(">>-- -");
-	addstr(spaces);
+	
+	if(game->isCheckOnBoard())
+		addstr(" CHECK  ");
+	else 
+		addstr(spaces);
 	addstr("\n");
 	
 	addstr(spaces);

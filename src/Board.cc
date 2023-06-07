@@ -46,7 +46,48 @@ Piece* Board::operator[](Pos p) const
 {
 	return (*this)(p[0], p[1]);
 }
+
+bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
+{
+	Log log(2);
 	
+	bool kingMove = !(pieceMoved.getKingBehaviour() != nullptr);
+	bool validMove = true;
+	Piece* temp = nullptr;
+	
+	// ***Temp Move Piece***
+	temp = gameBoard[b.getX()][b.getY()];
+	gameBoard[b.getX()][b.getY()] = getPiece(a);
+	clearPiece(a);
+	if(temp != nullptr)
+		temp->die();
+	updateMaps(); // now when we get the attack maps the board makes sense
+	
+	if(isWhiteMove)
+		validMove = getBlackAttackMap(pieceMoved, &b, kingMove)[getWhiteKing().getPos()];
+	else
+		validMove = getWhiteAttackMap(pieceMoved, &b, kingMove)[getBlackKing().getPos()];
+
+	log.append(mergeStrings("B" + getBlackAttackMap(pieceMoved, &b, kingMove).toString(false) + "\n", "W" + getWhiteAttackMap(pieceMoved, &b, kingMove).toString(false) + "\n"));
+		
+	// ***Undo Temp Move Piece***
+	gameBoard[a.getX()][a.getY()] = getPiece(b);
+	gameBoard[b.getX()][b.getY()] = temp;
+	if(temp != nullptr)
+		temp->setDead(false);
+	updateMaps(); 
+	
+	return validMove;
+}
+
+// Refactor this entire function using the new 
+/*
+	Bitboard getWhiteAttackMap(const Piece& p, Pos* to) const;
+	Bitboard getBlackAttackMap(const Piece& p, Pos* to) const;
+	Bitboard getWhiteMoveMap(const Piece& p, Pos* to) const;
+	Bitboard getBlackMoveMap(const Piece& p, Pos* to) const;
+*/
+// functions.
 ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 
@@ -61,51 +102,37 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
 		halfmoveCount = 0;
 	
-	bool prevWhiteCheck = whiteCheck;
-	bool prevBlackCheck = blackCheck;
+	int tempHalfmoveCount = halfmoveCount;
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
-		// Update the halfmove count and kill the piece according to rules
+		
+		log.append("Last position for failure, king fail... \n");
+		// MOVE CHECK king
+		if(isMoveValidOnKing(getPiece(a)->isWhite(), *getPiece(a), a, b))
+			return ChessStatus::FAIL;
+		// at this point we can assume that the move has succeeded
+		log.append("All fail states passed. \n");
+		
+		// Update the halfmove count and kill the piece according to rules (or fail if same color)
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 		{
+			if(gameBoard[b.getX()][b.getY()]->isWhite() == getPiece(a)->isWhite())
+				return ChessStatus::FAIL;
+			
 			gameBoard[b.getX()][b.getY()]->die();
-			halfmoveCount = 0;
+			tempHalfmoveCount = 0;
 		}
 		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-			halfmoveCount++;
+			tempHalfmoveCount++;
+		
+		// ? -- Preposition: a function that returns the attack/move bit board of the game with a piece moved to a different pos.
+		// Use that function to make this one make way more sense please...
 		
 		// ***Move Piece***
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
-		updateAttackMaps(); // now the kings know if they are under attack
-		
-		// update white & black checks 
-		if(blackAttackMap[whiteKing->getPos()])
-			whiteCheck = true;
-		else
-			whiteCheck = false;
-		
-		if(whiteAttackMap[blackKing->getPos()])
-			blackCheck = true;
-		else
-			blackCheck = false;
-		
-		log.append(std::string("post checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
-		
-		if((whiteCheck && getPiece(b)->isWhite()) || (blackCheck && !getPiece(b)->isWhite()))
-		{
-			// ***Undo Move***
-			gameBoard[a.getX()][a.getY()] = getPiece(b);
-			clearPiece(b);
-			updateAttackMaps();
-			
-			// **Reset Checks**
-			whiteCheck = prevWhiteCheck;
-			blackCheck = prevBlackCheck;
-			
-			return ChessStatus::FAIL;
-		}
+		updateMaps(); // now the kings know if they are under attack
 		
 		if(returnChessStatus != ChessStatus::PROMOTE)
 		{
@@ -115,7 +142,9 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			whiteTurn = !whiteTurn;
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
-
+		
+		halfmoveCount = tempHalfmoveCount;
+		
 		log.append("SUCCESS.\n");
 		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
 	}
@@ -194,9 +223,12 @@ std::string Board::toFENString() const
 	return FENs;
 }
 	
+	// CHANGE HOW THIS WORKS!!! any pawn that moves up 2
 std::string Board::getEnPassantBoardPosFEN() const
 {
 	Log log(2);
+	
+	
 	
 	if(enPassantActive)
 	{		
@@ -365,19 +397,27 @@ void Board::setStartingBoard(bool startingColor)
 		whitePieces->push_back(gameBoard[i][MAX_ROW_COL-2]);
 	}
 	
-	updateAttackMaps();
+	updateMaps();
 }
 
-void Board::updateAttackMaps()
+void Board::updateMaps()
 {
 	whiteAttackMap.clear();
 	blackAttackMap.clear();
+	whiteMoveMap.clear();
+	blackMoveMap.clear();
 	
 	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+	{
 		whiteAttackMap = whiteAttackMap | whitePieces->at(i)->validCaptures();
+		whiteMoveMap = whiteMoveMap | whitePieces->at(i)->validMoves();
+	}
 	
 	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();
+	{
+		blackAttackMap = blackAttackMap | blackPieces->at(i)->validCaptures();	
+		blackMoveMap = blackMoveMap | blackPieces->at(i)->validMoves();
+	}
 }
 
 const Piece& Board::getWhiteKing() const
@@ -400,6 +440,65 @@ const Bitboard& Board::getBlackAttackMap() const
 	return blackAttackMap;
 }
 	
+const Bitboard& Board::getWhiteMoveMap() const
+{
+	return whiteMoveMap;
+}
+
+const Bitboard& Board::getBlackMoveMap() const
+{
+	return blackMoveMap;
+}
+
+
+Bitboard Board::getWhiteAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		if(whitePieces->at(i) != &p)
+			tmp = tmp | whitePieces->at(i)->validCaptures(); // meaning there should be a dummy piece at to on board
+	
+	if(includePiecesAttacks)
+		tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
+Bitboard Board::getBlackAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		if(blackPieces->at(i) != &p)
+			tmp = tmp | blackPieces->at(i)->validCaptures();
+	
+	if(includePiecesAttacks)
+		tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
+Bitboard Board::getWhiteMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < whitePieces->size(); i++)
+		if(whitePieces->at(i) != &p)
+			tmp = tmp | whitePieces->at(i)->validMoves();
+	
+	if(includePiecesAttacks)
+		tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
+Bitboard Board::getBlackMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
+{
+	Bitboard tmp;
+	for(long unsigned int i = 0; i < blackPieces->size(); i++)
+		if(blackPieces->at(i) != &p)
+			tmp = tmp | blackPieces->at(i)->validMoves();
+	
+	if(includePiecesAttacks)
+		tmp = tmp | p.validCaptures(to);
+	return tmp;
+}
+
 bool Board::isWhiteTurn() const
 {
 	return whiteTurn;

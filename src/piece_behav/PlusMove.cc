@@ -22,12 +22,12 @@ bool PlusMove::checkPosition(int x, int y, std::vector<Pos>& out)
 	return true;
 }
 
-bool PlusMove::checkPosition(int x, int y, Bitboard& out)
+bool PlusMove::checkPosition(int x, int y, Bitboard& out) const
 {
 	if(Pos::isValid(x, y))
 	{
 		Piece* temp = from->getBoard()->getPiece(Pos(x,y));
-		if(temp == nullptr)
+		if(temp == nullptr || temp == from)
 			out.setBit(Pos(x,y));
 		else
 		{
@@ -41,11 +41,13 @@ bool PlusMove::checkPosition(int x, int y, Bitboard& out)
 }
 
 
-Bitboard PlusMove::validMoves()
+Bitboard PlusMove::validMoves(Pos* p) const
 {
 	Bitboard bb;
 	if(from->isDead())
 		return bb;
+	
+	Pos searchFrom = (p == nullptr) ? from->getPos() : *p;
 	
 	bool stopR = false;
 	bool stopL = false;
@@ -55,16 +57,16 @@ Bitboard PlusMove::validMoves()
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopR)
-			stopR = checkPosition(from->getPos().getX() + i, from->getPos().getY(), bb);
+			stopR = checkPosition(searchFrom.getX() + i, searchFrom.getY(), bb);
 		
 		if(!stopL)
-			stopL = checkPosition(from->getPos().getX() - i, from->getPos().getY(), bb);
+			stopL = checkPosition(searchFrom.getX() - i, searchFrom.getY(), bb);
 		
 		if(!stopD)
-			stopD = checkPosition(from->getPos().getX(), from->getPos().getY() + i, bb);
+			stopD = checkPosition(searchFrom.getX(), searchFrom.getY() + i, bb);
 		
 		if(!stopU)
-			stopU = checkPosition(from->getPos().getX(), from->getPos().getY() - i, bb);
+			stopU = checkPosition(searchFrom.getX(), searchFrom.getY() - i, bb);
 		
 		if(stopU && stopD && stopR && stopL)
 			break;

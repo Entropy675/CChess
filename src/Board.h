@@ -49,6 +49,8 @@ class Board
 	void setStartingBoard(bool = true);
 	bool registerPromotion(std::string&);
 
+	bool isMoveValidOnKing(bool, Piece&, Pos, Pos);
+	
 	void disableCheck();
 	bool isCheckOnBoard() const;
 	
@@ -67,15 +69,22 @@ class Board
 	void epActivate();
 	void epDeactivate();
 	
+	
 	std::vector<Piece*>* getWhitePieces() const;
 	std::vector<Piece*>* getBlackPieces() const;
 	const Bitboard& getWhiteAttackMap() const;
 	const Bitboard& getBlackAttackMap() const;
+	const Bitboard& getWhiteMoveMap() const;
+	const Bitboard& getBlackMoveMap() const;
 
+	Bitboard getWhiteAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks = true) const;
+	Bitboard getBlackAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks = true) const;
+	Bitboard getWhiteMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks = true) const;
+	Bitboard getBlackMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks = true) const;
 
 	private:
 	char promotionMatchChar(std::string&);
-	void updateAttackMaps();
+	void updateMaps();
 	
 	std::vector<Piece*>* whitePieces;
 	Piece* whiteKing;
@@ -91,6 +100,8 @@ class Board
 
 	Bitboard whiteAttackMap;
 	Bitboard blackAttackMap;
+	Bitboard whiteMoveMap;
+	Bitboard blackMoveMap;
 	
 	bool enPassantActive;
 

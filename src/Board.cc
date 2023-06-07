@@ -106,8 +106,8 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
-		
-		log.append("Last position for failure, king fail... \n");
+		log.setLogLevel(2);
+		log.append("Last position for failure, fail states... \n");
 		// MOVE CHECK king
 		if(isMoveValidOnKing(getPiece(a)->isWhite(), *getPiece(a), a, b))
 			return ChessStatus::FAIL;
@@ -145,6 +145,10 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		
 		halfmoveCount = tempHalfmoveCount;
 		
+		whiteCheck = getBlackAttackMap()[getWhiteKing().getPos()];
+		blackCheck = getWhiteAttackMap()[getBlackKing().getPos()];
+		
+		log.setLogLevel(1);
 		log.append("SUCCESS.\n");
 		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
 	}

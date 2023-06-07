@@ -83,6 +83,10 @@ class Board
 	Bitboard getBlackMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks = true) const;
 
 	private:
+	
+	template <typename Function>
+	Bitboard conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAttacks, Function func, std::vector<Piece*>* pieces) const;
+
 	char promotionMatchChar(std::string&);
 	void updateMaps();
 	

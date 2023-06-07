@@ -80,14 +80,7 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 	return validMove;
 }
 
-// Refactor this entire function using the new 
-/*
-	Bitboard getWhiteAttackMap(const Piece& p, Pos* to) const;
-	Bitboard getBlackAttackMap(const Piece& p, Pos* to) const;
-	Bitboard getWhiteMoveMap(const Piece& p, Pos* to) const;
-	Bitboard getBlackMoveMap(const Piece& p, Pos* to) const;
-*/
-// functions.
+// bug: if king tries to take a piece that is attacking him that is also defended by the opponent king, the player that made the illogical move is now stuck and cannot move their king...
 ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 
@@ -95,7 +88,6 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		return ChessStatus::FAIL;
 
 	Log log(2);
-	log.append(std::string("pre checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move on piece***
 	
@@ -106,7 +98,7 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
-		log.setLogLevel(2);
+		log.setLogLevel(3);
 		log.append("Last position for failure, fail states... \n");
 		// MOVE CHECK king
 		if(isMoveValidOnKing(getPiece(a)->isWhite(), *getPiece(a), a, b))
@@ -125,9 +117,6 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		}
 		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
 			tempHalfmoveCount++;
-		
-		// ? -- Preposition: a function that returns the attack/move bit board of the game with a piece moved to a different pos.
-		// Use that function to make this one make way more sense please...
 		
 		// ***Move Piece***
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
@@ -457,46 +446,31 @@ const Bitboard& Board::getBlackMoveMap() const
 
 Bitboard Board::getWhiteAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		if(whitePieces->at(i) != &p)
-			tmp = tmp | whitePieces->at(i)->validCaptures(); // meaning there should be a dummy piece at to on board
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, whitePieces);
 }
 
 Bitboard Board::getBlackAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		if(blackPieces->at(i) != &p)
-			tmp = tmp | blackPieces->at(i)->validCaptures();
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, blackPieces);
 }
 
 Bitboard Board::getWhiteMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		if(whitePieces->at(i) != &p)
-			tmp = tmp | whitePieces->at(i)->validMoves();
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validMoves();}, whitePieces);
 }
 
 Bitboard Board::getBlackMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validMoves();}, blackPieces);
+}
+
+template <typename Function>
+Bitboard Board::conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAttacks, Function func, std::vector<Piece*>* pieces) const
+{
 	Bitboard tmp;
-	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		if(blackPieces->at(i) != &p)
-			tmp = tmp | blackPieces->at(i)->validMoves();
+	for(long unsigned int i = 0; i < pieces->size(); i++)
+		if(pieces->at(i) != &p)
+			tmp = tmp | func(*pieces->at(i));
 	
 	if(includePiecesAttacks)
 		tmp = tmp | p.validCaptures(to);

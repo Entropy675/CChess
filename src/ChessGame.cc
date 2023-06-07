@@ -27,43 +27,7 @@ void ChessGame::updateAllSpectators()
 	for(long unsigned int i = 0; i < otherViews.size(); i++)
 		otherViews[i]->update();
 }
-	
-// only merge strings of same '\n' newline count, or str1 < str2 '\n's (I lazy, theres probably a better way to write this but I did this in a min)
-std::string ChessGame::mergeStrings(std::string str2, const std::string& str1) 
-{
-    std::string mergedString;
-	str2 += "\n"; // (the second one needs to be offset by at least one \n)
-	
-	unsigned long size = str1.size() + str2.size();
-	unsigned long str1c = 0;
-	unsigned long str2c = 0;
-	
-	bool flip = false;
-	while(str1c + str2c < size)
-	{
-		char current;
-		if(flip)
-			current = str1[str1c++];
-		else
-			current = str2[str2c++];
 
-		if(current == '\n')
-		{
-			flip = !flip;
-			if(flip)
-			{
-				mergedString += "  ";
-				size += 2;
-			}
-			else
-				mergedString += current;
-		}
-		else
-			mergedString += current;
-	}
-
-    return mergedString;
-}
 
 // for this ncurses implementation we will assume that the whitePlayer = blackPlayer (local machine)
 void ChessGame::startLocalNcursesGame()

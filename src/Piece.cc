@@ -218,6 +218,11 @@ void Piece::die(bool clear)
 		game->clearPiece(pos); // clear the piece ptr off the game board
 }
 
+void Piece::setDead(bool a)
+{
+	dead = a;
+}
+
 bool Piece::isWhite() const
 {
 	return white;

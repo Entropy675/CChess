@@ -50,6 +50,7 @@ class Piece
 	void promote(const char);
 	void epActivate();
 	void die(bool = false);
+	void setDead(bool);
 	
 	char toFENChar() const;
 	char getCharacter() const;

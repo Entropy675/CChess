@@ -79,10 +79,11 @@ void ChessGame::startLocalNcursesGame()
 			p2.setY(8 - (uinp[4] - '0'));
 			
 			log.append("Attempt: " + p1.toString() + " " + p2.toString() + "\n");
+			//log.append("game->movePiece(Pos" + p1.toString() + ", Pos" + p2.toString() + ");\n"); 
+				
 			if(randomPiece != nullptr)
 				log.append(randomPiece->toString() + "\n");
-			
-			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board**** 
+			promotionAsk = game->movePiece(p1, p2); // ****Move piece on board***
 			
 			log.append("CHESSSTATUS: " + getChessStatusString(promotionAsk) + "\n");
 		}

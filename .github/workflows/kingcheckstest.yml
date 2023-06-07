@@ -1,0 +1,26 @@
+name: Run kingcheckstest
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  kingcheckstest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Test King Checks
+      run: |
+        make
+        cd tests/
+        make kingcheckstest
+        ./kingcheckstest
+        exit_code=$?
+        if [ $exit_code -gt 0 ]; then
+          echo "King check test failed with exit code: $exit_code"
+          exit 1
+        fi

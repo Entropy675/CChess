@@ -9,6 +9,7 @@ Run command: ./CChess
 Currently only builds on Linux or WSL with KeX (working on windows port right now!)
 
  ** ->>> creating a Windows API based GUI for download.
+ (Current build toolchain: MingW64 -> get windows environment installed, get dependencies -> make command at root of project -> produces CChess.exe)
  
 Plans to integrate with Web Assembly for a future web project, combining with one of my preexisting web socket based chat servers.
 

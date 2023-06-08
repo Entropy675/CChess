@@ -9,7 +9,7 @@ TEST_SOURCES := pawnpush2test pawnpromotiontest pawncapturetest bishopmovestest 
 TEST_TARGETS := $(patsubst %.cc,%,$(TEST_SOURCES))
 
 allLocal: $(TEST_TARGETS)
-	@./run_tests.sh
+	@./runTests.sh
 	
 %: %.cc $(OBJ)
 	$(CC) -o $@ $< $(OBJ) $(LIB)

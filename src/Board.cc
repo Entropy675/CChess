@@ -1,5 +1,4 @@
 #include "Board.h"
-#include <cctype>
 
 #include "piece_behav/PawnMove.h"
 #include "piece_behav/KingMove.h"
@@ -80,14 +79,7 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 	return validMove;
 }
 
-// Refactor this entire function using the new 
-/*
-	Bitboard getWhiteAttackMap(const Piece& p, Pos* to) const;
-	Bitboard getBlackAttackMap(const Piece& p, Pos* to) const;
-	Bitboard getWhiteMoveMap(const Piece& p, Pos* to) const;
-	Bitboard getBlackMoveMap(const Piece& p, Pos* to) const;
-*/
-// functions.
+// bug: if king tries to take a piece that is attacking him that is also defended by the opponent king, the player that made the illogical move is now stuck and cannot move their king...
 ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 
@@ -95,18 +87,13 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		return ChessStatus::FAIL;
 
 	Log log(2);
-	log.append(std::string("pre checks: ")  + (whiteCheck ? "WcurrentCheck" : "") + ", " + (blackCheck ? "BcurrentCheck" : "\n"));
 	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move on piece***
 	
-	if(returnChessStatus == ChessStatus::PAWNMOVE || returnChessStatus == ChessStatus::PROMOTE)
-		halfmoveCount = 0;
-	
-	int tempHalfmoveCount = halfmoveCount;
-	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
 	{
-		log.setLogLevel(2);
+
+		log.setLogLevel(3);
 		log.append("Last position for failure, fail states... \n");
 		// MOVE CHECK king
 		if(isMoveValidOnKing(getPiece(a)->isWhite(), *getPiece(a), a, b))
@@ -114,25 +101,25 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		// at this point we can assume that the move has succeeded
 		log.append("All fail states passed. \n");
 		
-		// Update the halfmove count and kill the piece according to rules (or fail if same color)
+		if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
+			halfmoveCount++; 
+		else
+			halfmoveCount = 0;
+		
+		// Fix the halfmove count and kill the piece if piece exists
 		if(gameBoard[b.getX()][b.getY()] != nullptr)
 		{
 			if(gameBoard[b.getX()][b.getY()]->isWhite() == getPiece(a)->isWhite())
 				return ChessStatus::FAIL;
 			
 			gameBoard[b.getX()][b.getY()]->die();
-			tempHalfmoveCount = 0;
+			halfmoveCount = 0;
 		}
-		else if(returnChessStatus != ChessStatus::PAWNMOVE && returnChessStatus != ChessStatus::PROMOTE)
-			tempHalfmoveCount++;
-		
-		// ? -- Preposition: a function that returns the attack/move bit board of the game with a piece moved to a different pos.
-		// Use that function to make this one make way more sense please...
 		
 		// ***Move Piece***
 		gameBoard[b.getX()][b.getY()] = getPiece(a);
 		clearPiece(a);
-		updateMaps(); // now the kings know if they are under attack
+		updateMaps();
 		
 		if(returnChessStatus != ChessStatus::PROMOTE)
 		{
@@ -143,7 +130,6 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 			returnChessStatus = ChessStatus::SUCCESS;
 		}
 		
-		halfmoveCount = tempHalfmoveCount;
 		
 		whiteCheck = getBlackAttackMap()[getWhiteKing().getPos()];
 		blackCheck = getWhiteAttackMap()[getBlackKing().getPos()];
@@ -331,6 +317,21 @@ void Board::setStartingBoard(bool startingColor)
 	
 	whitePerspective = startingColor;
 
+	
+	// should be empty for the first call, for every other call the following two loops run and reset the vecs.
+	for(long int i = whitePieces->size() - 1; i >= 0; i--)
+	{
+		delete whitePieces->at(i); 
+		whitePieces->erase(whitePieces->begin() + i);
+	}
+	
+	for(long int i = blackPieces->size() - 1; i >= 0; i--)
+	{
+		delete blackPieces->at(i); 
+		blackPieces->erase(blackPieces->begin() + i);
+	}
+
+
 	for(int x = 0; x < MAX_ROW_COL; x++)
 	{
 		for(int y = 0; y < MAX_ROW_COL; y++)
@@ -454,49 +455,35 @@ const Bitboard& Board::getBlackMoveMap() const
 	return blackMoveMap;
 }
 
-
 Bitboard Board::getWhiteAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		if(whitePieces->at(i) != &p)
-			tmp = tmp | whitePieces->at(i)->validCaptures(); // meaning there should be a dummy piece at to on board
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, whitePieces); 
 }
 
 Bitboard Board::getBlackAttackMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		if(blackPieces->at(i) != &p)
-			tmp = tmp | blackPieces->at(i)->validCaptures();
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validCaptures();}, blackPieces);
 }
 
 Bitboard Board::getWhiteMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
-	Bitboard tmp;
-	for(long unsigned int i = 0; i < whitePieces->size(); i++)
-		if(whitePieces->at(i) != &p)
-			tmp = tmp | whitePieces->at(i)->validMoves();
-	
-	if(includePiecesAttacks)
-		tmp = tmp | p.validCaptures(to);
-	return tmp;
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validMoves();}, whitePieces);
 }
 
 Bitboard Board::getBlackMoveMap(const Piece& p, Pos* to, bool includePiecesAttacks) const
 {
+	return conditionalGetMap(p, to, includePiecesAttacks, [](const Piece& piece) {return piece.validMoves();}, blackPieces);
+}
+
+template <typename Function>
+Bitboard Board::conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAttacks, Function func, std::vector<Piece*>* pieces) const
+{
 	Bitboard tmp;
-	for(long unsigned int i = 0; i < blackPieces->size(); i++)
-		if(blackPieces->at(i) != &p)
-			tmp = tmp | blackPieces->at(i)->validMoves();
+	for(long unsigned int i = 0; i < pieces->size(); i++)
+		if(pieces->at(i) != &p)
+			tmp = tmp | func(*pieces->at(i));
+	// we assume that Function type = lambda function, thus calling that lambda function we defined with *pieces->at(i) and returning the corresponding piece.validMoves(); bitboard.
+	// Remember, compiler just creates different copies of this function based on the input passed! Validity is entirly based on whats passed... seems a little wacky but its good, and no extra libs needed ;)
 	
 	if(includePiecesAttacks)
 		tmp = tmp | p.validCaptures(to);

@@ -9,7 +9,7 @@ LINUX_SOURCES = $(OBJ) $(PATH2OBJ)NcView.o $(PATH2OBJ)ChessGameLinux.o
 # assuming MinGW toolchain for compiling on windows
 ifeq ($(OS),Windows_NT)
     TARGET = CChess.exe
-    LIB = -luser32 -lgdi32 -static-libstdc++
+    LIB = -luser32 -lgdi32 -static
     CC = g++
 else ifeq ($(shell uname),Linux)
     TARGET = CChess

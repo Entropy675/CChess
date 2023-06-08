@@ -1,18 +1,42 @@
 #include "ChessGame.h"
-#include "NcView.h"
+
 using namespace std;
 
 ChessGame::ChessGame(View* wp, View* bp) : whitePlayer(wp), blackPlayer(bp)
 {
 	game = new Board();
-	wp->subscribeToGame(game);
-	bp->subscribeToGame(game);
-	Log::addView(wp);
-	Log::addView(bp);
+	if(wp != nullptr)
+	{		
+		wp->subscribeToGame(game);
+		Log::addView(wp);
+	}
+	
+	if(bp != nullptr)
+	{
+		bp->subscribeToGame(game);
+		Log::addView(bp);
+	}
 }
 
 ChessGame::~ChessGame()
 {
+	if(whitePlayer != nullptr)
+		delete whitePlayer;
+	
+	if(whitePlayer == blackPlayer)
+	{
+		whitePlayer = nullptr;
+		blackPlayer = nullptr;
+		delete game;
+		return;
+	}
+	
+	whitePlayer = nullptr;
+	
+	if(blackPlayer != nullptr)
+		delete blackPlayer;
+	blackPlayer = nullptr;
+	
 	delete game;
 }
 
@@ -28,18 +52,9 @@ void ChessGame::updateAllSpectators()
 		otherViews[i]->update();
 }
 
-
-// for this ncurses implementation we will assume that the whitePlayer = blackPlayer (local machine)
-void ChessGame::startLocalNcursesGame()
+void ChessGame::localGameloop()
 {
-	game->setStartingBoard(true);
 	
-	whitePlayer->update();
-	whitePlayer->print("");
-	whitePlayer->print("Use ([Ctrl +] or [Ctrl Shift =]) and [Ctrl -] to resize console on Linux.");
-	whitePlayer->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
-	Log::delViewById(0); // to prevent double logging to the same view, since in local game w/b are the same.
-
 	Log log(1);
 	bool redraw;
 
@@ -110,7 +125,6 @@ void ChessGame::startLocalNcursesGame()
 
 		if(uinp == string("tg"))
 			whitePlayer->toggleSize();
-
 		else if(uinp == string("exit"))
 			break;
 		

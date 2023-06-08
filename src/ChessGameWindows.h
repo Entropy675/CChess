@@ -5,7 +5,7 @@
 #include "Windows.h"
 #include "WinView.h"
 
-class ChessGameWindows
+class ChessGameWindows : public ChessGame
 {
 	public:
 	ChessGameWindows(View* = nullptr, View* = nullptr);

@@ -1,4 +1,5 @@
 #include "WinView.h"
+#include <stdexcept>
 
 WinView* WinView::s_pInstance = nullptr; // will only allow one windowproc to happen at a time
 
@@ -7,15 +8,17 @@ WinView::WinView(Board* g, HINSTANCE hinst)
 {
     int numAttempts = 3; 
 
+	std::cout << "We made it this far..." << std::endl;
+
     for (int i = 0; i < numAttempts; ++i)
     {
-        WNDCLASS wc = {0};
+        WNDCLASSW wc = {0};
         wc.lpfnWndProc = WindowProc;
         wc.hInstance = hinst;
         wc.lpszClassName = className;
-        RegisterClass(&wc);
+        RegisterClassW(&wc);
 
-        windowHandle = CreateWindowEx(
+        windowHandle = CreateWindowExW(
             0,                              // Optional window styles
             className,                      // Window class name
             windowName,                     // Window title
@@ -36,13 +39,15 @@ WinView::WinView(Board* g, HINSTANCE hinst)
         throw std::runtime_error("WinView failed to acquire window handle (tried 3 times) --- CreateWindowEx failed, low resources?");
     }
 
+	std::cout << "We made it this far.2.." << std::endl;
     // Store the instance pointer in the static member variable
     s_pInstance = this;
+	ShowWindow(windowHandle, SW_SHOW); 
 }
 
 WinView::~WinView()
 {
-    UnregisterClass(className, nullptr);
+    UnregisterClassW(className, nullptr);
 
     if (windowHandle != nullptr)
     {
@@ -69,6 +74,7 @@ LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 	if(outputString == nullptr)
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 		
+	std::cout << "Captured input... " << *outputString << std::endl;
     switch (uMsg)
     {
 		case WM_PAINT:
@@ -122,7 +128,6 @@ void WinView::userInput(std::string& a)
         a = "exit";
     }
 	
-	Sleep(10);
 }
 
 void WinView::print(const std::string&)

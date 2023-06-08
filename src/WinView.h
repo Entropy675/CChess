@@ -8,7 +8,7 @@
 class WinView : public View
 {
 public:
-    WinView(Board* = nullptr, HINSTANCE);
+    WinView(Board* = nullptr, HINSTANCE = nullptr);
     ~WinView();
 
     void update() override;
@@ -21,7 +21,7 @@ private:
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	
-	string* outputString;
+	std::string* outputString;
     const wchar_t* className; // L"string"
     const wchar_t* windowName;
     HWND windowHandle; // window handle

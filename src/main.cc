@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     return 0;
 }
 
-#else 
+#elif defined __linux__
 
 #include "ChessGameLinux.h"
 int main() 

@@ -13,7 +13,7 @@ class ChessGameWindows : public ChessGame
 	
 	void setHInstance(HINSTANCE);
 	
-	virtual void startLocalGame() override;
+	virtual void runLocalGame() override;
 
 	protected:
 	HINSTANCE hinst;

@@ -21,12 +21,17 @@ private:
     static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	
+	void updateBoard();
+	
 	std::string* outputString;
     const wchar_t* className; // L"string"
-    const wchar_t* windowName;
+    const char* windowName;
     HWND windowHandle; // window handle
     MSG msg = {0};
 
+	const int windowWidth = 600;
+	const int windowHeight = 600;
+	
     static WinView* s_pInstance;
 };
 

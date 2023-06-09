@@ -1,0 +1,4 @@
+#include <windows.h>
+
+IDI_ICON ICON "./icon.ico"
+#define IDR_MY_ICON 101

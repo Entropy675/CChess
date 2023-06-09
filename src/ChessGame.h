@@ -20,10 +20,10 @@ class ChessGame
 	// Starting to build API...
 	void addView(View*);
 	void updateAllSpectators();
-	virtual void startLocalGame() = 0;
+	virtual void runLocalGame() = 0;
 
 	protected:
-	void localGameloop();
+	int localGameloop();
 	
 	View* whitePlayer;
 	View* blackPlayer;

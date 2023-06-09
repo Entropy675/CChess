@@ -5,7 +5,7 @@ ChessGameLinux::ChessGameLinux(View* a, View* b) : ChessGame(a, b) {}
 
 ChessGameLinux::~ChessGameLinux() {}
 
-void ChessGameLinux::startLocalGame()
+void ChessGameLinux::runLocalGame()
 {
 	whitePlayer = new NcView(game);
 	blackPlayer = whitePlayer;
@@ -17,5 +17,8 @@ void ChessGameLinux::startLocalGame()
 	whitePlayer->print("Input a command with \"[a-h][1-8] [a-h][1-8]\", more options will be added later.");
 	Log::delViewById(0); // to prevent double logging to the same view, since in local game w/b are the same.
 	
-	localGameloop();
+	int run = 1;
+	
+	while(run)
+		run = localGameloop();
 }

@@ -4,11 +4,11 @@
 WinView* WinView::s_pInstance = nullptr; // will only allow one windowproc to happen at a time
 
 WinView::WinView(Board* g, HINSTANCE hinst) 
-    : View(g), outputString(nullptr), className(L"ChessWindowClass"), windowName(L"ChessWindow"), windowHandle(nullptr)
+    : View(g), outputString(nullptr), className(L"ChessWindowClass"), windowName("ChessWindow"), windowHandle(nullptr)
 {
     int numAttempts = 3; 
 
-	std::cout << "We made it this far..." << std::endl;
+	HICON hIcon = LoadIcon(hinst, MAKEINTRESOURCE(IDR_MY_ICON));
 
     for (int i = 0; i < numAttempts; ++i)
     {
@@ -16,14 +16,17 @@ WinView::WinView(Board* g, HINSTANCE hinst)
         wc.lpfnWndProc = WindowProc;
         wc.hInstance = hinst;
         wc.lpszClassName = className;
+		wc.hCursor = NULL; // Use the default cursor
+		wc.hIcon = hIcon;
         RegisterClassW(&wc);
 
-        windowHandle = CreateWindowExW(
+        windowHandle = CreateWindowEx(
             0,                              // Optional window styles
-            className,                      // Window class name
+            "ChessWindowClass",                      // Window class name
             windowName,                     // Window title
-            WS_OVERLAPPEDWINDOW,            // Window style
-            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, // Size and position
+            WS_OVERLAPPEDWINDOW & ~(WS_SIZEBOX | WS_MAXIMIZEBOX),            // Window style
+            CW_USEDEFAULT, CW_USEDEFAULT, 
+			windowWidth, windowHeight,      // Size and position
             NULL,                           // Parent window
             NULL,                           // Menu
             hinst,                          // Instance handle
@@ -36,10 +39,16 @@ WinView::WinView(Board* g, HINSTANCE hinst)
     
     if (windowHandle == NULL)
     {
+		std::cout << "WinView failed to acquire window handle (tried 3 times) --- CreateWindowEx failed, low resources?" << std::endl;
         throw std::runtime_error("WinView failed to acquire window handle (tried 3 times) --- CreateWindowEx failed, low resources?");
     }
 
-	std::cout << "We made it this far.2.." << std::endl;
+	SendMessage(windowHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    SendMessage(windowHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+	
+    // Set the window class icon
+    //SetClassLongPtr(windowHandle, GCLP_HICON, (LONG_PTR)hIcon);
+	
     // Store the instance pointer in the static member variable
     s_pInstance = this;
 	ShowWindow(windowHandle, SW_SHOW); 
@@ -71,12 +80,25 @@ LRESULT CALLBACK WinView::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 // The non-static member function handling the window procedure internally
 LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    //UpdateWindow(hwnd);
+	
 	if(outputString == nullptr)
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 		
-	std::cout << "Captured input... " << *outputString << std::endl;
+	//std::cout << "Captured input... " << *outputString << std::endl;
     switch (uMsg)
     {
+		case WM_MOUSEMOVE:
+		{
+			int xPos = LOWORD(lParam);
+			int yPos = HIWORD(lParam);
+
+
+			// Track the mouse position and update your program accordingly
+			std::cout << xPos << "," << yPos << std::endl;
+
+			return 0;
+		}
 		case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -84,8 +106,8 @@ LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 
             // Perform drawing operations using the HDC (device context)
 
-            RECT rect = { 50, 50, 200, 200 };
-            HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0)); // Red brush
+            RECT rect = {0, 0, windowWidth, windowHeight};
+            HBRUSH brush = CreateSolidBrush(RGB(10, 0, 10)); // black brush
             FillRect(hdc, &rect, brush);
 
             // Clean up
@@ -104,20 +126,27 @@ LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-void WinView::update()
+// happens whenever a logical change in the program occurs (a move is made, board is updated, piece promoted etc)
+// so anything that updates based off of those things should be redrawn here.
+void WinView::update() 
 {
-	// update the board on the screen based on the Board*
+	updateBoard();
+}
+
+void WinView::updateBoard()
+{
+	// redraw the board on the screen
 }
 
 void WinView::toggleSize()
 {
-	// this can be left empty unless a toggle is needed...
+	// this can be left empty unless a toggle is needed... (maybe it toggles resizable?)
 }
 
 void WinView::userInput(std::string& a)
 {
     s_pInstance = this;
-	outputString = &a;
+	outputString = &a; // stash for later
     if (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
@@ -126,6 +155,8 @@ void WinView::userInput(std::string& a)
     else
     {
         a = "exit";
+		TranslateMessage(&msg);
+        DispatchMessage(&msg); 
     }
 	
 }
@@ -137,5 +168,5 @@ void WinView::print(const std::string&)
 
 void WinView::log(const std::string&)
 {
-	// allow for some sort of logging
+	// allow for some sort of logging (maybe to the chatbox too?)
 }

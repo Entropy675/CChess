@@ -6,6 +6,9 @@
 #define C_OK			1
 #define C_NOK			-1
 
+// windows icon
+#define IDR_MY_ICON 101
+
 #define MAX_ROW_COL		8  // since its a square row and col are same
 #define MAX_ARR_SIZE	64 
 #define NUM_PIECES		32

@@ -7,9 +7,10 @@ WIN_SOURCES = $(OBJ) $(PATH2OBJ)WinView.o $(PATH2OBJ)ChessGameWindows.o
 LINUX_SOURCES = $(OBJ) $(PATH2OBJ)NcView.o $(PATH2OBJ)ChessGameLinux.o
 
 # assuming MinGW toolchain for compiling on windows
+# -mwindows stops the terminal from being visable, -static makes it static link everything (portable exe)
 ifeq ($(OS),Windows_NT)
     TARGET = CChess.exe
-    LIB = -luser32 -lgdi32 -static
+    LIB = -luser32 -lgdi32 -mwindows -static
     CC = g++
 else ifeq ($(shell uname),Linux)
     TARGET = CChess
@@ -27,7 +28,7 @@ CChess:	$(LINUX_SOURCES) $(PATH2OBJ)main.o
 
 # Build for Windows
 CChess.exe: $(WIN_SOURCES) $(PATH2OBJ)main.o
-	g++ -o CChess.exe $(WIN_SOURCES) $(PATH2OBJ)main.o $(LIB)
+	g++ -o CChess.exe $(WIN_SOURCES) iconResource.res $(PATH2OBJ)main.o $(LIB)
 
 $(PATH2OBJ)ChessGame.o: $(PATH2SRC)ChessGame.cc $(PATH2SRC)ChessGame.h $(PATH2SRC)Log.h $(PATH2SRC)Board.h $(PATH2SRC)NcView.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
 	$(CC) -c $(PATH2SRC)ChessGame.cc -o $(PATH2OBJ)ChessGame.o

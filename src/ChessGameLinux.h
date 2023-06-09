@@ -9,7 +9,7 @@ class ChessGameLinux : public ChessGame
 	public:
 	ChessGameLinux(View* = nullptr, View* = nullptr);
 	~ChessGameLinux();
-	virtual void startLocalGame() override;
+	virtual void  runLocalGame() override;
 };
 
 #endif

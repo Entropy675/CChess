@@ -8,15 +8,15 @@
 class ChessGameWindows : public ChessGame
 {
 	public:
-	ChessGameWindows(View* = nullptr, View* = nullptr);
+	ChessGameWindows(View* = nullptr, View* = nullptr, HINSTANCE = nullptr, HICON = nullptr);
 	~ChessGameWindows();
 	
-	void setHInstance(HINSTANCE);
 	
 	virtual void runLocalGame() override;
 
 	protected:
 	HINSTANCE hinst;
+	HICON hIcon;
 };
 
 #endif

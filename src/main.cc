@@ -7,10 +7,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MY_ICON));
 	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+	SendMessage(GetConsoleWindow(), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 
-
-    ChessGameWindows g;
-	g.setHInstance(hInstance);
+    ChessGameWindows g(nullptr, nullptr, hInstance, hIcon);
     g.runLocalGame();
     return 0;
 }

@@ -11,7 +11,7 @@ LINUX_SOURCES = $(OBJ) $(PATH2OBJ)NcView.o $(PATH2OBJ)ChessGameLinux.o
 ifeq ($(OS),Windows_NT)
     TARGET = CChess.exe
     LIB = -luser32 -lgdi32 -mwindows -static
-    CC = g++
+    CC = g++ -municode -DUNICODE
 else ifeq ($(shell uname),Linux)
     TARGET = CChess
     LIB = -lncursesw
@@ -28,7 +28,7 @@ CChess:	$(LINUX_SOURCES) $(PATH2OBJ)main.o
 
 # Build for Windows
 CChess.exe: $(WIN_SOURCES) $(PATH2OBJ)main.o
-	g++ -o CChess.exe $(WIN_SOURCES) iconResource.res $(PATH2OBJ)main.o $(LIB)
+	g++ -o CChess.exe $(WIN_SOURCES) piece_images/iconResource.res $(PATH2OBJ)main.o $(LIB)
 
 $(PATH2OBJ)ChessGame.o: $(PATH2SRC)ChessGame.cc $(PATH2SRC)ChessGame.h $(PATH2SRC)Log.h $(PATH2SRC)Board.h $(PATH2SRC)NcView.h $(PATH2SRC)defs.h $(PATH2SRC)MoveBehaviour.h
 	$(CC) -c $(PATH2SRC)ChessGame.cc -o $(PATH2OBJ)ChessGame.o

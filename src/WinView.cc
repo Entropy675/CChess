@@ -4,25 +4,25 @@
 WinView* WinView::s_pInstance = nullptr; // will only allow one windowproc to happen at a time
 
 WinView::WinView(Board* g, HINSTANCE hinst) 
-    : View(g), outputString(nullptr), className(L"ChessWindowClass"), windowName("ChessWindow"), windowHandle(nullptr)
+    : View(g), outputString(nullptr), className(L"ChessWindowClass"), windowName(L"ChessWindow"), windowHandle(nullptr)
 {
     int numAttempts = 3; 
 
-	HICON hIcon = LoadIcon(hinst, MAKEINTRESOURCE(IDR_MY_ICON));
+	//HICON hIcon ;
+
+	WNDCLASSW wc = {0};
+	wc.lpfnWndProc = WindowProc;
+	wc.hInstance = hinst;
+	wc.lpszClassName = className;
+	wc.hCursor = NULL; // Use the default cursor
+	//wc.hIcon = hIcon;
+	RegisterClassW(&wc);
 
     for (int i = 0; i < numAttempts; ++i)
     {
-        WNDCLASSW wc = {0};
-        wc.lpfnWndProc = WindowProc;
-        wc.hInstance = hinst;
-        wc.lpszClassName = className;
-		wc.hCursor = NULL; // Use the default cursor
-		wc.hIcon = hIcon;
-        RegisterClassW(&wc);
-
-        windowHandle = CreateWindowEx(
+        windowHandle = CreateWindowExW(
             0,                              // Optional window styles
-            "ChessWindowClass",                      // Window class name
+            className,                      // Window class name
             windowName,                     // Window title
             WS_OVERLAPPEDWINDOW & ~(WS_SIZEBOX | WS_MAXIMIZEBOX),            // Window style
             CW_USEDEFAULT, CW_USEDEFAULT, 
@@ -63,6 +63,11 @@ WinView::~WinView()
         DestroyWindow(windowHandle);
         windowHandle = nullptr;
     }
+}
+
+void WinView::setHIcon(HICON hi)
+{
+	hIcon = hi;
 }
 
 // static wrapper function for win procedure
@@ -110,6 +115,11 @@ LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
             HBRUSH brush = CreateSolidBrush(RGB(10, 0, 10)); // black brush
             FillRect(hdc, &rect, brush);
 
+			if(drawBoard)
+			{
+				
+			}
+			
             // Clean up
             DeleteObject(brush);
             EndPaint(hwnd, &ps);

@@ -1,4 +1,5 @@
 #include "WinView.h"
+#include <gl/GL.h>
 #include <stdexcept>
 
 WinView* WinView::s_pInstance = nullptr; // will only allow one windowproc to happen at a time
@@ -42,7 +43,24 @@ WinView::WinView(Board* g, HINSTANCE hinst)
 		std::cout << "WinView failed to acquire window handle (tried 3 times) --- CreateWindowEx failed, low resources?" << std::endl;
         throw std::runtime_error("WinView failed to acquire window handle (tried 3 times) --- CreateWindowEx failed, low resources?");
     }
+	
+	HDC hdc = GetDC(windowHandle);
+	PIXELFORMATDESCRIPTOR pfd;
+	ZeroMemory(&pfd, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 24;
+	pfd.cDepthBits = 16;
+	pfd.iLayerType = PFD_MAIN_PLANE;
 
+	int pixelFormat = ChoosePixelFormat(hdc, &pfd);
+	SetPixelFormat(hdc, pixelFormat, &pfd);
+
+	HGLRC hglrc = wglCreateContext(hdc);
+	wglMakeCurrent(hdc, hglrc);
+	
 	SendMessage(windowHandle, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
     SendMessage(windowHandle, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 	
@@ -105,26 +123,21 @@ LRESULT WinView::WindowProcInternal(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 			return 0;
 		}
 		case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
+		{
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hwnd, &ps);
 
-            // Perform drawing operations using the HDC (device context)
+			// Perform drawing operations using OpenGL
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-            RECT rect = {0, 0, windowWidth, windowHeight};
-            HBRUSH brush = CreateSolidBrush(RGB(10, 0, 10)); // black brush
-            FillRect(hdc, &rect, brush);
+			// Draw your chess board and pieces using OpenGL commands
 
-			if(drawBoard)
-			{
-				
-			}
-			
-            // Clean up
-            DeleteObject(brush);
-            EndPaint(hwnd, &ps);
-            return 0;
-        }
+			SwapBuffers(hdc);
+
+			EndPaint(hwnd, &ps);
+			return 0;
+		}
         case WM_DESTROY:
             PostQuitMessage(0);
             return 0;

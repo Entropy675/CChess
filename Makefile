@@ -10,7 +10,7 @@ LINUX_SOURCES = $(OBJ) $(PATH2OBJ)NcView.o $(PATH2OBJ)ChessGameLinux.o
 # -mwindows stops the terminal from being visable, -static makes it static link everything (portable exe)
 ifeq ($(OS),Windows_NT)
     TARGET = CChess.exe
-    LIB = -luser32 -lgdi32 -mwindows -static
+    LIB = -luser32 -lgdi32 -lopengl32 -mwindows -static
     CC = g++ -municode -DUNICODE
 else ifeq ($(shell uname),Linux)
     TARGET = CChess

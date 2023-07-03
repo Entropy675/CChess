@@ -14,18 +14,16 @@
 class ChessGame
 {
 	public:
-	ChessGame(View* = nullptr, View* = nullptr);
-	~ChessGame();
-
-	void startLocalNcursesGame(); // main control flow, for running directly.
-	
+	ChessGame(View* = nullptr, View* = nullptr); // takes ownership
+	virtual ~ChessGame();
 	
 	// Starting to build API...
 	void addView(View*);
 	void updateAllSpectators();
-	
+	virtual void startLocalGame() = 0;
 
-	private:
+	protected:
+	void localGameloop();
 	
 	View* whitePlayer;
 	View* blackPlayer;

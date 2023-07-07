@@ -1,6 +1,15 @@
-# CChess
+# [DEPRECATED] CChess
+
+**Important: This project is deprecated and no longer actively maintained.**
+
+Please check out the new and improved version of the CChess engine, called [CChessV2](https://github.com/Entropy675/CChessV2).
+It includes a much better architecture for interplatform interfaces.
+
+Feel free to explore and contribute to the new repository for the latest updates and improvements. Thank you for your support!
+
+---
+
 An abstract implementation of Chess in C++.
-Currently in development. 
 The current game is built inside of the Linux terminal - that means that you can play Chess from your terminal!
 
 For Linux, download the repo then:

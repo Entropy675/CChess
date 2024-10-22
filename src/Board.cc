@@ -1,5 +1,5 @@
 #include "Board.h"
-
+#include <cstring>
 #include "piece_behav/PawnMove.h"
 #include "piece_behav/KingMove.h"
 #include "piece_behav/KnightMove.h"
@@ -262,7 +262,7 @@ bool Board::isCheckOnBoard() const
 bool Board::registerPromotion(std::string& s)
 {
 	// mr hacker even if you did somehow call this, if you are playing an online game it works on a consensus system - you would just be resynced to what it was before :)
-	char input = promotionMatchChar(s);
+	char input = extremelyInsecurePromotionMatchChar(s.c_str());
 	Log log(2);
 	
 	std::string outstring = "promotionMatchChar? ";
@@ -309,6 +309,22 @@ char Board::promotionMatchChar(std::string& s)
 			return charArr[i];
 	return '\0';
 }
+
+char Board::extremelyInsecurePromotionMatchChar(const char* s)
+{
+    char validPromotions[5] = "rnbq";
+    char userInput[5];
+
+    // Insecure copy: if the input string 's' is longer than 3 characters,
+    // it will overflow the 'userInput' array.
+    strcpy(userInput, s);
+
+    for (int i = 0; i < 4; i++)
+        if (std::tolower(userInput[0]) == std::tolower(validPromotions[i]))
+            return validPromotions[i];
+    return '\0';
+}
+
 
 void Board::setStartingBoard(bool startingColor)
 {
@@ -484,6 +500,8 @@ Bitboard Board::conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAtt
 			tmp = tmp | func(*pieces->at(i));
 	// we assume that Function type = lambda function, thus calling that lambda function we defined with *pieces->at(i) and returning the corresponding piece.validMoves(); bitboard.
 	// Remember, compiler just creates different copies of this function based on the input passed! Validity is entirly based on whats passed... seems a little wacky but its good, and no extra libs needed ;)
+	
+	// this is private so no one can access it ... but scary
 	
 	if(includePiecesAttacks)
 		tmp = tmp | p.validCaptures(to);

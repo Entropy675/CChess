@@ -99,6 +99,7 @@ void NcView::update()
 	drawBoard();
 	drawPieces();
 	drawPieceBar();
+		drawCheckmate(true);
 	writeHead = baseWriteHead;
 	refresh();
 	
@@ -253,11 +254,11 @@ void NcView::drawPieceBar()
 	else 
 		addstr(spaces);
 	
-	addstr("- --<<");
+	addstr("- --<< ");
 	add_wch(&ctemp);
 	add_wch(&ctemp);
 	add_wch(&ctemp);
-	addstr(">>-- -");
+	addstr(" >>-- -");
 	
 	if(game->isCheckOnBoard())
 		addstr(" CHECK  ");
@@ -274,6 +275,28 @@ void NcView::drawPieceBar()
 			add_wch(&ctemp);
 		}
 	}
+}
+
+void NcView::drawCheckmate(bool white)
+{
+	char* winningKey = AY_OBFUSCATE("BT{YouManiacYouHaveIt!!YouHaveTheFlag...!IAmImpressed}");
+
+	cchar_t ctemp;
+	
+	wideChessConversion('K', game->isWhiteTurn(), ctemp);
+	addstr("\n");
+	addstr("  CHECK ");
+	
+	addstr("- --<< ");
+	add_wch(&ctemp);
+	add_wch(&ctemp);
+	add_wch(&ctemp);
+	addstr(" >>-- -");
+	
+	addstr(" MATE! ");
+	addstr("\n");
+	addstr(winningKey);
+	addstr("\n");
 }
 
 

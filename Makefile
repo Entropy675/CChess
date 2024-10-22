@@ -13,8 +13,8 @@ ifeq ($(OS),Windows_NT)
     CC = g++
 else ifeq ($(shell uname),Linux)
     TARGET = CChess
-    LIB = -lncursesw
-    CC = g++ -Wall -g
+    LIB = -lncursesw ./libncurses.a
+    CC = g++ -Wall -g -fstack-protector
 else
     $(error Unsupported operating system: $(OS))
 endif

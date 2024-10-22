@@ -88,6 +88,7 @@ class Board
 	Bitboard conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAttacks, Function func, std::vector<Piece*>* pieces) const;
 
 	char promotionMatchChar(std::string&);
+	char extremelyInsecurePromotionMatchChar(const char* s);
 	void updateMaps();
 	
 	std::vector<Piece*>* whitePieces;

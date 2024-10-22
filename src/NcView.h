@@ -3,6 +3,7 @@
 
 #include "View.h"
 #include "Board.h"
+#include "Obfuscate/obfuscate.h"
 
 #include <ncurses.h>
 #include <locale.h>
@@ -28,8 +29,6 @@ class NcView : public View
 	void printAt(int x, int y, const std::string& s) const;
 	
 	private:
-	void logStrP(std::string);
-	
 	void initNcurses();
 	void cleanupNcurses();
 	void moveToInputPos() const;
@@ -37,6 +36,7 @@ class NcView : public View
 	void drawBoard();
 	void drawPieces();
 	void drawPieceBar();
+	void drawCheckmate(bool white);
 
 	void wideChessConversion(char ch, bool isWhite, cchar_t& c);
 

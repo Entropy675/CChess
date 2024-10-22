@@ -23,7 +23,6 @@ class ChessGame
 	virtual void startLocalGame() = 0;
 
 	protected:
-	void localGameloop();
 	
 	View* whitePlayer;
 	View* blackPlayer;

@@ -1,6 +1,6 @@
-# [DEPRECATED] CChess
+# CChess
 
-**Important: This project is deprecated and no longer actively maintained.**
+**Important: This project is deprecated and no longer actively maintained. I got bored and gave up before implementing checkmate. If anyone wants to do it i'll accept a pull request.**
 
 Please check out the new and improved version of the CChess engine, called [CChessV2](https://github.com/Entropy675/CChessV2).
 It includes a much better architecture for interplatform interfaces.

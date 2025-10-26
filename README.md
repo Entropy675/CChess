@@ -2,11 +2,6 @@
 
 **Important: This project is deprecated and no longer actively maintained. I got bored and gave up before implementing checkmate. If anyone wants to do it i'll accept a pull request.**
 
-Please check out the new and improved version of the CChess engine, called [CChessV2](https://github.com/Entropy675/CChessV2).
-It includes a much better architecture for interplatform interfaces.
-
-Feel free to explore and contribute to the new repository for the latest updates and improvements. Thank you for your support!
-
 ---
 
 
@@ -42,4 +37,5 @@ This would allow players to play either through my website or through their own 
 
 See: https://docs.google.com/document/d/1oaZmhNOmmDsz6Fmuz6LzkdWVBBkZxCUrXsQ7BhuDwwk/
 For current documentation (WIP).
+
 

@@ -1,41 +1,25 @@
 # CChess
 
-**Important: This project is deprecated and no longer actively maintained. I got bored and gave up before implementing checkmate. If anyone wants to do it i'll accept a pull request.**
+The beauty of a tiny piece of code is that it costs nothing to maintain. No dependencies to rot, nothing to keep up with.
 
----
+## Build & run (Linux)
 
+make
+./CChess
 
-*Looking back at this code, it seems that the seperation of logic into:*
-Behavior - light weight modules, can easily be loaded from file, engine (no dependencies), and view (OS dependencies for GUI/TUI implementations) makes this more into a general purpose board state resolver then a Chess implementation. This can easily accept any kind of piece movement, any kind of win condition with a checkmate hook, and be implemented in any visual interface. Maybe I should have called it "BBoard" lmfao
+Builds on any Linux distribution with no per-environment variation. The only dependency is ncurses, the standard library for Linux terminal applications.
 
-An abstract implementation of a board game engine, specifically implementing Chess as an example.
-The current game is built inside of the Linux terminal - that means that you can play Chess from your terminal!
+If the board renders with no alignment or whitespace, set your terminal to a monospace font. Most distributions ship one by default, but it isn't guaranteed.
 
+## Build (Windows)
+Toolchain: MinGW-w64. Install the Windows environment and dependencies, then run `make` at the project root to produce `CChess.exe`.
 
-For Linux, download the repo then:
-```
-Compile Command: make
-Run command: ./CChess
-```
+## Tests
+Enter the tests folder, run make, the Makefile will build then run the tests.
 
-Currently only builds on Linux or WSL with the KeX GUI.
-If the game seems to be all messed up with no whitespaces, please change your terminal font to something monospace...
-Many linux distributions come with monospace formats in terminals by default but there is no garutee that yours will.
+## Direction
+CChess is no longer developed as a standalone program. It's being integrated as an example LGPL provider for ETCS (Entity Tag Context System), my forthcoming super-type ontology, which is also LGPL on release.
 
- ** ->>> creating a Windows API based GUI for download as an executable windows binary (a .exe program).
- (Current build toolchain: MingW64 -> get windows environment installed, get dependencies -> make command at root of project -> produces CChess.exe)
+ETCS acts as an OS abstraction, and as a kernel outright when compiled or run in kernel mode. Turning CChess into a type provider lets the ETCS substrate fulfill the P2P trust contract natively, through its existing synchronization primitives (the causal type lattice, the gap reorder buffer, and mirror-buffer RPC over compile-time-declared dependency graphs), and bridge to any target platform through separate provider modules (Linux, Windows, WASM).
 
-The priorities of this board game engine are:
- 1. <b>Secure</b>
- 1. <b>Lightweight</b>
- 1. <b>Portable</b>
- 1. <b>Peer-to-peer (no central server)</b>
-
- 
-Plans to integrate with Web Assembly for a future web project, combining with one of my preexisting web socket based chat servers.
-This would allow players to play either through my website or through their own downloaded file.
-
-See: https://docs.google.com/document/d/1oaZmhNOmmDsz6Fmuz6LzkdWVBBkZxCUrXsQ7BhuDwwk/
-For current documentation (WIP).
-
-
+Rendering therefore lives outside this repository, wherever the CChess work-function interface is reached. **This is a chess engine only.** The OS-specific display has nothing to do with it. The one exception is the ncurses terminal view on Linux, which remains as the reference implementation and the default terminal when available.

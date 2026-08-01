@@ -1,9 +1,13 @@
-# CChess
+<h1 align="center">CChess</h1>
+<p align="center">
+  The beauty in a tiny piece of code is that it costs nothing to maintain. No dependencies to rot, nothing to keep up with.
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Entropy675/CChess/refs/heads/main/piece_images/CChessStart.png" alt="CChess Start Position" style="width: 100%; max-width: 100%;" />
+</p>
 
-The beauty of a tiny piece of code is that it costs nothing to maintain. No dependencies to rot, nothing to keep up with.
 
 ## Build & run (Linux)
-
 make
 ./CChess
 

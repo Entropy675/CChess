@@ -8,6 +8,11 @@ PawnMove::~PawnMove()
 	capturableViaEP = nullptr;
 }
 
+int PawnMove::getTurnToEP() const
+{
+	return turnToEP;
+}
+
 // Before trying to move a pawn to a position, use this check on that position.
 // When this returns true, it kills the enPassantTarget. 
 // It is then the move funcs responsibility to move this pawn to the position and update values (like has moved etc) as per normal.

@@ -78,18 +78,29 @@ void NcView::cleanupNcurses()
 
 void NcView::userInput(std::string& uinp)
 {
-	char ch; // TODO: add backspace functionality 
+	int ch; // int, not char: KEY_BACKSPACE (258) truncates in a char
 	while(true)
 	{
 		ch = getch();
-		addch(ch);
-		uinp += ch;
-		refresh();
-		if(ch == '\n')
+
+		if(ch == '\n' || ch == '\r')
 			break;
+
+		if(ch == KEY_BACKSPACE || ch == 127 || ch == 8) // keypad off -> raw 127/8; on -> KEY_BACKSPACE
+		{
+			if(!uinp.empty())
+			{
+				uinp.pop_back();
+				addstr("\b \b"); // back over the glyph, overwrite with space, back again
+				refresh();
+			}
+			continue;
+		}
+
+		addch(ch);
+		uinp += static_cast<char>(ch);
+		refresh();
 	}
-	
-	uinp.erase(uinp.end()-1); // null terminates, removes \n from uinp
 }
 
 void NcView::update()
@@ -241,9 +252,18 @@ void NcView::drawPieceBar()
 		}
 	}
 	
-	wideChessConversion('K', game->isWhiteTurn(), ctemp);
+    wideChessConversion('K', game->isWhiteTurn(), ctemp);
 	addstr("\n");
-	if(game->isCheckOnBoard())
+
+	// status of the side to move: checkmate / stalemate / check.
+	// one legal-move search, recomputed (so it stays correct after promotion,
+	// unlike the cached whiteCheck/blackCheck flags).
+	bool inCheck = game->sideToMoveInCheck();
+	bool hasMove = game->sideToMoveHasLegalMove();
+	bool mate    = inCheck  && !hasMove;
+	bool stale   = !inCheck && !hasMove;
+
+	if(mate || stale || inCheck)
 	{
 		if(game->isWhiteTurn())
 			addstr("  WHITE ");
@@ -259,7 +279,11 @@ void NcView::drawPieceBar()
 	add_wch(&ctemp);
 	addstr(">>-- -");
 	
-	if(game->isCheckOnBoard())
+	if(mate)
+		addstr(" CHECKMATE ");
+	else if(stale)
+		addstr(" STALEMATE ");
+	else if(inCheck)
 		addstr(" CHECK  ");
 	else 
 		addstr(spaces);

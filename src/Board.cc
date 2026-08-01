@@ -50,7 +50,7 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 {
 	Log log(2);
 	
-	bool kingMove = !(pieceMoved.getKingBehaviour() != nullptr);
+	bool movedIsKing = (pieceMoved.getKingBehaviour() != nullptr);
 	bool validMove = true;
 	Piece* temp = nullptr;
 	
@@ -62,13 +62,15 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 		temp->die();
 	updateMaps(); // now when we get the attack maps the board makes sense
 	
-	if(isWhiteMove)
-		validMove = getBlackAttackMap(pieceMoved, &b, kingMove)[getWhiteKing().getPos()];
-	else
-		validMove = getWhiteAttackMap(pieceMoved, &b, kingMove)[getBlackKing().getPos()];
+    Pos kingSquare = isWhiteMove
+		? (movedIsKing ? b : getWhiteKing().getPos())
+		: (movedIsKing ? b : getBlackKing().getPos());
 
-	log.append(mergeStrings("B" + getBlackAttackMap(pieceMoved, &b, kingMove).toString(false) + "\n", "W" + getWhiteAttackMap(pieceMoved, &b, kingMove).toString(false) + "\n"));
-		
+	if(isWhiteMove)
+		validMove = getBlackAttackMap()[kingSquare];
+	else
+		validMove = getWhiteAttackMap()[kingSquare];
+	log.append(mergeStrings("B" + getBlackAttackMap().toString(false) + "\n", "W" + getWhiteAttackMap().toString(false) + "\n"));
 	// ***Undo Temp Move Piece***
 	gameBoard[a.getX()][a.getY()] = getPiece(b);
 	gameBoard[b.getX()][b.getY()] = temp;
@@ -77,6 +79,31 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 	updateMaps(); 
 	
 	return validMove;
+}
+
+void Board::setEmptyBoard(bool whiteToMove)
+{
+	for(int x=0;x<MAX_ROW_COL;x++) for(int y=0;y<MAX_ROW_COL;y++) gameBoard[x][y]=nullptr;
+	whitePieces->clear(); blackPieces->clear();
+	whiteKing=nullptr; blackKing=nullptr;
+	whiteTurn=whiteToMove; moveCount=0; turnCountFEN=1;
+	whiteCastleKS=whiteCastleQS=blackCastleKS=blackCastleQS=false;
+}
+
+Piece* Board::placePiece(int x, int y, char type, bool white)
+{
+	Piece* p=new Piece(Pos(x,y),type,white,this);
+	gameBoard[x][y]=p;
+	(white?whitePieces:blackPieces)->push_back(p);
+	switch(type){
+		case 'R': p->addBehav(new PlusMove()); break;
+		case 'N': p->addBehav(new KnightMove()); break;
+		case 'B': p->addBehav(new CrossMove()); break;
+		case 'Q': p->addBehav(new CrossMove()); p->addBehav(new PlusMove()); break;
+		case 'K': p->addBehav(new KingMove()); if(white) whiteKing=p; else blackKing=p; break;
+		case 'P': p->addBehav(new PawnMove()); break;
+	}
+	return p;
 }
 
 // bug: if king tries to take a piece that is attacking him that is also defended by the opponent king, the player that made the illogical move is now stuck and cannot move their king...
@@ -218,8 +245,6 @@ std::string Board::getEnPassantBoardPosFEN() const
 {
 	Log log(2);
 	
-	
-	
 	if(enPassantActive)
 	{		
 		log.append("enPassantActive!!! " + std::to_string(whitePieces->size()) + "\n");
@@ -233,14 +258,17 @@ std::string Board::getEnPassantBoardPosFEN() const
 				if(enPassantTarget != nullptr)
 					return enPassantTarget->getBoardPos();
 			}
-
-			tmp = blackPieces->at(i)->getPawnBehaviour();
-			if(tmp != nullptr)
-			{
-				const Piece* enPassantTarget = tmp->getEnPassantTarget();
-				if(enPassantTarget != nullptr)
-					return enPassantTarget->getBoardPos();
-			}
+			
+            if(i < blackPieces->size())
+            {
+			    tmp = blackPieces->at(i)->getPawnBehaviour();
+			    if(tmp != nullptr)
+			    {
+				    const Piece* enPassantTarget = tmp->getEnPassantTarget();
+				    if(enPassantTarget != nullptr)
+					    return enPassantTarget->getBoardPos();
+			    }
+            }
 		}
 	}
 	
@@ -251,6 +279,97 @@ void Board::disableCheck()
 {
 	whiteCheck = false;
 	blackCheck = false;
+}
+
+bool Board::sideToMoveInCheck()
+{
+	updateMaps();
+	if(whiteTurn)
+		return getBlackAttackMap()[getWhiteKing().getPos()];
+	return getWhiteAttackMap()[getBlackKing().getPos()];
+}
+
+bool Board::sideToMoveHasLegalEnPassant()
+{
+	std::vector<Piece*>* pieces = whiteTurn ? whitePieces : blackPieces;
+	for(long unsigned int i = 0; i < pieces->size(); i++)
+	{
+		Piece* pc = pieces->at(i);
+		if(pc == nullptr || pc->isDead())
+			continue;
+
+		PawnMove* pm = pc->getPawnBehaviour();
+		if(pm == nullptr || pm->getTurnToEP() != getMoves())
+			continue;
+
+		const Piece* epTarget = pm->getEnPassantTarget();
+		if(epTarget == nullptr)
+			continue;
+
+		Pos from = pc->getPos();
+		Pos capSq = epTarget->getPos();
+		Pos to(capSq.getX(), capSq.getY() + (pc->isWhite() ? -1 : 1));
+
+		Piece* captured = gameBoard[capSq.getX()][capSq.getY()];
+		gameBoard[to.getX()][to.getY()] = pc;
+		clearPiece(from);
+		if(captured != nullptr)
+			captured->die();
+		clearPiece(capSq);
+		updateMaps();
+
+		Pos kingSq = whiteTurn ? getWhiteKing().getPos() : getBlackKing().getPos();
+		bool inCheck = whiteTurn ? getBlackAttackMap()[kingSq] : getWhiteAttackMap()[kingSq];
+
+		clearPiece(to);
+		gameBoard[from.getX()][from.getY()] = pc;
+		gameBoard[capSq.getX()][capSq.getY()] = captured;
+		if(captured != nullptr)
+			captured->setDead(false);
+		updateMaps();
+
+		if(!inCheck)
+			return true;
+	}
+	return false;
+}
+
+bool Board::sideToMoveHasLegalMove()
+{
+	std::vector<Piece*>* pieces = whiteTurn ? whitePieces : blackPieces;
+	for(long unsigned int i = 0; i < pieces->size(); i++)
+	{
+		Piece* pc = pieces->at(i);
+		if(pc == nullptr || pc->isDead())
+			continue;
+
+		Pos from = pc->getPos();
+		Bitboard moves = pc->validMoves();
+		for(int sq = 0; sq < MAX_ARR_SIZE; sq++)
+		{
+			if(!moves[sq])
+				continue;
+
+			Pos to(sq % MAX_ROW_COL, sq / MAX_ROW_COL);
+			Piece* dest = getPiece(to);
+			if(dest != nullptr && dest->isWhite() == pc->isWhite())
+				continue; // can't capture own piece — matches movePiece's guard
+
+			if(!isMoveValidOnKing(whiteTurn, *pc, from, to))
+				return true; // a king-safe legal move exists
+		}
+	}
+	return sideToMoveHasLegalEnPassant();
+}
+
+bool Board::isCheckmate()
+{
+	return sideToMoveInCheck() && !sideToMoveHasLegalMove();
+}
+
+bool Board::isStalemate()
+{
+	return !sideToMoveInCheck() && !sideToMoveHasLegalMove();
 }
 
 bool Board::isCheckOnBoard() const
@@ -304,7 +423,7 @@ bool Board::registerPromotion(std::string& s)
 char Board::promotionMatchChar(std::string& s)
 {
 	const char* charArr = "rnbq"; // cant promote to pawn or king
-	for(long unsigned int i = 0; i < sizeof(charArr); i++) // sizeof gives byte size, chars are all 1 byte though
+	for(long unsigned int i = 0; charArr[i] != '\0'; i++) // sizeof gives byte size, chars are all 1 byte though
 		if(std::tolower(s[0]) == std::tolower(charArr[i]))
 			return charArr[i];
 	return '\0';
@@ -316,7 +435,22 @@ void Board::setStartingBoard(bool startingColor)
 	// populate the vectors corresponding to the black/white pieces.
 	
 	whitePerspective = startingColor;
-
+	
+	// Full game-state reset so setStartingBoard is a complete "new game",
+	// not just piece placement. These were previously only set in the ctor,
+	// so a second call (restart) would have left turn/castling/counters stale.
+	whiteTurn = true;
+	whiteCheck = false;
+	blackCheck = false;
+	whiteCastleKS = true;
+	whiteCastleQS = true;
+	blackCastleKS = true;
+	blackCastleQS = true;
+	enPassantActive = false;
+	previousPiece = nullptr;
+	halfmoveCount = 0;
+	turnCountFEN = 1;
+	moveCount = 0;
 	
 	// should be empty for the first call, for every other call the following two loops run and reset the vecs.
 	for(long int i = whitePieces->size() - 1; i >= 0; i--)

@@ -9,6 +9,7 @@ class PawnMove : public MoveBehaviour
 	PawnMove(Piece* from = nullptr);
 	~PawnMove();
 
+    int getTurnToEP() const;
 	void EPValidateTarget(Piece*, bool);
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move.
 	const Piece* getEnPassantTarget() const;	

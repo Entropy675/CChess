@@ -47,12 +47,20 @@ class Board
 	void clearPiece(Pos);
 	
 	void setStartingBoard(bool = true);
+	void setEmptyBoard(bool whiteToMove);              // custom-position setup (sibling of setStartingBoard)
+	Piece* placePiece(int x, int y, char type, bool white); // place + wire behaviour on a custom board
 	bool registerPromotion(std::string&);
 
 	bool isMoveValidOnKing(bool, Piece&, Pos, Pos);
 	
-	void disableCheck();
+    void disableCheck();
 	bool isCheckOnBoard() const;
+
+	bool isCheckmate();
+	bool isStalemate();
+	bool sideToMoveInCheck();
+	bool sideToMoveHasLegalMove();
+	bool sideToMoveHasLegalEnPassant();
 	
 	const Piece& getWhiteKing() const;
 	const Piece& getBlackKing() const;

@@ -127,6 +127,8 @@ void ChessGame::localGameloop()
 			whitePlayer->toggleSize();
 		else if(uinp == string("exit"))
 			break;
+		else if(uinp == string("new") || uinp == string("restart"))
+			game->setStartingBoard(true);
 		
 		// if move was a promotion (which also means valid)...
 		if(promotionAsk == ChessStatus::PROMOTE)

@@ -53,11 +53,13 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 	bool movedIsKing = (pieceMoved.getKingBehaviour() != nullptr);
 	bool validMove = true;
 	Piece* temp = nullptr;
+	Pos savedPos = pieceMoved.getPos(); // stateless: remember where the piece really is
 	
 	// ***Temp Move Piece***
 	temp = gameBoard[b.getX()][b.getY()];
 	gameBoard[b.getX()][b.getY()] = getPiece(a);
 	clearPiece(a);
+	pieceMoved.setPos(b); // so the moved piece's own attacks compute from b during the check
 	if(temp != nullptr)
 		temp->die();
 	updateMaps(); // now when we get the attack maps the board makes sense
@@ -74,6 +76,7 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 	// ***Undo Temp Move Piece***
 	gameBoard[a.getX()][a.getY()] = getPiece(b);
 	gameBoard[b.getX()][b.getY()] = temp;
+	pieceMoved.setPos(savedPos); // restore: the check leaves no trace
 	if(temp != nullptr)
 		temp->setDead(false);
 	updateMaps(); 
@@ -144,8 +147,10 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		}
 		
 		// ***Move Piece***
-		gameBoard[b.getX()][b.getY()] = getPiece(a);
+		Piece* mover = getPiece(a);
+		gameBoard[b.getX()][b.getY()] = mover;
 		clearPiece(a);
+		mover->setPos(b); // commit position here (deferred from Piece::move so a rejected move mutates nothing)
 		updateMaps();
 		
 		if(returnChessStatus != ChessStatus::PROMOTE)

@@ -9,6 +9,7 @@ void ChessGameLinux::startLocalGame()
 {
 	whitePlayer = new NcView(game);
 	blackPlayer = whitePlayer;
+	Log::addView(whitePlayer); // register the view so flush() has a sink (w == b, so add once)
 	game->setStartingBoard(true);
 	
 	whitePlayer->update();

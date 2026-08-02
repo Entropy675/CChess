@@ -44,6 +44,7 @@ class Piece
 	bool hasMoved() const;
 	
 	const Pos& getPos() const;
+	void setPos(const Pos& p) { pos = p; } // restore point: movePiece rolls this back if a move is rejected after Piece::move committed it
 	std::string toString() const;
 	std::string getBoardPos() const;
 	

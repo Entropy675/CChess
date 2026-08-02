@@ -59,7 +59,7 @@ ChessStatus Piece::move(Pos cPos)
 			moved = true;
 		
 		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
-		pos = cPos; // ***change the position of the piece***
+		// pos is committed by Board::movePiece after all validation, not here (stateless check)
 		
 		if(returnChessStatus == ChessStatus::FAIL)
 			returnChessStatus = ChessStatus::SUCCESS; // PROMOTE stays the same, flips FAIL

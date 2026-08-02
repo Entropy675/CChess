@@ -17,7 +17,6 @@ class PawnMove : public MoveBehaviour
 	virtual Bitboard validCaptures(Pos* p = nullptr) const override;
 	virtual Bitboard validMoves(Pos* p = nullptr) const override;
 	
-	virtual void validMoves(std::vector<Pos>& out) override; 
 
 	private:
 	void EPSetTarget(Piece*, int);

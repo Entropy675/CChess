@@ -35,7 +35,6 @@ class Piece
 	Board* getBoard() const;
 
 	bool isValidMove(const Pos p);
-	void validMoves(std::vector<Pos>& p);
 	Bitboard validMoves(Pos* = nullptr) const;
 	Bitboard validCaptures(Pos* = nullptr) const;
 	

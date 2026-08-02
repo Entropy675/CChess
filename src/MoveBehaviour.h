@@ -26,7 +26,6 @@ public:
 	virtual bool isValidMove(const Pos& to);
 	
 	virtual Bitboard validMoves(Pos* p = nullptr) const = 0;
-	virtual void validMoves(std::vector<Pos>& out) = 0; // ptr cant be const ref because of pawn EP set & kill
 
 protected:
 	Piece* from;

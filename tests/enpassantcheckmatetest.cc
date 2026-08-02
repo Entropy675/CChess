@@ -36,8 +36,8 @@ int main()
 	std::cout << afterEP << std::endl;
 
 	std::cout << "\nchecking...\n" << std::endl;
-	std::string expectCheck = "6k1/8/7p/6pP/4n2K/6r1/8/8 w ---- g5 0 2";
-	std::string expectEP    = "6k1/8/6Pp/8/4n2K/6r1/8/8 b ---- - 0 2";
+	std::string expectCheck = "6k1/8/7p/6pP/4n2K/6r1/8/8 w - g5 0 2";
+	std::string expectEP    = "6k1/8/6Pp/8/4n2K/6r1/8/8 b - - 0 2";
 
 	delete game;
 

@@ -87,6 +87,9 @@ bool Board::isMoveValidOnKing(bool isWhiteMove, Piece& pieceMoved, Pos a, Pos b)
 void Board::setEmptyBoard(bool whiteToMove)
 {
 	for(int x=0;x<MAX_ROW_COL;x++) for(int y=0;y<MAX_ROW_COL;y++) gameBoard[x][y]=nullptr;
+	// delete before clearing (matches setStartingBoard); clear() alone leaks every Piece
+	for(long int i = whitePieces->size() - 1; i >= 0; i--) delete whitePieces->at(i);
+	for(long int i = blackPieces->size() - 1; i >= 0; i--) delete blackPieces->at(i);
 	whitePieces->clear(); blackPieces->clear();
 	whiteKing=nullptr; blackKing=nullptr;
 	whiteTurn=whiteToMove; moveCount=0; turnCountFEN=1;
@@ -118,6 +121,13 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 
 	Log log(2);
 	
+	// An en-passant capture kills a pawn that is NOT on the destination square, and
+	// Piece::move performs that kill before the king check. Remember the victim so a
+	// move rejected by isMoveValidOnKing can restore it (a rejected move must mutate nothing).
+	Piece* epVictim = ((getPiece(a)->getPawnBehaviour() != nullptr) && (a.getX() != b.getX())
+	                   && (gameBoard[b.getX()][b.getY()] == nullptr))
+	                  ? gameBoard[b.getX()][a.getY()] : nullptr;
+	
 	ChessStatus returnChessStatus = getPiece(a)->move(b); // ***attempt move on piece***
 	
 	if(returnChessStatus != ChessStatus::FAIL) // FAIL is only case where nothing happen
@@ -127,7 +137,14 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		log.append("Last position for failure, fail states... \n");
 		// MOVE CHECK king
 		if(isMoveValidOnKing(getPiece(a)->isWhite(), *getPiece(a), a, b))
+		{
+			if(epVictim != nullptr && epVictim->isDead()) // EP victim was killed before this failed check; put it back
+			{
+				epVictim->setDead(false);
+				gameBoard[epVictim->getPos().getX()][epVictim->getPos().getY()] = epVictim;
+			}
 			return ChessStatus::FAIL;
+		}
 		// at this point we can assume that the move has succeeded
 		log.append("All fail states passed. \n");
 		
@@ -217,22 +234,13 @@ std::string Board::toFENString() const
 	
 	FENs += " ";
 	
-	if(whiteCastleKS)
-		FENs += "K";
-	else
-		FENs += "-";
-	if(whiteCastleQS)
-		FENs += "Q";
-	else
-		FENs += "-";
-	if(blackCastleKS)
-		FENs += "k";
-	else
-		FENs += "-";
-	if(blackCastleQS)
-		FENs += "q";
-	else
-		FENs += "-";
+	// Standard FEN: concatenate the available rights, or a single "-" when there are none.
+	std::string castle = "";
+	if(whiteCastleKS) castle += "K";
+	if(whiteCastleQS) castle += "Q";
+	if(blackCastleKS) castle += "k";
+	if(blackCastleQS) castle += "q";
+	FENs += castle.empty() ? "-" : castle;
 	
 	FENs += " ";
 	FENs += getEnPassantBoardPosFEN();

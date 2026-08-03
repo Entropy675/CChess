@@ -55,10 +55,8 @@ ChessStatus Piece::move(Pos cPos)
 			pm->EPValidateTarget(this, false);
 		}
 		
-		if(!moved)
-			moved = true;
-		
-		log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
+		// moved flag is committed by Board::movePiece / tryCastle after validation, not here
+				log.append(" ======= ---*^\\> MATCH: " + cPos.toString() + "\n");
 		// pos is committed by Board::movePiece after all validation, not here (stateless check)
 		
 		if(returnChessStatus == ChessStatus::FAIL)

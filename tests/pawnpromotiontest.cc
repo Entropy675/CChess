@@ -63,7 +63,7 @@ int main()
 	
 	std::cout << "!!!\nWarning! This test case does not properly consider castling! When castling is implemented, this will fail incorrectly.\n!!!" << std::endl;
 	
-	std::string test = "rnbk1bnr/1ppp1ppp/8/8/8/7P/P1P1PPP1/nNBQKBNR w KQkq - 0 7";
+	std::string test = "rnbk1bnr/1ppp1ppp/8/8/8/7P/P1P1PPP1/nNBQKBNR w K - 0 7";
 	
 	delete game;
 	if(fs != test)

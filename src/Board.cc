@@ -9,7 +9,7 @@
 
 
 Board::Board() 
-	: whiteKing(nullptr), whiteCheck(false), whiteCastleKS(true), whiteCastleQS(true), blackKing(nullptr), blackCheck(false), blackCastleKS(true), blackCastleQS(true), 
+	: whiteKing(nullptr), whiteCheck(false), blackKing(nullptr), blackCheck(false), 
 	  enPassantActive(false), previousPiece(nullptr), whitePerspective(true), whiteTurn(true), halfmoveCount(0), turnCountFEN(1), moveCount(0)
 {
 	whitePieces = new std::vector<Piece*>;
@@ -93,7 +93,6 @@ void Board::setEmptyBoard(bool whiteToMove)
 	whitePieces->clear(); blackPieces->clear();
 	whiteKing=nullptr; blackKing=nullptr;
 	whiteTurn=whiteToMove; moveCount=0; turnCountFEN=1;
-	whiteCastleKS=whiteCastleQS=blackCastleKS=blackCastleQS=false;
 }
 
 Piece* Board::placePiece(int x, int y, char type, bool white)
@@ -113,11 +112,85 @@ Piece* Board::placePiece(int x, int y, char type, bool white)
 }
 
 // bug: if king tries to take a piece that is attacking him that is also defended by the opponent king, the player that made the illogical move is now stuck and cannot move their king...
+bool Board::castleRight(bool white, bool kingside) const
+{
+	// Derived from live state: king unmoved AND the home-square rook present and unmoved.
+	Piece* king = white ? whiteKing : blackKing;
+	if(king == nullptr || king->hasMoved())
+		return false;
+	int y  = white ? MAX_ROW_COL - 1 : 0;    // rank 1 (white home) / rank 8 (black home)
+	int rx = kingside ? MAX_ROW_COL - 1 : 0; // h-file / a-file
+	Piece* rook = gameBoard[rx][y];
+	return rook != nullptr && rook->getCharacter() == 'R'
+	    && rook->isWhite() == white && !rook->hasMoved();
+}
+
+ChessStatus Board::tryCastle(Pos kingSq, Pos rookSq)
+{
+	int y  = kingSq.getY();
+	int kx = kingSq.getX();
+	bool kingside = rookSq.getX() > kx;
+	int kingDest = kingside ? kx + 2 : kx - 2;
+	int rookDest = kingside ? kx + 1 : kx - 1;
+
+	if(kingDest < 0 || kingDest >= MAX_ROW_COL) // guard non-standard placements
+		return ChessStatus::FAIL;
+
+	// every square strictly between king and rook must be empty
+	int lo = (kx < rookSq.getX()) ? kx : rookSq.getX();
+	int hi = (kx < rookSq.getX()) ? rookSq.getX() : kx;
+	for(int x = lo + 1; x < hi; x++)
+		if(gameBoard[x][y] != nullptr)
+			return ChessStatus::FAIL;
+
+	// the king may not start in, pass through, or land on an attacked square
+	bool white = getPiece(kingSq)->isWhite();
+	updateMaps(); // ensure the opponent attack map is current
+	int step = kingside ? 1 : -1;
+	for(int x = kx; ; x += step)
+	{
+		Pos sq(x, y);
+		if(white ? getBlackAttackMap()[sq] : getWhiteAttackMap()[sq])
+			return ChessStatus::FAIL;
+		if(x == kingDest)
+			break;
+	}
+
+	// perform the swap
+	Piece* king = getPiece(kingSq);
+	Piece* rook = getPiece(rookSq);
+	clearPiece(kingSq);
+	clearPiece(rookSq);
+	gameBoard[kingDest][y] = king; king->setPos(Pos(kingDest, y)); king->setMoved(true);
+	gameBoard[rookDest][y] = rook; rook->setPos(Pos(rookDest, y)); rook->setMoved(true);
+
+	halfmoveCount++;
+	if(!whiteTurn) turnCountFEN++;
+	moveCount++;
+	whiteTurn = !whiteTurn;
+	updateMaps();
+	whiteCheck = getBlackAttackMap()[getWhiteKing().getPos()];
+	blackCheck = getWhiteAttackMap()[getBlackKing().getPos()];
+	previousPiece = king;
+	return ChessStatus::SUCCESS;
+}
+
 ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this piece
 {
 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return ChessStatus::FAIL;
+
+	// Castling: an unmoved king moving onto its own unmoved rook triggers the two-piece swap.
+	{
+		Piece* mv = getPiece(a);
+		Piece* tg = getPiece(b);
+		if(mv->getKingBehaviour() != nullptr && !mv->hasMoved()
+		   && tg != nullptr && tg->getCharacter() == 'R'
+		   && tg->isWhite() == mv->isWhite() && !tg->hasMoved()
+		   && a.getY() == b.getY())
+			return tryCastle(a, b);
+	}
 
 	Log log(2);
 	
@@ -167,7 +240,8 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		Piece* mover = getPiece(a);
 		gameBoard[b.getX()][b.getY()] = mover;
 		clearPiece(a);
-		mover->setPos(b); // commit position here (deferred from Piece::move so a rejected move mutates nothing)
+		mover->setPos(b);   // commit position here (deferred from Piece::move so a rejected move mutates nothing)
+		mover->setMoved(true); // likewise commit the moved flag only on a real move (keeps castling rights honest)
 		updateMaps();
 		
 		if(returnChessStatus != ChessStatus::PROMOTE)
@@ -236,10 +310,10 @@ std::string Board::toFENString() const
 	
 	// Standard FEN: concatenate the available rights, or a single "-" when there are none.
 	std::string castle = "";
-	if(whiteCastleKS) castle += "K";
-	if(whiteCastleQS) castle += "Q";
-	if(blackCastleKS) castle += "k";
-	if(blackCastleQS) castle += "q";
+	if(castleRight(true,  true))  castle += "K";
+	if(castleRight(true,  false)) castle += "Q";
+	if(castleRight(false, true))  castle += "k";
+	if(castleRight(false, false)) castle += "q";
 	FENs += castle.empty() ? "-" : castle;
 	
 	FENs += " ";
@@ -455,10 +529,6 @@ void Board::setStartingBoard(bool startingColor)
 	whiteTurn = true;
 	whiteCheck = false;
 	blackCheck = false;
-	whiteCastleKS = true;
-	whiteCastleQS = true;
-	blackCastleKS = true;
-	blackCastleQS = true;
 	enPassantActive = false;
 	previousPiece = nullptr;
 	halfmoveCount = 0;

@@ -4,7 +4,10 @@ PlusMove::PlusMove(Piece* from) : MoveBehaviour(from) {}
 PlusMove::~PlusMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool PlusMove::checkPosition(int x, int y, Bitboard& out) const
+Bitboard PlusMove::validMoves(Pos* p) const { return generate(p, false); }
+Bitboard PlusMove::validCaptures(Pos* p) const { return generate(p, true); }
+
+bool PlusMove::checkPosition(int x, int y, Bitboard& out, bool attackMap) const
 {
 	if(Pos::isValid(x, y))
 	{
@@ -13,7 +16,7 @@ bool PlusMove::checkPosition(int x, int y, Bitboard& out) const
 			out.setBit(Pos(x,y));
 		else
 		{
-			if(temp->isWhite() != from->isWhite())
+			if(temp->isWhite() != from->isWhite() || attackMap) // attack map includes defended friendly pieces
 				out.setBit(Pos(x,y));
 			return true;
 		}
@@ -23,7 +26,7 @@ bool PlusMove::checkPosition(int x, int y, Bitboard& out) const
 }
 
 
-Bitboard PlusMove::validMoves(Pos* p) const
+Bitboard PlusMove::generate(Pos* p, bool attackMap) const
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -39,16 +42,16 @@ Bitboard PlusMove::validMoves(Pos* p) const
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopR)
-			stopR = checkPosition(searchFrom.getX() + i, searchFrom.getY(), bb);
+			stopR = checkPosition(searchFrom.getX() + i, searchFrom.getY(), bb, attackMap);
 		
 		if(!stopL)
-			stopL = checkPosition(searchFrom.getX() - i, searchFrom.getY(), bb);
+			stopL = checkPosition(searchFrom.getX() - i, searchFrom.getY(), bb, attackMap);
 		
 		if(!stopD)
-			stopD = checkPosition(searchFrom.getX(), searchFrom.getY() + i, bb);
+			stopD = checkPosition(searchFrom.getX(), searchFrom.getY() + i, bb, attackMap);
 		
 		if(!stopU)
-			stopU = checkPosition(searchFrom.getX(), searchFrom.getY() - i, bb);
+			stopU = checkPosition(searchFrom.getX(), searchFrom.getY() - i, bb, attackMap);
 		
 		if(stopU && stopD && stopR && stopL)
 			break;

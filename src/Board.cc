@@ -257,7 +257,6 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 		whiteCheck = getBlackAttackMap()[getWhiteKing().getPos()];
 		blackCheck = getWhiteAttackMap()[getBlackKing().getPos()];
 		
-		log.setLogLevel(1);
 		log.append("SUCCESS.\n");
 		previousPiece = getPiece(b); // keeps track of last piece moved, for promotion
 	}

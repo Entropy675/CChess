@@ -10,9 +10,11 @@ class CrossMove : public MoveBehaviour
 	~CrossMove();
 	
 	virtual Bitboard validMoves(Pos* p = nullptr) const override;
+	virtual Bitboard validCaptures(Pos* p = nullptr) const override;
+	Bitboard generate(Pos* p, bool attackMap) const;
 	
 	private:
-	bool checkPosition(int, int, Bitboard&) const;
+	bool checkPosition(int, int, Bitboard&, bool attackMap = false) const;
 };
 
 #endif

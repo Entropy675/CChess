@@ -4,7 +4,10 @@ CrossMove::CrossMove(Piece* p) : MoveBehaviour(p)  {}
 CrossMove::~CrossMove() {}
 
 // returns false meaning continue searching - have yet to hit a piece or invalid square.
-bool CrossMove::checkPosition(int x, int y, Bitboard& bb) const
+Bitboard CrossMove::validMoves(Pos* p) const { return generate(p, false); }
+Bitboard CrossMove::validCaptures(Pos* p) const { return generate(p, true); }
+
+bool CrossMove::checkPosition(int x, int y, Bitboard& bb, bool attackMap) const
 {
 	if(Pos::isValid(x, y))
 	{
@@ -13,7 +16,7 @@ bool CrossMove::checkPosition(int x, int y, Bitboard& bb) const
 			bb.setBit(Pos(x, y));
 		else
 		{
-			if(temp->isWhite() != from->isWhite())
+			if(temp->isWhite() != from->isWhite() || attackMap) // attack map includes defended friendly pieces
 				bb.setBit(Pos(x, y));
 			return true;
 		}
@@ -22,7 +25,7 @@ bool CrossMove::checkPosition(int x, int y, Bitboard& bb) const
 	return true;			
 }
 
-Bitboard CrossMove::validMoves(Pos* p) const
+Bitboard CrossMove::generate(Pos* p, bool attackMap) const
 {
 	Bitboard bb;
 	if(from->isDead())
@@ -39,16 +42,16 @@ Bitboard CrossMove::validMoves(Pos* p) const
 	for(int i = 1; i < MAX_ROW_COL; i++)
 	{
 		if(!stopTL)
-			stopTL = checkPosition(searchFrom.getX() - i, searchFrom.getY() - i, bb);
+			stopTL = checkPosition(searchFrom.getX() - i, searchFrom.getY() - i, bb, attackMap);
 		
 		if(!stopTR)
-			stopTR = checkPosition(searchFrom.getX() + i, searchFrom.getY() - i, bb);
+			stopTR = checkPosition(searchFrom.getX() + i, searchFrom.getY() - i, bb, attackMap);
 		
 		if(!stopBR)
-			stopBR = checkPosition(searchFrom.getX() + i, searchFrom.getY() + i, bb);
+			stopBR = checkPosition(searchFrom.getX() + i, searchFrom.getY() + i, bb, attackMap);
 		
 		if(!stopBL)
-			stopBL = checkPosition(searchFrom.getX() - i, searchFrom.getY() + i, bb);
+			stopBL = checkPosition(searchFrom.getX() - i, searchFrom.getY() + i, bb, attackMap);
 		
 		if(stopTR && stopTL && stopBR && stopBL)
 			break;

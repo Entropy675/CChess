@@ -22,8 +22,9 @@ Toolchain: MinGW-w64. Install the Windows environment and dependencies, then run
 Enter the tests folder, run make, the Makefile will build then run the tests.
 
 ## Direction
-CChess is no longer developed as a standalone program. It's being integrated as an example LGPL provider for ETCS (Entity Tag Context System), my forthcoming super-type ontology, which is also LGPL on release.
+CChess is no longer developed as a standalone program (but of course, you can still compile it to be so on linux since ncurses implementation is so easy to keep). It's being integrated as an example LGPL provider for ETCS (Entity Tag Context System), my forthcoming super-type ontology, which is also LGPL on release.
 
 ETCS acts as an OS abstraction, and as a kernel outright when compiled or run in kernel mode. Turning CChess into a type provider lets the ETCS substrate fulfill the P2P trust contract natively, through its existing synchronization primitives (the causal type lattice, the gap reorder buffer, and mirror-buffer RPC over compile-time-declared dependency graphs), and bridge to any target platform through separate OS variant instances of the same type provider module (Linux, Windows, WASM).
 
-Rendering therefore lives outside this repository, wherever the CChess work-function interface is reached. **This is a chess engine only.** The OS-specific display has nothing to do with it. The one exception is the ncurses terminal view on Linux, which remains as the reference implementation and the default terminal when available.
+Rendering and search therefore lives outside this repository, wherever the CChess work-function interface is reached. **This is a chess engine only.** The OS-specific display has nothing to do with it. This will be sub-project to the actual ChessProvider module - serves as a demonstration of how you can take arbitrary code and create a work function interface for it that transforms it into a type provider for the ETCS runtime.
+

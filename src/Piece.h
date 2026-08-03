@@ -35,7 +35,6 @@ class Piece
 	Board* getBoard() const;
 
 	bool isValidMove(const Pos p);
-	void validMoves(std::vector<Pos>& p);
 	Bitboard validMoves(Pos* = nullptr) const;
 	Bitboard validCaptures(Pos* = nullptr) const;
 	
@@ -45,6 +44,7 @@ class Piece
 	
 	const Pos& getPos() const;
 	void setPos(const Pos& p) { pos = p; } // restore point: movePiece rolls this back if a move is rejected after Piece::move committed it
+	void setMoved(bool m) { moved = m; } // castling commits the king/rook moved flags through here
 	std::string toString() const;
 	std::string getBoardPos() const;
 	

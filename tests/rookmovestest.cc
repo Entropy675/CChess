@@ -42,7 +42,7 @@ int main()
 	
 	std::cout << "\nchecking...\n" << std::endl;
 
-	std::string test = "1nbqkbnr/1pppppp1/8/p6p/1P6/PR6/2PPPPPR/1NBQKBN1 b KQkq - 1 6";
+	std::string test = "1nbqkbnr/1pppppp1/8/p6p/1P6/PR6/2PPPPPR/1NBQKBN1 b k - 1 6";
 	
 	delete game;
 	if(fs != test)

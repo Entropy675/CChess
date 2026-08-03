@@ -61,7 +61,7 @@ int main()
 	
 	std::cout << "\nchecking...\n" << std::endl;
 
-	std::string test = "rnb2bnr/ppppk2p/5pp1/6B1/3KP3/8/PPP2NPP/RN1Q1B1R w KQkq - 0 10";
+	std::string test = "rnb2bnr/ppppk2p/5pp1/6B1/3KP3/8/PPP2NPP/RN1Q1B1R w - - 0 10";
 	
 	delete game;
 	if(fs != test)

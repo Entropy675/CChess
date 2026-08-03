@@ -97,18 +97,16 @@ class Board
 
 	char promotionMatchChar(std::string&);
 	void updateMaps();
+	ChessStatus tryCastle(Pos kingSq, Pos rookSq); // king moving onto its own unmoved rook
+	bool castleRight(bool white, bool kingside) const; // FEN castling right, derived from live state
 	
 	std::vector<Piece*>* whitePieces;
 	Piece* whiteKing;
 	bool whiteCheck;
-	bool whiteCastleKS;
-	bool whiteCastleQS;
 	
 	std::vector<Piece*>* blackPieces;
 	Piece* blackKing;
 	bool blackCheck;
-	bool blackCastleKS;
-	bool blackCastleQS;
 
 	Bitboard whiteAttackMap;
 	Bitboard blackAttackMap;

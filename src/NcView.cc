@@ -140,7 +140,7 @@ void NcView::log(const std::string& sin)
 		logfile << s << std::endl;
 	}
 	
-	logstring = s;
+	logstring += s;
 //	mvwprintw(logwin, 3, 2, "%s", s.c_str());
 //	box(logwin, 0, 0);
 //	wrefresh(logwin);

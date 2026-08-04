@@ -181,15 +181,31 @@ ChessStatus Board::movePiece(Pos a, Pos b) // move from a to b if valid on this 
 	if(getPiece(a) == nullptr || getPiece(a)->isWhite() != whiteTurn)
 		return ChessStatus::FAIL;
 
-	// Castling: an unmoved king moving onto its own unmoved rook triggers the two-piece swap.
+	// Castling: an unmoved king moving toward a corner rook on its home rank,
+	// entered EITHER the standard way (king two squares: e1->g1 / e1->c1) OR as
+	// king-onto-rook (e1->h1 / e1->a1). Both resolve to the same corner rook and
+	// go through tryCastle, which always lands the king on its standard square --
+	// so the move is recorded the standard way regardless of how it was entered.
 	{
 		Piece* mv = getPiece(a);
-		Piece* tg = getPiece(b);
 		if(mv->getKingBehaviour() != nullptr && !mv->hasMoved()
-		   && tg != nullptr && tg->getCharacter() == 'R'
-		   && tg->isWhite() == mv->isWhite() && !tg->hasMoved()
-		   && a.getY() == b.getY())
-			return tryCastle(a, b);
+		   && a.getY() == b.getY() && a.getX() != b.getX())
+		{
+			int dx = b.getX() - a.getX();
+			int cornerX = (dx > 0) ? MAX_ROW_COL - 1 : 0; // h-file / a-file corner
+			bool twoSquare = (dx == 2 || dx == -2);
+			Piece* tg = getPiece(b);
+			bool ontoCornerRook = (b.getX() == cornerX && tg != nullptr
+			                       && tg->getCharacter() == 'R' && tg->isWhite() == mv->isWhite());
+			if(twoSquare || ontoCornerRook)
+			{
+				Pos rookSq(cornerX, a.getY());
+				Piece* rook = getPiece(rookSq);
+				if(rook != nullptr && rook->getCharacter() == 'R'
+				   && rook->isWhite() == mv->isWhite() && !rook->hasMoved())
+					return tryCastle(a, rookSq);
+			}
+		}
 	}
 
 	Log log(2);

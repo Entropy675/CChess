@@ -57,6 +57,34 @@ int main(){
       bool ok = r==ChessStatus::SUCCESS && at(g,6,7,'K') && at(g,5,7,'R');
       if(!ok){ std::cout<<"case7 castle-after-rejected-move FAIL: "<<g->toFENString()<<"\n"; fail++; } delete g; }
 
+    // 8. standard input form: king TWO squares (e1->g1 kingside, e1->c1 queenside)
+    { Board* g=new Board(); g->setEmptyBoard(true);
+      g->placePiece(4,7,'K',true); g->placePiece(7,7,'R',true); g->placePiece(4,0,'K',false);
+      ChessStatus r=g->movePiece(Pos(4,7),Pos(6,7)); // e1-g1
+      bool ok = r==ChessStatus::SUCCESS && at(g,6,7,'K') && at(g,5,7,'R') && (*g)[4][7]==nullptr && (*g)[7][7]==nullptr;
+      if(!ok){ std::cout<<"case8 e1-g1 FAIL: "<<g->toFENString()<<"\n"; fail++; } delete g; }
+    { Board* g=new Board(); g->setEmptyBoard(true);
+      g->placePiece(4,7,'K',true); g->placePiece(0,7,'R',true); g->placePiece(4,0,'K',false);
+      ChessStatus r=g->movePiece(Pos(4,7),Pos(2,7)); // e1-c1
+      bool ok = r==ChessStatus::SUCCESS && at(g,2,7,'K') && at(g,3,7,'R') && (*g)[4][7]==nullptr && (*g)[0][7]==nullptr;
+      if(!ok){ std::cout<<"case8 e1-c1 FAIL: "<<g->toFENString()<<"\n"; fail++; } delete g; }
+
+    // 9. both input forms land the king on the SAME standard square (g1)
+    { Board* g1b=new Board(); g1b->setEmptyBoard(true);
+      g1b->placePiece(4,7,'K',true); g1b->placePiece(7,7,'R',true); g1b->placePiece(4,0,'K',false);
+      g1b->movePiece(Pos(4,7),Pos(7,7)); // e1->h1 (onto-rook form)
+      Board* g2b=new Board(); g2b->setEmptyBoard(true);
+      g2b->placePiece(4,7,'K',true); g2b->placePiece(7,7,'R',true); g2b->placePiece(4,0,'K',false);
+      g2b->movePiece(Pos(4,7),Pos(6,7)); // e1->g1 (standard form)
+      if(g1b->toFENString() != g2b->toFENString()){ std::cout<<"case9 forms diverge: "<<g1b->toFENString()<<" vs "<<g2b->toFENString()<<"\n"; fail++; }
+      delete g1b; delete g2b; }
+
+    // 10. king moving one square onto an ADJACENT own rook is NOT castling -> FAIL
+    { Board* g=new Board(); g->setEmptyBoard(true);
+      g->placePiece(4,7,'K',true); g->placePiece(5,7,'R',true); g->placePiece(7,7,'R',true); g->placePiece(4,0,'K',false);
+      bool ok = g->movePiece(Pos(4,7),Pos(5,7))==ChessStatus::FAIL && at(g,4,7,'K'); // e1->f1 onto own rook
+      if(!ok){ std::cout<<"case10 onto-adjacent-rook wrongly allowed\n"; fail++; } delete g; }
+
     std::cout<<(fail==0?"castlingtest: PASS\n":"castlingtest: FAIL\n");
     return fail==0?0:1;
 }

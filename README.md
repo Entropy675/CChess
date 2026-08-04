@@ -9,6 +9,8 @@
 
 ## Build & run (Linux)
 make
+
+Then:
 ./CChess
 
 Builds on any Linux distribution with no per-environment variation. The only dependency is ncurses, the standard library for Linux terminal applications.

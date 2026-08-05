@@ -49,6 +49,12 @@ const Piece* PawnMove::getEnPassantTarget() const
 	return capturableViaEP;
 }
 	
+void PawnMove::primeEnPassant(Piece* pushedPawn, int turn)
+{
+	// loadFEN wiring: the same state a real double-push would leave, minus the move.
+	EPSetTarget(pushedPawn, turn);
+}
+
 void PawnMove::EPSetTarget(Piece* p, int tep)
 {
 	capturableViaEP = p;

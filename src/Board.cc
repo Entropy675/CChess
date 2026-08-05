@@ -1,4 +1,5 @@
 #include "Board.h"
+#include <cctype>
 
 #include "piece_behav/PawnMove.h"
 #include "piece_behav/KingMove.h"
@@ -340,6 +341,90 @@ std::string Board::toFENString() const
 	FENs += std::to_string(turnCountFEN);
 	
 	return FENs;
+}
+
+bool Board::loadFEN(const std::string& fen)
+{
+	// Split into up to 6 space-separated fields (counters optional).
+	std::string f[6]; int n = 0; std::string cur;
+	for(char ch : fen)
+	{
+		if(ch == ' ') { if(!cur.empty() && n < 6) { f[n++] = cur; cur.clear(); } }
+		else cur += ch;
+	}
+	if(!cur.empty() && n < 6) f[n++] = cur;
+	if(n < 2) return false; // need at least board + side-to-move
+
+	std::string boardField  = f[0];
+	bool whiteToMove        = (f[1] == "w");
+	std::string castleField = (n > 2) ? f[2] : "-";
+	std::string epField     = (n > 3) ? f[3] : "-";
+	int halfmove            = (n > 4) ? std::atoi(f[4].c_str()) : 0;
+	int fullmove            = (n > 5) ? std::atoi(f[5].c_str()) : 1;
+
+	setEmptyBoard(whiteToMove); // resets board+pieces, whiteTurn, moveCount=0, turnCountFEN=1
+
+	// 1. pieces: ranks 8..1 (y=0..7), files a..h (x=0..7)
+	int x = 0, y = 0;
+	for(char ch : boardField)
+	{
+		if(ch == '/') { y++; x = 0; continue; }
+		if(ch >= '1' && ch <= '8') { x += ch - '0'; continue; }
+		if(x < MAX_ROW_COL && y < MAX_ROW_COL)
+			placePiece(x, y, static_cast<char>(std::toupper(static_cast<unsigned char>(ch))),
+			           std::isupper(static_cast<unsigned char>(ch)) != 0);
+		x++;
+	}
+
+	// 2. castling: every piece is unmoved after placePiece (so all rights would
+	//    read true). Mark the kings + corner rooks moved, then un-mark exactly the
+	//    rights the FEN grants -- castleRight() derives the field from these flags.
+	auto mark = [](Piece* p, bool m){ if(p) p->setMoved(m); };
+	Piece* wRh = getPiece(Pos(MAX_ROW_COL-1, MAX_ROW_COL-1)); // h1
+	Piece* wRa = getPiece(Pos(0,            MAX_ROW_COL-1)); // a1
+	Piece* bRh = getPiece(Pos(MAX_ROW_COL-1, 0));            // h8
+	Piece* bRa = getPiece(Pos(0,             0));            // a8
+	mark(whiteKing,true); mark(blackKing,true);
+	mark(wRh,true); mark(wRa,true); mark(bRh,true); mark(bRa,true);
+	if(castleField != "-")
+		for(char ch : castleField)
+			switch(ch)
+			{
+				case 'K': mark(whiteKing,false); mark(wRh,false); break;
+				case 'Q': mark(whiteKing,false); mark(wRa,false); break;
+				case 'k': mark(blackKing,false); mark(bRh,false); break;
+				case 'q': mark(blackKing,false); mark(bRa,false); break;
+			}
+
+	// 3. en passant. CChess encodes the double-pushed PAWN's own square here
+	//    (getEnPassantBoardPosFEN returns the target pawn's getBoardPos()), not the
+	//    standard square-behind -- so parse it as the pawn square directly and
+	//    re-prime the side-to-move's adjacent pawns exactly as a real push would.
+	enPassantActive = false;
+	if(epField != "-" && epField.size() >= 2)
+	{
+		int ex = epField[0] - 'a';
+		int ey = MAX_ROW_COL - (epField[1] - '0');
+		if(ex >= 0 && ex < MAX_ROW_COL && ey >= 0 && ey < MAX_ROW_COL)
+		{
+			Piece* pushed = getPiece(Pos(ex, ey));
+			if(pushed != nullptr && pushed->getPawnBehaviour() != nullptr)
+				for(int dx = -1; dx <= 1; dx += 2)
+				{
+					int ax = ex + dx;
+					if(ax < 0 || ax >= MAX_ROW_COL) continue;
+					Piece* adj = getPiece(Pos(ax, ey));
+					if(adj != nullptr && adj->getPawnBehaviour() != nullptr
+					   && adj->isWhite() == whiteToMove)
+						adj->getPawnBehaviour()->primeEnPassant(pushed, moveCount);
+				}
+		}
+	}
+
+	// 4. counters
+	halfmoveCount = halfmove;
+	turnCountFEN  = fullmove;
+	return true;
 }
 	
 	// CHANGE HOW THIS WORKS!!! any pawn that moves up 2

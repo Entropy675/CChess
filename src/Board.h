@@ -71,6 +71,7 @@ class Board
 	
 	int getTurnFEN() const;
 	std::string toFENString() const;
+	bool loadFEN(const std::string& fen); // inverse of toFENString (CChess FEN convention)
 
 	std::string getEnPassantBoardPosFEN() const;
 	bool isEnpassantOnBoard() const;

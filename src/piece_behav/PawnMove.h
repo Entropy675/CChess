@@ -13,6 +13,7 @@ class PawnMove : public MoveBehaviour
 	void EPValidateTarget(Piece*, bool);
 	bool enPassantCheckAct(const Pos, const Piece&); // call this before allowing move.
 	const Piece* getEnPassantTarget() const;	
+	void primeEnPassant(Piece* pushedPawn, int turn); // restore ep state when loading a FEN
 	
 	virtual Bitboard validCaptures(Pos* p = nullptr) const override;
 	virtual Bitboard validMoves(Pos* p = nullptr) const override;

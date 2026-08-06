@@ -58,7 +58,14 @@ class Board
 
 	bool isCheckmate();
 	bool isStalemate();
-	bool sideToMoveInCheck();
+	// const: reads the attack maps after refreshing them, and that refresh is a
+	// memoized cache update (see the mutable maps below), not a state change.
+	// isCheckmate/isStalemate/sideToMoveHasLegalMove are deliberately NOT const:
+	// they route through isMoveValidOnKing, which SIMULATES a move by mutating
+	// gameBoard and restoring it. That is logically const but genuinely mutating,
+	// so const there would be a lie -- and it would hide a real hazard, since two
+	// threads querying the same board would corrupt each other's simulation.
+	bool sideToMoveInCheck() const;
 	bool sideToMoveHasLegalMove();
 	bool sideToMoveHasLegalEnPassant();
 	
@@ -97,7 +104,10 @@ class Board
 	Bitboard conditionalGetMap(const Piece& p, Pos* to, bool includePiecesAttacks, Function func, std::vector<Piece*>* pieces) const;
 
 	char promotionMatchChar(std::string&);
-	void updateMaps();
+	// const + mutable maps: this is a memoization cache refresh, which is the
+	// textbook case for mutable. It recomputes a view OF the position rather than
+	// changing the position, so a const query that needs fresh maps can call it.
+	void updateMaps() const;
 	ChessStatus tryCastle(Pos kingSq, Pos rookSq); // king moving onto its own unmoved rook
 	bool castleRight(bool white, bool kingside) const; // FEN castling right, derived from live state
 	
@@ -109,10 +119,10 @@ class Board
 	Piece* blackKing;
 	bool blackCheck;
 
-	Bitboard whiteAttackMap;
-	Bitboard blackAttackMap;
-	Bitboard whiteMoveMap;
-	Bitboard blackMoveMap;
+	mutable Bitboard whiteAttackMap;
+	mutable Bitboard blackAttackMap;
+	mutable Bitboard whiteMoveMap;
+	mutable Bitboard blackMoveMap;
 	
 	bool enPassantActive;
 

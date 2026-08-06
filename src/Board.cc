@@ -468,7 +468,7 @@ void Board::disableCheck()
 	blackCheck = false;
 }
 
-bool Board::sideToMoveInCheck()
+bool Board::sideToMoveInCheck() const
 {
 	updateMaps();
 	if(whiteTurn)
@@ -722,7 +722,7 @@ void Board::setStartingBoard(bool startingColor)
 	updateMaps();
 }
 
-void Board::updateMaps()
+void Board::updateMaps() const
 {
 	whiteAttackMap.clear();
 	blackAttackMap.clear();
